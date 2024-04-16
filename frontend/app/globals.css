@@ -28,7 +28,7 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
+    --border: 198 15% 87%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
@@ -103,4 +103,25 @@
   background: #888;
   border-radius: 5px;
   height: 10px;
+}
+
+.card-shadow {
+  @apply shadow-[0_3px_20px_#1d26260d];
+}
+.card___style {
+  @apply card-shadow bg-white rounded-xl p-7;
+}
+.active-date {
+  @apply underline decoration-primary underline-offset-8 decoration-2;
+}
+.two-line {
+  overflow: hidden;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.table___title {
+  @apply xl:text-3xl text-2xl font-bold;
 }
