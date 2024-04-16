@@ -1,26 +1,26 @@
 import { SidebarItem } from "@/types";
-import { HiOutlineHome } from "react-icons/hi2";
-import { HiOutlineNewspaper } from "react-icons/hi2";
-import { HiOutlineCalendarDays } from "react-icons/hi2";
-import { HiOutlineDocumentText } from "react-icons/hi2";
+import { FiHome } from "react-icons/fi";
+import { IoNewspaperOutline } from "react-icons/io5";
+import { IoCalendarOutline } from "react-icons/io5";
+import { SlDocs } from "react-icons/sl";
 import { CgWorkAlt } from "react-icons/cg";
 export const sidebarItems: SidebarItem[] = [
   {
     title: "Home",
     href: "/",
-    icon: HiOutlineHome,
+    icon: FiHome,
     submenu: false,
   },
   {
     title: "Bảng tin",
     href: "/news",
-    icon: HiOutlineNewspaper,
+    icon: IoNewspaperOutline,
     submenu: false,
   },
   {
     title: "Lịch",
     href: "/calendar",
-    icon: HiOutlineCalendarDays,
+    icon: IoCalendarOutline,
     submenu: true,
     subMenuItems: [
       { title: "Lịch làm việc", href: "/calendar/jobs" },
@@ -31,7 +31,7 @@ export const sidebarItems: SidebarItem[] = [
   {
     title: "Tài liệu",
     href: "/document",
-    icon: HiOutlineDocumentText,
+    icon: SlDocs,
     submenu: false,
   },
   {

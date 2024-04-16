@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
 import Sidebar from "@/components/sidebar";
+import Header from "@/components/header";
+import HeaderMobile from "@/components/header-mobile";
 
 const roboto = Roboto({
-  weight: ["400", "700"],
-  style: ["normal", "italic"],
+  weight: ["300", "400", "700"],
+  style: ["normal"],
   subsets: ["latin"],
   display: "swap",
 });
@@ -21,17 +23,17 @@ export default function RootLayout({
 }>) {
   const isAuthented = true;
   return (
-    <html lang="en">
+    <html lang="en" className="h-full">
       <body className={`${roboto.className} flex overflow-y-hidden h-full`}>
         {/* <LoadingProvider> */}
         {isAuthented ? (
           <>
             <Sidebar />
-            <main className="flex flex-1">
+            <main className="flex flex-1 bg-[#eef6f7]">
               <div className="flex w-full flex-col overflow-y-hidden">
-                {/* <Header />
-                  <HeaderMobile /> */}
-                <div className="md:p-10 p-4 overflow-auto">{children}</div>
+                <Header />
+                <HeaderMobile />
+                <div className="md:p-12 p-4 overflow-auto ">{children}</div>
                 {/* <Toaster /> */}
               </div>
             </main>

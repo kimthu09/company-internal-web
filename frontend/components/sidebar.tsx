@@ -19,7 +19,7 @@ export default function Sidebar() {
 
   const [items, setItems] = useState<SidebarItem[]>(sidebarItems);
   return (
-    <div className="md:flex hidden z-20">
+    <div className="lg:flex hidden z-20">
       <aside
         className={`bg-[#fafdfd] h-screen p-1 transition-all shadow-md overflow-auto ${
           isCollapse ? "w-[5rem]" : "w-64"
@@ -48,7 +48,7 @@ export default function Sidebar() {
                   isCollapse ? "hidden" : "block"
                 }`}
               >
-                COM
+                Company
               </p>
             </Link>
             <div
@@ -101,8 +101,9 @@ const MenuItem = ({
                   <div className="p-2 rounded-md shadow-md flex justify-center items-center bg-white">
                     <span>
                       <item.icon
-                        className={`sidebar__icon  ${
-                          item.href === pathname
+                        className={`sidebar__icon ${
+                          (pathname.includes(item.href) && item.href !== "/") ||
+                          pathname === item.href
                             ? "text-primary"
                             : "text-gray-text"
                         }`}
@@ -170,13 +171,14 @@ const MenuItem = ({
           href={item.href}
           className={`flex items-center text-base no-underline text-black px-4 py-3 mb-2 rounded-md overflow-hidden max-h-15 hover:text-primary transition-colors`}
         >
-          {item.icon ? (
+          {item.icon && (
             <>
               <div className="p-2 rounded-md shadow-md flex justify-center items-center bg-white">
                 <span>
                   <item.icon
                     className={`sidebar__icon ${
-                      pathname.includes(item.href)
+                      (pathname.includes(item.href) && item.href !== "/") ||
+                      pathname === item.href
                         ? "text-primary"
                         : "text-gray-text"
                     }`}
@@ -184,7 +186,7 @@ const MenuItem = ({
                 </span>
               </div>
             </>
-          ) : null}
+          )}
 
           <span
             className={`ml-4 text-lg overflow-hidden  whitespace-nowrap ${
