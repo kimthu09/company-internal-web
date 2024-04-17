@@ -24,6 +24,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -37,6 +38,7 @@ public class PostService {
 	private final PostRepository postRepository;
 	private final TagRepository tagRepository;
 
+	@Transactional
 	public ListResponse<SimplePostResponse, PostFilter> getPosts(AppPageRequest page, PostFilter filter) {
 		Pageable pageable = PageRequest.of(page.getPage() - 1,
 										   page.getLimit(),
@@ -78,7 +80,8 @@ public class PostService {
 		return spec;
 	}
 
-	public PostResponse seeDetailPost(Long postId) {
+	@Transactional
+	public PostResponse getPost(Long postId) {
 		Post post = postRepository.findById(postId)
 								  .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST,
 																	  Message.Post.POST_NOT_EXIST));
@@ -86,6 +89,7 @@ public class PostService {
 		return mapToDTO(post);
 	}
 
+	@Transactional
 	public PostResponse createPost(CreatePostRequest request) {
 		handleImagePreCreatePostRequest(request);
 
@@ -96,6 +100,7 @@ public class PostService {
 		return mapToDTO(postRepository.save(post));
 	}
 
+	@Transactional
 	public SimpleResponse deletePost(Long postId) {
 		Post post = postRepository.findById(postId)
 								  .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST,
@@ -152,7 +157,7 @@ public class PostService {
 						   .content(post.getContent())
 						   .image(post.getImage())
 						   .attachments(post.getAttachments())
-						   .createdBy(mapToSimple(post.getCreatedBy()))
+						   .createdBy(mapToSimpleUser(post.getCreatedBy()))
 						   .createdAt(post.getCreatedAt())
 						   .updatedAt(post.getUpdatedAt())
 						   .tags(post.getTags().stream().map(this::mapTagToTagResponse).collect(Collectors.toSet()))
@@ -165,7 +170,7 @@ public class PostService {
 								 .title(post.getTitle())
 								 .description(post.getDescription())
 								 .image(post.getImage())
-								 .createdBy(mapToSimple(post.getCreatedBy()))
+								 .createdBy(mapToSimpleUser(post.getCreatedBy()))
 								 .updatedAt(post.getUpdatedAt())
 								 .tags(post.getTags()
 										   .stream()
@@ -174,8 +179,14 @@ public class PostService {
 								 .build();
 	}
 
-	private SimpleUserResponse mapToSimple(User user) {
-		return objectMapper.convertValue(user, SimpleUserResponse.class);
+	private SimpleUserResponse mapToSimpleUser(User user) {
+		return SimpleUserResponse.builder()
+								 .id(user.getId())
+								 .name(user.getName())
+								 .email(user.getEmail())
+								 .phone(user.getPhone())
+								 .image(user.getImage())
+								 .build();
 	}
 
 	private TagResponse mapTagToTagResponse(Tag tag) {

@@ -42,7 +42,23 @@ public class User implements UserDetails {
 	private String password;
 
 	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "unit_id", nullable = false)
 	private Unit unit;
+
+	@Column(nullable = false, columnDefinition = "text")
+	private String image;
+
+	@Column(nullable = false)
+	@Length(min = 10, max = 10)
+	private String dob;
+
+	@Column(nullable = false)
+	@Length(min = 1, max = 50)
+	private String address;
+
+	@Column(nullable = false)
+	@Length(min = 10, max = 11)
+	private String phone;
 
 	@Column(nullable = false)
 	private boolean isDeleted = false;

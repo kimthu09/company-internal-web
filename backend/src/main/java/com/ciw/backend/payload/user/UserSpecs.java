@@ -1,0 +1,33 @@
+package com.ciw.backend.payload.user;
+
+import com.ciw.backend.entity.User;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
+import org.springframework.data.jpa.domain.Specification;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+public class UserSpecs {
+	public static Specification<User> hasName(String name) {
+		return (root, query, cb) -> cb.like(root.get("name"), "%" + name + "%");
+	}
+	public static Specification<User> hasEmail(String email) {
+		return (root, query, cb) -> cb.like(root.get("email"), "%" + email + "%");
+	}
+	public static Specification<User> hasPhone(String phone) {
+		return (root, query, cb) -> cb.like(root.get("phone"), "%" + phone + "%");
+	}
+	public static Specification<User> hasUnit(String unit) {
+		return (root, query, cb) -> cb.like(root.get("unit").get("name"), "%" + unit + "%");
+	}
+	public static Specification<User> hasDOBinMonth(Integer dobMonth) {
+		String formattedNumber = String.format("%02d", dobMonth);
+		return (root, query, cb) -> cb.like(root.get("dob"), "___" + formattedNumber + "_____");
+	}
+	public static Specification<User> hasDOBinYear(Integer dobYear) {
+		String formattedNumber = String.format("%02d", dobYear);
+		return (root, query, cb) -> cb.like(root.get("dob"), "______" + formattedNumber);
+	}
+}

@@ -3,14 +3,15 @@ package com.ciw.backend.service;
 import com.ciw.backend.constants.ApplicationConst;
 import com.ciw.backend.constants.Message;
 import com.ciw.backend.entity.PasswordResetToken;
-import com.ciw.backend.entity.Unit;
 import com.ciw.backend.entity.User;
 import com.ciw.backend.exception.AppException;
 import com.ciw.backend.mail.MailSender;
 import com.ciw.backend.payload.SimpleResponse;
-import com.ciw.backend.payload.auth.*;
+import com.ciw.backend.payload.auth.AuthenticationRequest;
+import com.ciw.backend.payload.auth.AuthenticationResponse;
+import com.ciw.backend.payload.auth.EmailRequest;
+import com.ciw.backend.payload.auth.ResetPasswordRequest;
 import com.ciw.backend.repository.PasswordResetTokenRepository;
-import com.ciw.backend.repository.UnitRepository;
 import com.ciw.backend.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -28,25 +30,12 @@ import java.util.UUID;
 public class AuthenticationService {
 	private final UserRepository userRepository;
 	private final PasswordResetTokenRepository passwordResetTokenRepository;
-	private final UnitRepository unitRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final JWTService jwtService;
 	private final AuthenticationManager authenticationManager;
 	private final MailSender mailSender;
 
-	public AuthenticationResponse register(RegisterRequest request) {
-		Unit unit = unitRepository.findByName("temp").orElseThrow();
-		User user = User.builder()
-						.name(request.getName())
-						.email(request.getEmail())
-						.password(passwordEncoder.encode(request.getPassword()))
-						.unit(unit)
-						.build();
-		User savedUser = userRepository.save(user);
-		String jwtToken = jwtService.generateToken(savedUser);
-		return AuthenticationResponse.builder().token(jwtToken).build();
-	}
-
+	@Transactional
 	public AuthenticationResponse authenticate(AuthenticationRequest request) {
 		authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(
@@ -59,16 +48,18 @@ public class AuthenticationService {
 		return AuthenticationResponse.builder().token(jwtToken).build();
 	}
 
+	@Transactional
 	public SimpleResponse sendEmailToResetPassword(EmailRequest request) {
 		User user = userRepository.findByEmail(request.getEmail())
 								  .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST,
-																	  Message.USER_NOT_EXIST));
+																	  Message.User.USER_NOT_EXIST));
 		String token = UUID.randomUUID().toString();
 		passwordResetEmailLink(user, token);
 		passwordResetTokenRepository.save(new PasswordResetToken(token, user));
 		return new SimpleResponse();
 	}
 
+	@Transactional
 	public SimpleResponse resetPassword(ResetPasswordRequest request, String token) {
 		PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token)
 																			.orElseThrow(() -> new AppException(
@@ -83,6 +74,7 @@ public class AuthenticationService {
 		userRepository.save(user);
 		return new SimpleResponse();
 	}
+
 
 	private void passwordResetEmailLink(User user, String token) {
 		String url = generateResetPasswordUrl(token);

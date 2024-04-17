@@ -17,7 +17,7 @@ import java.util.List;
 @Builder
 public class PostFilter {
 	@Schema(name = "title", example = "Tiêu đề bài post")
-	@Length(min = 1, max = 100, message = Message.Post.POST_TITLE_VALIDATE)
+	@Length(max = 100, message = Message.Post.POST_TITLE_FILTER_VALIDATE)
 	private String title;
 
 	@Schema(name = "updatedAtFrom", example = "2024-04-16 05:20:42")

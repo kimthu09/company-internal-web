@@ -15,8 +15,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AppPageRequest {
 	@Schema(name = "page", example = "1")
-	@Min(value = 1, message = Message.Page.PAGE_LIMIT)
+	@Min(value = 1, message = Message.Page.PAGE_VALIDATE)
 	private int page = ApplicationConst.DEFAULT_PAGE;
+
 	@Schema(name = "limit", example = "10")
 	@Min(value = 1, message = Message.Page.PAGE_LIMIT)
 	private int limit = ApplicationConst.DEFAULT_LIMIT;
