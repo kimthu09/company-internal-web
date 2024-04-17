@@ -1,13 +1,7 @@
 package com.ciw.backend.payload.user;
 
 import com.ciw.backend.entity.User;
-import jakarta.persistence.criteria.Expression;
-import jakarta.persistence.criteria.Path;
-import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class UserSpecs {
 	public static Specification<User> hasName(String name) {
