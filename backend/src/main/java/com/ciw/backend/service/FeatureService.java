@@ -7,6 +7,7 @@ import com.ciw.backend.repository.FeatureRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class FeatureService {
 	private final FeatureRepository featureRepository;
 	private final ObjectMapper objectMapper;
 
+	@Transactional
 	public SimpleListResponse<FeatureResponse> getAllFeatures() {
 		List<FeatureResponse> features = featureRepository.findAll().stream().map(this::mapToDTO).toList();
 		return new SimpleListResponse<>(features);

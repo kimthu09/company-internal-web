@@ -19,9 +19,6 @@ public class CreateUnitRequest {
 	@Length(min = 1, max = 100, message = Message.Unit.UNIT_NAME_VALIDATE)
 	private String name;
 
-	@Schema(name = "manager", example = "0")
-	private Long manager;
-
 	@Schema(name = "features", example = "[0, 1]")
 	private List<Long> features;
 }

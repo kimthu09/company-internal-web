@@ -3,9 +3,11 @@ package com.ciw.backend.payload.user;
 import com.ciw.backend.entity.User;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class UserSpecs {
 	public static Specification<User> hasName(String name) {
@@ -21,19 +23,11 @@ public class UserSpecs {
 		return (root, query, cb) -> cb.like(root.get("unit").get("name"), "%" + unit + "%");
 	}
 	public static Specification<User> hasDOBinMonth(Integer dobMonth) {
-		return (root, query, cb) -> {
-			Path<String> dobPath = root.get("dob");
-			Expression<LocalDate> dobExpression = cb.function("TO_DATE", LocalDate.class, dobPath, cb.literal("dd/MM/yyyy"));
-			Expression<Integer> dobMonthExpression = cb.function("MONTH", Integer.class, dobExpression);
-			return cb.equal(dobMonthExpression, dobMonth);
-		};
+		String formattedNumber = String.format("%02d", dobMonth);
+		return (root, query, cb) -> cb.like(root.get("dob"), "___" + formattedNumber + "_____");
 	}
 	public static Specification<User> hasDOBinYear(Integer dobYear) {
-		return (root, query, cb) -> {
-			Path<String> dobPath = root.get("dob");
-			Expression<LocalDate> dobExpression = cb.function("TO_DATE", LocalDate.class, dobPath, cb.literal("dd/MM/yyyy"));
-			Expression<Integer> dobMonthExpression = cb.function("YEAR", Integer.class, dobExpression);
-			return cb.equal(dobMonthExpression, dobYear);
-		};
+		String formattedNumber = String.format("%02d", dobYear);
+		return (root, query, cb) -> cb.like(root.get("dob"), "______" + formattedNumber);
 	}
 }

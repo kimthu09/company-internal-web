@@ -16,4 +16,7 @@ public class SimpleUnitWithoutManagerResponse {
 
 	@Schema(name = "name", example = "Tên phòng ban")
 	private String name;
+
+	@Schema(name = "numberStaffs", example = "1")
+	private int numberStaffs = 0;
 }

@@ -20,4 +20,7 @@ public class SimpleUnitResponse {
 
 	@Schema(name = "manager")
 	private SimpleUserResponse manager;
+
+	@Schema(name = "numberStaffs", example = "1")
+	private int numberStaffs = 0;
 }

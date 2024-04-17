@@ -29,4 +29,7 @@ public class UnitResponse {
 
 	@Schema(name = "features")
 	private List<FeatureResponse> features;
+
+	@Schema(name = "numberStaffs", example = "1")
+	private int numberStaffs = 0;
 }

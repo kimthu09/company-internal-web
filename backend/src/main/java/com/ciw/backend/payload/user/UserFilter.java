@@ -35,7 +35,7 @@ public class UserFilter {
 	@Max(value = 12, message = Message.User.DOB_VALIDATE)
 	private Integer monthDOB;
 
-	@Schema(name = "yearDOB", example = "1")
+	@Schema(name = "yearDOB", example = "1900")
 	@Min(value = 1900, message = Message.User.DOB_VALIDATE)
 	@Max(value = 2024, message = Message.User.DOB_VALIDATE)
 	private Integer yearDOB;

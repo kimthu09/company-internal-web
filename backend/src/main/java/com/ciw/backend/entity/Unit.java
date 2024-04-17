@@ -37,4 +37,7 @@ public class Unit {
 			   orphanRemoval = true,
 			   targetEntity = UnitFeature.class)
 	private Set<UnitFeature> unitFeatures;
+
+	@Column(nullable = false)
+	private int numberStaffs = 0;
 }

@@ -1,6 +1,7 @@
 package com.ciw.backend.service;
 
 import com.ciw.backend.constants.Message;
+import com.ciw.backend.entity.Feature;
 import com.ciw.backend.entity.Unit;
 import com.ciw.backend.entity.UnitFeature;
 import com.ciw.backend.entity.User;
@@ -11,6 +12,7 @@ import com.ciw.backend.payload.page.AppPageRequest;
 import com.ciw.backend.payload.page.AppPageResponse;
 import com.ciw.backend.payload.unit.*;
 import com.ciw.backend.payload.user.SimpleUserResponse;
+import com.ciw.backend.repository.FeatureRepository;
 import com.ciw.backend.repository.UnitFeatureRepository;
 import com.ciw.backend.repository.UnitRepository;
 import com.ciw.backend.repository.UserRepository;
@@ -22,19 +24,22 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UnitService {
 	private final UnitRepository unitRepository;
 	private final UserRepository userRepository;
+	private final FeatureRepository featureRepository;
 	private final UnitFeatureRepository unitFeatureRepository;
 
+	@Transactional
 	public ListResponse<SimpleUnitResponse, UnitFilter> getUnits(AppPageRequest page, UnitFilter filter) {
 		Pageable pageable = PageRequest.of(page.getPage() - 1, page.getLimit(), Sort.by(Sort.Direction.DESC, "name"));
 		Specification<Unit> spec = filterUnits(filter);
@@ -68,6 +73,7 @@ public class UnitService {
 		return spec;
 	}
 
+	@Transactional
 	public UnitResponse getUnit(Long id) {
 		Unit unit = unitRepository.findById(id)
 								  .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST,
@@ -78,38 +84,53 @@ public class UnitService {
 		return mapToDTO(unit, staffs);
 	}
 
+	@Transactional
 	public UnitResponse createUnit(CreateUnitRequest request) {
 		Unit unit = mapToEntity(request);
-		unit.setUnitFeatures(findUnitFeatures(request.getFeatures()));
-		if (request.getManager() != null) {
-			unit.setManager(findManager(request.getManager()));
-		}
+		List<Feature> features = findFeatures(request.getFeatures());
 
-		return mapToDTO(unitRepository.save(unit));
+		Unit savedUnit = unitRepository.save(unit);
+
+		List<UnitFeature> unitFeatures = getUnitFeatures(unit, features);
+		unitFeatureRepository.saveAll(unitFeatures);
+		savedUnit.setUnitFeatures(new HashSet<>(unitFeatures));
+
+		return mapToDTO(savedUnit);
 	}
 
-	private Set<UnitFeature> findUnitFeatures(List<Long> featureIds) {
-		Set<UnitFeature> features = new HashSet<>();
+	private List<Feature> findFeatures(List<Long> featureIds) {
+		List<Feature> features = new ArrayList<>();
 		for (Long featureId : featureIds) {
-			features.add(unitFeatureRepository.findFirstByFeatureId(featureId)
-								 .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST,
-																	 Message.Feature.FEATURE_NOT_EXIST)
+			features.add(featureRepository.findById(featureId)
+										  .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST,
+																			  Message.Feature.FEATURE_NOT_EXIST)
 
-								 ));
+										  ));
 		}
 		return features;
 	}
 
-	private User findManager(Long id) {
-		return userRepository.findById(id)
-							 .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, Message.User.USER_NOT_EXIST));
+	private List<UnitFeature> getUnitFeatures(Unit unit, List<Feature> features) {
+		List<UnitFeature> res = new ArrayList<>();
+		for (Feature feature : features) {
+			res.add(UnitFeature.builder().feature(feature).unit(unit).build());
+		}
+		return res;
 	}
 
 	private SimpleUnitResponse mapToSimpleDTO(Unit unit) {
+		if (unit.getManager() == null) {
+			return SimpleUnitResponse.builder()
+									 .id(unit.getId())
+									 .name(unit.getName())
+									 .numberStaffs(unit.getNumberStaffs())
+									 .build();
+		}
 		return SimpleUnitResponse.builder()
 								 .id(unit.getId())
 								 .name(unit.getName())
 								 .manager(mapToSimpleUser(unit.getManager()))
+								 .numberStaffs(unit.getNumberStaffs())
 								 .build();
 	}
 
@@ -118,12 +139,22 @@ public class UnitService {
 	}
 
 	private UnitResponse mapToDTO(Unit unit, List<User> staffs) {
+		if (unit.getManager() == null) {
+			return UnitResponse.builder()
+							   .id(unit.getId())
+							   .name(unit.getName())
+							   .staffs(staffs.stream().map(this::mapToSimpleUser).toList())
+							   .features(unit.getUnitFeatures().stream().map(this::mapToFeatureResponse).toList())
+							   .numberStaffs(unit.getNumberStaffs())
+							   .build();
+		}
 		return UnitResponse.builder()
 						   .id(unit.getId())
 						   .name(unit.getName())
 						   .manager(mapToSimpleUser(unit.getManager()))
 						   .staffs(staffs.stream().map(this::mapToSimpleUser).toList())
 						   .features(unit.getUnitFeatures().stream().map(this::mapToFeatureResponse).toList())
+						   .numberStaffs(unit.getNumberStaffs())
 						   .build();
 	}
 

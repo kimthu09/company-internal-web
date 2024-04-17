@@ -20,6 +20,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -34,6 +35,7 @@ public class AuthenticationService {
 	private final AuthenticationManager authenticationManager;
 	private final MailSender mailSender;
 
+	@Transactional
 	public AuthenticationResponse authenticate(AuthenticationRequest request) {
 		authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(
@@ -46,6 +48,7 @@ public class AuthenticationService {
 		return AuthenticationResponse.builder().token(jwtToken).build();
 	}
 
+	@Transactional
 	public SimpleResponse sendEmailToResetPassword(EmailRequest request) {
 		User user = userRepository.findByEmail(request.getEmail())
 								  .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST,
@@ -56,6 +59,7 @@ public class AuthenticationService {
 		return new SimpleResponse();
 	}
 
+	@Transactional
 	public SimpleResponse resetPassword(ResetPasswordRequest request, String token) {
 		PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token)
 																			.orElseThrow(() -> new AppException(
@@ -70,6 +74,7 @@ public class AuthenticationService {
 		userRepository.save(user);
 		return new SimpleResponse();
 	}
+
 
 	private void passwordResetEmailLink(User user, String token) {
 		String url = generateResetPasswordUrl(token);

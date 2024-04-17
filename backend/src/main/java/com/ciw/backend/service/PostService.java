@@ -24,6 +24,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -37,6 +38,7 @@ public class PostService {
 	private final PostRepository postRepository;
 	private final TagRepository tagRepository;
 
+	@Transactional
 	public ListResponse<SimplePostResponse, PostFilter> getPosts(AppPageRequest page, PostFilter filter) {
 		Pageable pageable = PageRequest.of(page.getPage() - 1,
 										   page.getLimit(),
@@ -78,6 +80,7 @@ public class PostService {
 		return spec;
 	}
 
+	@Transactional
 	public PostResponse getPost(Long postId) {
 		Post post = postRepository.findById(postId)
 								  .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST,
@@ -86,6 +89,7 @@ public class PostService {
 		return mapToDTO(post);
 	}
 
+	@Transactional
 	public PostResponse createPost(CreatePostRequest request) {
 		handleImagePreCreatePostRequest(request);
 
@@ -96,6 +100,7 @@ public class PostService {
 		return mapToDTO(postRepository.save(post));
 	}
 
+	@Transactional
 	public SimpleResponse deletePost(Long postId) {
 		Post post = postRepository.findById(postId)
 								  .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST,

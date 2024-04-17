@@ -23,6 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -32,12 +33,19 @@ public class StaffService {
 	private final UserRepository userRepository;
 	private final UnitRepository unitRepository;
 
+	@Transactional
 	public UserResponse createUser(CreateUserRequest request) {
 		handleImage(request);
 		User user = mapToEntity(request);
 		user.setDeleted(false);
-		user.setUnit(findUnit(request.getUnit()));
+
 		user.setPassword(ApplicationConst.DEFAULT_PASSWORD);
+
+		Unit unit = findUnit(request.getUnit());
+		user.setUnit(unit);
+
+		unit.setNumberStaffs(unit.getNumberStaffs() + 1);
+		unitRepository.save(unit);
 
 		return mapToDTO(userRepository.save(user));
 	}
@@ -53,6 +61,7 @@ public class StaffService {
 							 .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, Message.Unit.UNIT_NOT_EXIST));
 	}
 
+	@Transactional
 	public ListResponse<UserResponse, UserFilter> getUsers(AppPageRequest page, UserFilter filter) {
 		Pageable pageable = PageRequest.of(page.getPage() - 1,
 										   page.getLimit(),
@@ -77,6 +86,7 @@ public class StaffService {
 						   .build();
 	}
 
+	@Transactional
 	public UserResponse getUser(Long id) {
 		User user = userRepository.findById(id)
 								  .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST,
@@ -125,6 +135,7 @@ public class StaffService {
 		return SimpleUnitWithoutManagerResponse.builder()
 											   .id(unit.getId())
 											   .name(unit.getName())
+											   .numberStaffs(unit.getNumberStaffs())
 											   .build();
 	}
 
