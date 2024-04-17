@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @Table(
-		name = "feature"
+		name = "feature",
+		uniqueConstraints = {@UniqueConstraint(columnNames = {"feature"}, name = "Tên")}
 )
 public class Feature {
 	@Id

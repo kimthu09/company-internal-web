@@ -1,9 +1,9 @@
 package com.ciw.backend.controller;
 
 import com.ciw.backend.payload.SimpleListResponse;
+import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.tag.NameTagRequest;
 import com.ciw.backend.payload.tag.TagResponse;
-import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.service.TagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

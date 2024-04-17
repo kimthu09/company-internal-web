@@ -18,6 +18,9 @@ public class SimpleUserResponse {
 	@Schema(name = "email", example = "admin@gmail.com")
 	private String email;
 
+	@Schema(name = "phone", example = "0123456789")
+	private String phone;
+
 	@Schema(name = "name", example = "Nguyễn Văn A")
 	private String name;
 

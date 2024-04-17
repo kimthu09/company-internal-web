@@ -2,7 +2,6 @@ package com.ciw.backend.payload.tag;
 
 import com.ciw.backend.constants.Message;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

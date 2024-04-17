@@ -3,14 +3,11 @@ package com.ciw.backend.payload.post;
 import com.ciw.backend.constants.ApplicationConst;
 import com.ciw.backend.payload.tag.TagResponse;
 import com.ciw.backend.payload.user.SimpleUserResponse;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.Set;

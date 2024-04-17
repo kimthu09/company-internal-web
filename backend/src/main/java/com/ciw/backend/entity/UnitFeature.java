@@ -1,5 +1,6 @@
 package com.ciw.backend.entity;
 
+import com.ciw.backend.entity.IdClass.UnitFeatureId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,11 +15,13 @@ import lombok.NoArgsConstructor;
 @Table(
 		name = "unit_feature"
 )
+@IdClass(UnitFeatureId.class)
 public class UnitFeature {
-	@Id
 	@ManyToOne(fetch = FetchType.EAGER, targetEntity = Unit.class)
-	private Unit unit;
 	@Id
+	private Unit unit;
+
 	@ManyToOne(fetch = FetchType.EAGER, targetEntity = Feature.class)
+	@Id
 	private Feature feature;
 }

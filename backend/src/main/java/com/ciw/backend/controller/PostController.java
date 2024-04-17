@@ -30,6 +30,9 @@ public class PostController {
 	private final PostService postService;
 
 	@GetMapping
+	@SecurityRequirement(
+			name = "Bearer Authentication"
+	)
 	@Operation(
 			summary = "Fetch posts",
 			description = "Fetch posts from database by filter and paging"
@@ -45,6 +48,9 @@ public class PostController {
 	}
 
 	@GetMapping("/{id}")
+	@SecurityRequirement(
+			name = "Bearer Authentication"
+	)
 	@Operation(
 			summary = "Fetch detail post",
 			description = "Fetch detail post from database by id"
@@ -54,7 +60,7 @@ public class PostController {
 			description = "Http Status is 200 OK"
 	)
 	public ResponseEntity<PostResponse> seeDetailPost(@PathVariable Long id) {
-		return new ResponseEntity<>(postService.seeDetailPost(id), HttpStatus.OK);
+		return new ResponseEntity<>(postService.getPost(id), HttpStatus.OK);
 	}
 
 	@SecurityRequirement(

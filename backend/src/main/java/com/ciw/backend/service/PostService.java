@@ -78,7 +78,7 @@ public class PostService {
 		return spec;
 	}
 
-	public PostResponse seeDetailPost(Long postId) {
+	public PostResponse getPost(Long postId) {
 		Post post = postRepository.findById(postId)
 								  .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST,
 																	  Message.Post.POST_NOT_EXIST));
@@ -152,7 +152,7 @@ public class PostService {
 						   .content(post.getContent())
 						   .image(post.getImage())
 						   .attachments(post.getAttachments())
-						   .createdBy(mapToSimple(post.getCreatedBy()))
+						   .createdBy(mapToSimpleUser(post.getCreatedBy()))
 						   .createdAt(post.getCreatedAt())
 						   .updatedAt(post.getUpdatedAt())
 						   .tags(post.getTags().stream().map(this::mapTagToTagResponse).collect(Collectors.toSet()))
@@ -165,7 +165,7 @@ public class PostService {
 								 .title(post.getTitle())
 								 .description(post.getDescription())
 								 .image(post.getImage())
-								 .createdBy(mapToSimple(post.getCreatedBy()))
+								 .createdBy(mapToSimpleUser(post.getCreatedBy()))
 								 .updatedAt(post.getUpdatedAt())
 								 .tags(post.getTags()
 										   .stream()
@@ -174,8 +174,14 @@ public class PostService {
 								 .build();
 	}
 
-	private SimpleUserResponse mapToSimple(User user) {
-		return objectMapper.convertValue(user, SimpleUserResponse.class);
+	private SimpleUserResponse mapToSimpleUser(User user) {
+		return SimpleUserResponse.builder()
+								 .id(user.getId())
+								 .name(user.getName())
+								 .email(user.getEmail())
+								 .phone(user.getPhone())
+								 .image(user.getImage())
+								 .build();
 	}
 
 	private TagResponse mapTagToTagResponse(Tag tag) {
