@@ -100,7 +100,7 @@ CREATE TABLE `user` (
   `name` varchar(200) NOT NULL,
   `password` varchar(255) NOT NULL,
   `phone` varchar(11) NOT NULL,
-  `unit_id` bigint NOT NULL,
+  `unit_id` bigint,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Email` (`email`),
   KEY `FKcjsdlph5v8ywnu5wqfkvk9mj8` (`unit_id`),
@@ -141,7 +141,7 @@ INSERT INTO `user` (`id`, `address`, `dob`, `email`, `image`, `is_deleted`, `mal
 INSERT INTO `user` (`id`, `address`, `dob`, `email`, `image`, `is_deleted`, `male`, `name`, `password`, `phone`, `unit_id`) VALUES
 (3, 'Hà Nội', '23/5/2006', '21520339@gm.uit.edu.vn', 'https://firebasestorage.googleapis.com/v0/b/company-internal-web.appspot.com/o/Default%2Fdefault-avatar.png?alt=media', 0, 0, 'Nguyễn Lê Ngọc Mai', '$2a$10$HaDXxAFsuseSQHdmCaShhOu90UOVYiyRHj6fyDMBG5xUXAKS3FCLe', '0123456789', 2);
 INSERT INTO `user` (`id`, `address`, `dob`, `email`, `image`, `is_deleted`, `male`, `name`, `password`, `phone`, `unit_id`) VALUES
-(4, 'Hà Nội', '23/5/2006', 'deletedUser@gmail.com', 'https://firebasestorage.googleapis.com/v0/b/company-internal-web.appspot.com/o/Default%2Fdefault-avatar.png?alt=media', 1, 1, 'Tên nhân viên đã bị xóa', '$2a$10$HaDXxAFsuseSQHdmCaShhOu90UOVYiyRHj6fyDMBG5xUXAKS3FCLe', '0123456789', 2);
+(4, 'Hà Nội', '23/5/2006', 'deletedUser@gmail.com', 'https://firebasestorage.googleapis.com/v0/b/company-internal-web.appspot.com/o/Default%2Fdefault-avatar.png?alt=media', 1, 1, 'Tên nhân viên đã bị xóa', '$2a$10$HaDXxAFsuseSQHdmCaShhOu90UOVYiyRHj6fyDMBG5xUXAKS3FCLe', '0123456789', NULL);
 
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
