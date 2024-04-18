@@ -61,13 +61,16 @@ public class User implements UserDetails {
 	private String phone;
 
 	@Column(nullable = false)
+	private boolean male;
+
+	@Column(nullable = false)
 	private boolean isDeleted = false;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<SimpleGrantedAuthority> res = unit.getUnitFeatures().stream()
 											   .map(unitFeature -> new SimpleGrantedAuthority(unitFeature.getFeature()
-																										 .getName()))
+																										 .getCode()))
 											   .toList();
 		System.out.println(res);
 		return res;
@@ -90,6 +93,6 @@ public class User implements UserDetails {
 	}
 
 	@Override public boolean isEnabled() {
-		return !isDeleted;
+		return true;
 	}
 }

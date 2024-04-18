@@ -12,4 +12,5 @@ public class ApplicationConst {
 	public static final int DEFAULT_PAGE = 1;
 	public static final int DEFAULT_LIMIT = 10;
 	public static final String DEFAULT_PASSWORD = "App123";
+	public static final String ADMIN_EMAIL = "admin@gmail.com";
 }
