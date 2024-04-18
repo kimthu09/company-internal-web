@@ -43,16 +43,15 @@ public class AuthenticationService {
 						request.getPassword()
 				)
 		);
-		User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
+		User user = Common.findUserByEmail(request.getEmail(), userRepository);
 		String jwtToken = jwtService.generateToken(user);
 		return AuthenticationResponse.builder().token(jwtToken).build();
 	}
 
 	@Transactional
 	public SimpleResponse sendEmailToResetPassword(EmailRequest request) {
-		User user = userRepository.findByEmail(request.getEmail())
-								  .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST,
-																	  Message.User.USER_NOT_EXIST));
+		User user = Common.findUserByEmail(request.getEmail(), userRepository);
+
 		String token = UUID.randomUUID().toString();
 		passwordResetEmailLink(user, token);
 		passwordResetTokenRepository.save(new PasswordResetToken(token, user));

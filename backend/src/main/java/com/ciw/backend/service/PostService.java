@@ -23,9 +23,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -101,10 +104,73 @@ public class PostService {
 	}
 
 	@Transactional
+	public PostResponse updatePost(Long postId, UpdatePostRequest request) {
+		Post post = Common.findPostById(postId, postRepository);
+
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String email = userDetails.getUsername();
+
+		if (!post.getCreatedBy().getEmail().equals(email)) {
+		    throw new AppException(HttpStatus.BAD_REQUEST, Message.Post.CAN_NOT_EDIT_OTHER_POST);
+		}
+
+		Common.updateIfNotNull(request.getTitle(), post::setTitle);
+		Common.updateIfNotNull(request.getDescription(), post::setDescription);
+		Common.updateIfNotNull(request.getImage(), post::setImage);
+		Common.updateIfNotNull(request.getContent(), post::setContent);
+		Common.updateIfNotNull(request.getAttachments(), post::setAttachments);
+
+		Post savedPost = postRepository.save(post);
+
+		if (post.getTags()!=null) {
+			Set<Tag> tags = updateTags(post, post.getTags(), request.getTags());
+			savedPost.setTags(tags);
+		}
+
+		return mapToDTO(savedPost);
+	}
+
+	private Set<Tag> updateTags(Post post, Set<Tag> currentTag, Set<Long> updatedTag) {
+		List<Long> currentTagIds = currentTag.stream()
+											 .map(Tag::getId)
+											 .toList();
+		List<Long> newTagIds = updatedTag.stream().filter(tag -> !currentTagIds.contains(tag)).toList();
+		List<Tag> newTags = handleCreatePostTag(post, newTagIds);
+
+		List<Tag> deletedTag = currentTag.stream().filter(tag -> !updatedTag.contains(tag.getId())).toList();
+		handleDeletePostTag(post, deletedTag);
+
+		List<Tag> notChangedTags = currentTag.stream().filter(tag -> updatedTag.contains(tag.getId())).toList();
+		Set<Tag> allUpdatedTags = new HashSet<>(notChangedTags);
+		allUpdatedTags.addAll(newTags);
+		return allUpdatedTags;
+	}
+
+	private List<Tag> handleCreatePostTag(Post post, List<Long> newTags) {
+		List<Tag> tags = new ArrayList<>();
+		for (Long tagId : newTags) {
+			Tag tag = Common.findTagById(tagId, tagRepository);
+			tag.setNumberPost(tag.getNumberPost() + 1);
+			tag.getPosts().add(post);
+			tags.add(tag);
+		}
+
+		tagRepository.saveAll(tags);
+
+		return tags;
+	}
+
+	private void handleDeletePostTag(Post post, List<Tag> deletedTag) {
+		for (Tag tag : deletedTag) {
+			tag.setNumberPost(tag.getNumberPost() - 1);
+			tag.getPosts().add(post);
+		}
+		tagRepository.saveAll(deletedTag);
+	}
+
+	@Transactional
 	public SimpleResponse deletePost(Long postId) {
-		Post post = postRepository.findById(postId)
-								  .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST,
-																	  Message.Post.POST_NOT_EXIST));
+		Post post = Common.findPostById(postId, postRepository);
 		for (Tag tag : post.getTags()) {
 			tag.getPosts().remove(post);
 			tag.setNumberPost(tag.getNumberPost() - 1);
@@ -124,9 +190,7 @@ public class PostService {
 	private Set<Tag> getTagsFromIds(Set<Long> tagIds) {
 		Set<Tag> tags = new HashSet<>();
 		for (Long tagId : tagIds) {
-			Tag tag = tagRepository.findById(tagId)
-								   .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST,
-																	   Message.Tag.TAG_NOT_EXIST));
+			Tag tag = Common.findTagById(tagId, tagRepository);
 			tags.add(tag);
 		}
 		return tags;
