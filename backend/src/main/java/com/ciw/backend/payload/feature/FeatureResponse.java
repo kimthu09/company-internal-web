@@ -16,4 +16,7 @@ public class FeatureResponse {
 
 	@Schema(name = "name", example = "Tên chức năng")
 	private String name;
+
+	@Schema(name = "has", example = "false")
+	private boolean has;
 }

@@ -4,12 +4,14 @@ import com.ciw.backend.constants.ApplicationConst;
 import com.ciw.backend.constants.Message;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,10 +23,12 @@ import java.util.Set;
 public class CreatePostRequest {
 	@Schema(name = "title", example = "Tiêu đề bài post")
 	@Length(min = 1, max = 100, message = Message.Post.POST_TITLE_VALIDATE)
+	@NotNull(message = Message.Post.POST_TITLE_VALIDATE)
 	private String title;
 
 	@Schema(name = "description", example = "Mô tả bài post")
 	@Length(min = 0, max = 200, message = Message.Post.POST_DESCRIPTION_VALIDATE)
+	@NotNull(message = Message.Post.POST_DESCRIPTION_VALIDATE)
 	private String description;
 
 	@Schema(name = "content", example = "{\n" +
@@ -84,6 +88,7 @@ public class CreatePostRequest {
 										"   \"version\": \"2.8.1\"\n" +
 										"}")
 	@NotEmpty(message = Message.Post.POST_CONTENT_EMPTY)
+	@NotNull(message = Message.Post.POST_CONTENT_EMPTY)
 	private Map<String, Object> content;
 
 	@Schema(name = "image",
@@ -93,8 +98,9 @@ public class CreatePostRequest {
 
 	@Schema(name = "attachments", description = "Nếu không có tệp đính kèm, cần truyền []")
 	@NotEmpty(message = Message.Post.POST_CONTENT_EMPTY)
+	@NotNull(message = Message.Post.POST_CONTENT_EMPTY)
 	private List<PostAttachment> attachments;
 
 	@Schema(name = "tags", example = "[1, 2, 3]", description = "Nếu không có tag, cần truyền []")
-	private Set<Long> tags;
+	private Set<Long> tags = new HashSet<>();
 }
