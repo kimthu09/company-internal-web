@@ -1,7 +1,7 @@
 package com.ciw.backend.config;
 
-import com.ciw.backend.constants.Message;
 import com.ciw.backend.repository.UserRepository;
+import com.ciw.backend.service.Common;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,8 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 	private final UserRepository userRepository;
 
 	@Bean public UserDetailsService userDetailsService() throws UsernameNotFoundException {
-		return username -> userRepository.findByEmail(username)
-										 .orElseThrow(() -> new UsernameNotFoundException(Message.Auth.USER_NOT_CORRECT));
+		return username -> Common.findUserByEmail(username, userRepository);
 	}
 
 	@Bean public AuthenticationProvider authenticationProvider() {

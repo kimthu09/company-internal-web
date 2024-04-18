@@ -6,13 +6,11 @@ import com.ciw.backend.entity.Unit;
 import com.ciw.backend.entity.User;
 import com.ciw.backend.exception.AppException;
 import com.ciw.backend.payload.ListResponse;
+import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.page.AppPageRequest;
 import com.ciw.backend.payload.page.AppPageResponse;
 import com.ciw.backend.payload.unit.SimpleUnitWithoutManagerResponse;
-import com.ciw.backend.payload.user.CreateUserRequest;
-import com.ciw.backend.payload.user.UserFilter;
-import com.ciw.backend.payload.user.UserResponse;
-import com.ciw.backend.payload.user.UserSpecs;
+import com.ciw.backend.payload.user.*;
 import com.ciw.backend.repository.UnitRepository;
 import com.ciw.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,14 +34,14 @@ public class StaffService {
 	private final UnitRepository unitRepository;
 
 	@Transactional
-	public UserResponse createUser(CreateUserRequest request) {
+	public UserResponse createStaff(CreateUserRequest request) {
 		handleImage(request);
 		User user = mapToEntity(request);
 		user.setDeleted(false);
 
 		user.setPassword(ApplicationConst.DEFAULT_PASSWORD);
 
-		Unit unit = findUnit(request.getUnit());
+		Unit unit = Common.findUnitById(request.getUnit(), unitRepository);
 		user.setUnit(unit);
 
 		unit.setNumberStaffs(unit.getNumberStaffs() + 1);
@@ -56,19 +56,76 @@ public class StaffService {
 		}
 	}
 
-	private Unit findUnit(Long unitId) {
-		return unitRepository.findById(unitId)
-							 .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, Message.Unit.UNIT_NOT_EXIST));
+	@Transactional
+	public UserResponse updateStaff(Long userId, UpdateUserRequest request) {
+		User user = Common.findUserById(userId, userRepository);
+
+		Common.updateIfNotNull(request.getName(), user::setName);
+		Common.updateIfNotNull(request.getPhone(), user::setPhone);
+		Common.updateIfNotNull(request.getDob(), user::setDob);
+		Common.updateIfNotNull(request.getAddress(), user::setAddress);
+		Common.updateIfNotNull(request.getImage(), user::setImage);
+		Common.updateIfNotNull(request.getMale(), user::setMale);
+		if (request.getUnit()!=null) {
+			updateUnit(user, user.getUnit(), request.getUnit());
+		}
+
+		return mapToDTO(userRepository.save(user));
+	}
+
+	private void updateUnit(User user, Unit currentUnit, Long updatedUnitId) {
+		addUnit(user, updatedUnitId);
+		deleteUnit(user.getId(), currentUnit);
+	}
+
+	private void addUnit(User user, Long updatedUnit) {
+		Unit unit = Common.findUnitById(updatedUnit, unitRepository);
+
+		user.setUnit(unit);
+		unit.setNumberStaffs(unit.getNumberStaffs() + 1);
+		unitRepository.save(unit);
+	}
+
+	private void deleteUnit(Long userId, Unit unit) {
+		unit.setNumberStaffs(unit.getNumberStaffs() - 1);
+		if (unit.getManagerId()!=null && unit.getManagerId().equals(userId)) {
+			unit.setManagerId(null);
+		}
+		unitRepository.save(unit);
 	}
 
 	@Transactional
+	public SimpleResponse deleteStaff(Long userId) {
+		User user = Common.findUserById(userId, userRepository);
+
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String email = userDetails.getUsername();
+
+		if (user.getEmail().equals(email)) {
+		    throw new AppException(HttpStatus.BAD_REQUEST, Message.User.CAN_NOT_DELETE_YOURSELF);
+		} else if (user.getEmail().equals(ApplicationConst.ADMIN_EMAIL)) {
+		    throw new AppException(HttpStatus.BAD_REQUEST, Message.User.CAN_NOT_DELETE_ADMIN);
+		}
+
+		userRepository.deleteUserById(userId);
+
+		deleteUnit(userId, user.getUnit());
+
+		return new SimpleResponse();
+	}
+
+
+	@Transactional
 	public ListResponse<UserResponse, UserFilter> getUsers(AppPageRequest page, UserFilter filter) {
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String email = userDetails.getUsername();
+
 		Pageable pageable = PageRequest.of(page.getPage() - 1,
 										   page.getLimit(),
 										   Sort.by(Sort.Direction.DESC, "name"));
 		Specification<User> spec = filterStaffs(filter);
 
-		Page<User> userPage = userRepository.findAll(spec, pageable);
+		Page<User> userPage = userRepository.findAllNotDeletedAndNotYourself(spec, pageable, email);
 
 		List<User> users = userPage.getContent();
 
@@ -88,9 +145,7 @@ public class StaffService {
 
 	@Transactional
 	public UserResponse getUser(Long id) {
-		User user = userRepository.findById(id)
-								  .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST,
-																	  Message.User.USER_NOT_EXIST));
+		User user = Common.findUserById(id, userRepository);
 
 		return mapToDTO(user);
 	}
@@ -108,6 +163,9 @@ public class StaffService {
 		}
 		if (filter.getUnit() != null) {
 			spec = spec.and(UserSpecs.hasUnit(filter.getUnit()));
+		}
+		if (filter.getMale() != null) {
+			spec = spec.and(UserSpecs.isMale(filter.getMale()));
 		}
 		if (filter.getMonthDOB() != null) {
 			spec = spec.and(UserSpecs.hasDOBinMonth(filter.getMonthDOB()));
@@ -128,6 +186,7 @@ public class StaffService {
 						   .phone(user.getPhone())
 						   .dob(user.getDob())
 						   .address(user.getAddress())
+						   .male(user.isMale())
 						   .build();
 	}
 
@@ -147,6 +206,7 @@ public class StaffService {
 				   .dob(request.getDob())
 				   .phone(request.getPhone())
 				   .image(request.getImage())
+				   .male(request.getMale())
 				   .build();
 	}
 }

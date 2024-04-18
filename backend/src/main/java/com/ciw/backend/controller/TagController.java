@@ -2,8 +2,9 @@ package com.ciw.backend.controller;
 
 import com.ciw.backend.payload.SimpleListResponse;
 import com.ciw.backend.payload.SimpleResponse;
-import com.ciw.backend.payload.tag.NameTagRequest;
+import com.ciw.backend.payload.tag.CreateTagRequest;
 import com.ciw.backend.payload.tag.TagResponse;
+import com.ciw.backend.payload.tag.UpdateTagRequest;
 import com.ciw.backend.service.TagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 public class TagController {
 	private final TagService tagService;
 
+	@GetMapping
 	@SecurityRequirement(
 			name = "Bearer Authentication"
 	)
@@ -37,11 +40,11 @@ public class TagController {
 			responseCode = "200",
 			description = "Http Status is 200 OK"
 	)
-	@GetMapping
 	public ResponseEntity<SimpleListResponse<TagResponse>> fetchAllTag(){
 		return new ResponseEntity<>(tagService.fetchAllTag(), HttpStatus.OK);
 	}
 
+	@PostMapping
 	@SecurityRequirement(
 			name = "Bearer Authentication"
 	)
@@ -53,13 +56,14 @@ public class TagController {
 			responseCode = "201",
 			description = "Http Status is 201 CREATED"
 	)
-	@PostMapping
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'POST')")
 	public ResponseEntity<TagResponse> createTag(
-			@Valid @RequestBody NameTagRequest request
+			@Valid @RequestBody CreateTagRequest request
 	){
 		return new ResponseEntity<>(tagService.createTag(request), HttpStatus.CREATED);
 	}
 
+	@PutMapping("/{id}")
 	@SecurityRequirement(
 			name = "Bearer Authentication"
 	)
@@ -71,14 +75,15 @@ public class TagController {
 			responseCode = "200",
 			description = "Http Status is 200 OK"
 	)
-	@PostMapping("/{id}")
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'POST')")
 	public ResponseEntity<TagResponse> updateTag(
 			@PathVariable Long id,
-			@Valid @RequestBody NameTagRequest request
+			@Valid @RequestBody UpdateTagRequest request
 	){
 		return new ResponseEntity<>(tagService.updateTag(id, request), HttpStatus.OK);
 	}
 
+	@DeleteMapping("/{id}")
 	@SecurityRequirement(
 			name = "Bearer Authentication"
 	)
@@ -90,7 +95,7 @@ public class TagController {
 			responseCode = "200",
 			description = "Http Status is 200 OK"
 	)
-	@DeleteMapping("/{id}")
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'POST')")
 	public ResponseEntity<SimpleResponse> deleteTag(
 			@PathVariable Long id
 	){

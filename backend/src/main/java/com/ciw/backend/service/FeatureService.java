@@ -2,7 +2,7 @@ package com.ciw.backend.service;
 
 import com.ciw.backend.entity.Feature;
 import com.ciw.backend.payload.SimpleListResponse;
-import com.ciw.backend.payload.feature.FeatureResponse;
+import com.ciw.backend.payload.feature.SimpleFeatureResponse;
 import com.ciw.backend.repository.FeatureRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -18,16 +18,12 @@ public class FeatureService {
 	private final ObjectMapper objectMapper;
 
 	@Transactional
-	public SimpleListResponse<FeatureResponse> getAllFeatures() {
-		List<FeatureResponse> features = featureRepository.findAll().stream().map(this::mapToDTO).toList();
+	public SimpleListResponse<SimpleFeatureResponse> getAllFeatures() {
+		List<SimpleFeatureResponse> features = featureRepository.findAll().stream().map(this::mapToDTO).toList();
 		return new SimpleListResponse<>(features);
 	}
 
-	private Feature mapToEntity(FeatureResponse featureResponse) {
-		return objectMapper.convertValue(featureResponse, Feature.class);
-	}
-
-	private FeatureResponse mapToDTO(Feature feature) {
-		return objectMapper.convertValue(feature, FeatureResponse.class);
+	private SimpleFeatureResponse mapToDTO(Feature feature) {
+		return objectMapper.convertValue(feature, SimpleFeatureResponse.class);
 	}
 }

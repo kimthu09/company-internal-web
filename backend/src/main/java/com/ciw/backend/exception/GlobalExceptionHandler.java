@@ -103,10 +103,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 			String fieldMessage = error.getDefaultMessage();
 			errors.put(fieldName, fieldMessage);
 		}
+
+		StringBuilder concatenated = new StringBuilder();
+		for (String value : errors.values()) {
+			concatenated.append(value).append(". ");
+		}
+		if (!concatenated.isEmpty()) {
+			concatenated.setLength(concatenated.length() - 2);
+		}
 		HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 		ErrorResponse errorResponse = new ErrorResponse(new Date(),
 														httpStatus,
-														errors,
+														concatenated.toString(),
 														request.getDescription(false));
 		return new ResponseEntity<>(errorResponse, httpStatus);
 	}

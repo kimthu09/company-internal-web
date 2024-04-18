@@ -12,7 +12,7 @@ import org.hibernate.validator.constraints.Length;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NameTagRequest {
+public class UpdateTagRequest {
 	@Schema(name = "name", example = "Sự kiện")
 	@Length(min = 1, max = 50, message = Message.Tag.TAG_NAME_INVALID)
 	private String name;

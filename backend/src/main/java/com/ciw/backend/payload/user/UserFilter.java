@@ -30,6 +30,9 @@ public class UserFilter {
 	@Length(max = 100, message = Message.Unit.UNIT_NAME_FILTER_VALIDATE)
 	private String unit;
 
+	@Schema(name = "male", example = "true")
+	private Boolean male;
+
 	@Schema(name = "monthDOB", example = "1")
 	@Min(value = 1, message = Message.User.DOB_VALIDATE)
 	@Max(value = 12, message = Message.User.DOB_VALIDATE)

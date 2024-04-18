@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileController {
 	private final FileService fileService;
 
+	@PostMapping
 	@SecurityRequirement(
 			name = "Bearer Authentication"
 	)
@@ -35,7 +37,7 @@ public class FileController {
 			responseCode = "200",
 			description = "Http Status is 200 OK"
 	)
-	@PostMapping
+	@PreAuthorize("hasAnyAuthority('ADMIN')")
 	public ResponseEntity<FileLinkResponse> upload(@RequestParam("file") MultipartFile multipartFile) {
 		return new ResponseEntity<>(fileService.upload(multipartFile), HttpStatus.OK);
 	}

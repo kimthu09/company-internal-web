@@ -27,9 +27,8 @@ public class Unit {
 	@Length(min = 1, max = 100)
 	private String name;
 
-	@OneToOne(fetch = FetchType.LAZY, targetEntity = User.class)
-	@JoinColumn(name="manager_id", nullable=true)
-	private User manager;
+	@Column(name = "manager_id")
+	private Long managerId;
 
 	@OneToMany(fetch = FetchType.EAGER,
 			   mappedBy = "unit",

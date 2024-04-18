@@ -34,6 +34,9 @@ public class UserResponse {
 	@Schema(name = "image", example = ApplicationConst.DEFAULT_AVATAR)
 	private String image;
 
+	@Schema(name = "male", example = "true")
+	private boolean male;
+
 	@Schema(name = "unit")
 	private SimpleUnitWithoutManagerResponse unit;
 }

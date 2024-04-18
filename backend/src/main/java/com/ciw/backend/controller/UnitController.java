@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,6 +63,7 @@ public class UnitController {
 		return new ResponseEntity<>(unitService.getUnit(id), HttpStatus.OK);
 	}
 
+	@PostMapping
 	@SecurityRequirement(
 			name = "Bearer Authentication"
 	)
@@ -73,7 +75,7 @@ public class UnitController {
 			responseCode = "201",
 			description = "Http Status is 201 CREATED"
 	)
-	@PostMapping
+	@PreAuthorize("hasAnyAuthority('ADMIN')")
 	public ResponseEntity<UnitResponse> createUnit(
 			@Valid @RequestBody CreateUnitRequest request
 	) {
