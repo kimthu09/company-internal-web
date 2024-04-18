@@ -42,7 +42,7 @@ public class User implements UserDetails {
 	private String password;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "unit_id", nullable = false)
+	@JoinColumn(name = "unit_id")
 	private Unit unit;
 
 	@Column(nullable = false, columnDefinition = "text")

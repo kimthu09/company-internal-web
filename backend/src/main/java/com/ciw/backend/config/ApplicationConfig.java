@@ -1,6 +1,6 @@
 package com.ciw.backend.config;
 
-CORimport com.ciw.backend.repository.UserRepository;
+import com.ciw.backend.repository.UserRepository;
 import com.ciw.backend.service.Common;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

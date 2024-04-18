@@ -23,7 +23,7 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 	List<User> findByUnitIdAndNotDeleted(Long unitId);
 
 	@Modifying
-	@Query("UPDATE User u SET u.isDeleted = true WHERE u.id = :userId")
+	@Query("UPDATE User u SET u.isDeleted = true, u.unit = null WHERE u.id = :userId")
 	void deleteUserById(Long userId);
 
 	List<User> findByNameContains(String name);
