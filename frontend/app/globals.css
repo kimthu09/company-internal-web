@@ -30,11 +30,15 @@
 
     --border: 198 15% 87%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* --ring: 222.2 84% 4.9%; */
+    --ring: 187 89% 37%;
 
     --radius: 0.5rem;
 
     --gray-text: 220, 3%, 45%;
+    --hover-accent: 187 89% 37%;
+    --green-primary: 164 85% 41%;
+    --green-hover: 164 88% 35%;
   }
 
   .dark {
@@ -76,6 +80,9 @@
     @apply bg-background text-foreground;
   }
 }
+* {
+  @apply p-0 m-0 box-border;
+}
 .sidebar__logo {
   @apply w-12 h-12 object-contain rounded-md;
 }
@@ -109,7 +116,7 @@
   @apply shadow-[0_3px_20px_#1d26260d];
 }
 .card___style {
-  @apply card-shadow bg-white rounded-xl p-7;
+  @apply card-shadow bg-white rounded-xl p-8;
 }
 .active-date {
   @apply underline decoration-primary underline-offset-8 decoration-2;
@@ -123,5 +130,54 @@
 }
 
 .table___title {
-  @apply xl:text-3xl text-2xl font-bold;
+  @apply xl:text-3xl text-2xl font-bold tracking-wide;
+}
+.DropdownMenuContent {
+  width: var(--radix-dropdown-menu-trigger-width);
+  max-height: var(--radix-dropdown-menu-content-available-height);
+}
+.PopoverContent {
+  width: var(--radix-popover-trigger-width);
+  max-height: var(--radix-popover-content-available-height);
+}
+.loader {
+  width: 50px;
+  aspect-ratio: 1;
+  display: grid;
+}
+.loader::before,
+.loader::after {
+  content: "";
+  grid-area: 1/1;
+  --c: no-repeat radial-gradient(farthest-side, #22bbce 92%, #0000);
+  background: var(--c) 50% 0, var(--c) 50% 100%, var(--c) 100% 50%,
+    var(--c) 0 50%;
+  background-size: 12px 12px;
+  animation: l12 1s infinite;
+}
+.loader::before {
+  margin: 4px;
+  filter: hue-rotate(45deg);
+  background-size: 8px 8px;
+  animation-timing-function: linear;
+}
+
+@keyframes l12 {
+  100% {
+    transform: rotate(0.5turn);
+  }
+}
+
+input::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+input[type="date"]::-webkit-input-placeholder {
+  visibility: hidden !important;
+}
+.error___message {
+  @apply text-sm text-red-700;
+}
+.link___primary {
+  @apply text-primary hover:text-hover-accent;
 }

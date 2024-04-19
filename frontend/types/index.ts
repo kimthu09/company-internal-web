@@ -7,3 +7,29 @@ export type SidebarItem = {
   submenu?: boolean;
   subMenuItems?: SidebarItem[];
 };
+export type Unit = {
+  id: number;
+  name: string;
+  numberStaffs: number;
+  manager: {
+    id: number;
+    email: string;
+    phone: string;
+    name: string;
+    image: string;
+  };
+};
+export type Employee = {
+  id: number;
+  name: string;
+  image: string;
+  phone: string;
+  email: string;
+  address: string;
+  dob: string;
+  male: boolean;
+  unit: {
+    id: number;
+    name: string;
+  };
+};

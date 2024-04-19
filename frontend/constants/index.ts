@@ -4,6 +4,13 @@ import { IoNewspaperOutline } from "react-icons/io5";
 import { IoCalendarOutline } from "react-icons/io5";
 import { SlDocs } from "react-icons/sl";
 import { CgWorkAlt } from "react-icons/cg";
+import { z } from "zod";
+
+export const apiKey =
+  "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE3MTM0NTA3OTcsImV4cCI6MTcxMzY2Njc5N30.hMnKkiArfvq-JHVTTJXfl4LNlOXVQ3l41tSD6WS_KAZ7SN3UQtQmX6-dFuRgWkVb";
+export const endpoint = "http://localhost:8080/api/v1";
+export const required = z.string().min(1, "Không để trống trường này");
+export const phoneRegex = new RegExp(/(0[3|5|7|8|9])+([0-9]{8})\b/g);
 export const sidebarItems: SidebarItem[] = [
   {
     title: "Home",
@@ -41,7 +48,7 @@ export const sidebarItems: SidebarItem[] = [
     submenu: true,
     subMenuItems: [
       { title: "Nhân viên", href: "/manage/employee" },
-      { title: "Phòng ban", href: "/manage/department" },
+      { title: "Phòng ban", href: "/manage/unit" },
       { title: "Tài nguyên", href: "/manage/resources" },
       { title: "Phòng họp", href: "/manage/room" },
     ],

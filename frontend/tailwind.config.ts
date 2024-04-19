@@ -53,6 +53,9 @@ const config = {
           foreground: "hsl(var(--card-foreground))",
         },
         "gray-text": "hsl(var(--gray-text))",
+        "hover-accent": "hsl(var(--hover-accent))",
+        "green-primary": "hsl(var(--green-primary))",
+        "green-hover": "hsl(var(--green-hover))",
       },
       borderRadius: {
         lg: "var(--radius)",

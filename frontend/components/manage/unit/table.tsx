@@ -19,18 +19,27 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Fragment, useState } from "react";
+import { useState } from "react";
+import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import getAllEmployees from "@/lib/employee/getAllEmployees";
-import TableSkeleton from "@/components/skeleton/table-skeleton";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Unit } from "@/types";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Controller,
   SubmitHandler,
   useFieldArray,
   useForm,
 } from "react-hook-form";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import getAllUnits from "@/lib/unit/getAllUnits";
+import TableSkeleton from "@/components/skeleton/table-skeleton";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { LuFilter } from "react-icons/lu";
 import {
   Select,
   SelectContent,
@@ -41,23 +50,15 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { AiOutlineClose } from "react-icons/ai";
-import { LuFilter } from "react-icons/lu";
-import Paging from "@/components/paging";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Employee } from "@/types";
-import UnitList from "../unit/unit-list";
-
+import UnitList from "./unit-list";
 type FormValues = {
   filters: {
     type: string;
     value: string;
   }[];
 };
-const columns: ColumnDef<Employee>[] = [
+
+const columns: ColumnDef<Unit>[] = [
   {
     accessorKey: "id",
     header: () => {
@@ -70,114 +71,74 @@ const columns: ColumnDef<Employee>[] = [
     cell: ({ row }) => <div className="text-right">{row.getValue("id")}</div>,
   },
   {
+    accessorKey: "name",
+    header: ({ column }) => {
+      return <span>Tên phòng</span>;
+    },
+    cell: ({ row }) => (
+      <Link
+        className="capitalize leading-6 text-base link___primary"
+        href={`/manage/unit/${row.original.id}`}
+      >
+        {row.original.name}
+      </Link>
+    ),
+  },
+  {
     accessorKey: "image",
     header: () => {},
     cell: ({ row }) => (
       <div className="flex justify-end">
         <Avatar>
-          <AvatarImage src={row.getValue("image")} alt="avatar" />
-          <AvatarFallback>{row.original.name.substring(0, 2)}</AvatarFallback>
+          <AvatarImage src={row.original.manager.image} alt="avatar" />
+          <AvatarFallback>
+            {row.original.manager.name.substring(0, 2)}
+          </AvatarFallback>
         </Avatar>
       </div>
     ),
   },
   {
-    accessorKey: "name",
+    accessorKey: "manager",
     header: ({ column }) => {
-      return <span>Tên nhân viên</span>;
+      return <span>Trưởng phòng</span>;
     },
     cell: ({ row }) => (
       <div className="leading-6 flex flex-col">
         <span className="capitalize leading-6 text-base">
-          {row.getValue("name")}
+          {row.original.manager.name}
         </span>
         <span className="text-sm leading-6 font-light">
-          {row.original.address}
+          {row.original.manager.email} | {row.original.manager.phone}
         </span>
       </div>
     ),
   },
   {
-    accessorKey: "email",
-    header: ({ column }) => {
-      return <span>Liên hệ</span>;
-    },
-    cell: ({ row }) => (
-      <div className="leading-6 flex flex-col">
-        <span>{row.original.email}</span>
-        <span className="text-sm leading-6 font-light">
-          {row.original.phone}
-        </span>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "male",
-    header: ({ column }) => {
-      return (
-        <div className="flex justify-center">
-          <span>Giới tính</span>
-        </div>
-      );
-    },
-    cell: ({ row }) => (
-      <div className="leading-6 flex justify-center font-medium tracking-wider">
-        <div
-          className={`${row.original.male ? "text-cyan-600" : "text-rose-400"}`}
-        >
-          {row.original.male ? "Nam" : "Nữ"}
-        </div>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "dob",
+    accessorKey: "staffs",
     header: ({ column }) => {
       return (
         <div className="flex justify-end">
-          <span>Ngày sinh</span>
+          <span>Số nhân viên</span>
         </div>
       );
     },
     cell: ({ row }) => (
       <div className="leading-6 flex flex-col text-right">
-        <span>{row.original.dob}</span>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "unit",
-    header: ({ column }) => {
-      return (
-        <div className="flex justify-center">
-          <span>Phòng</span>
-        </div>
-      );
-    },
-    cell: ({ row }) => (
-      <div className="leading-6 flex justify-center">
-        <div className=" px-3 py-1 bg-primary rounded-full text-sm text-white">
-          {row.original.unit.name}
-        </div>
+        <span>{row.original.numberStaffs.toLocaleString()}</span>
       </div>
     ),
   },
 ];
-
-const EmployeeTable = () => {
+const UnitTable = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const page = searchParams.get("page") ?? "1";
   let filters = [{ type: "", value: "" }];
   filters.pop();
   const filterValues = [
-    { type: "name", name: "Họ tên" },
-    { type: "email", name: "Email" },
-    { type: "phone", name: "Số điện thoại" },
-    { type: "monthDOB", name: "Tháng sinh" },
-    { type: "yearDOB", name: "Năm sinh" },
-    { type: "male", name: "Giới tính" },
-    { type: "unit", name: "Phòng ban" },
+    { type: "name", name: "Tên phòng ban" },
+    { type: "manager", name: "Tên trưởng phòng" },
   ];
   const [latestFilter, setLatestFilter] = useState("");
   Array.from(searchParams.keys()).forEach((key: string) => {
@@ -198,17 +159,20 @@ const EmployeeTable = () => {
   const filterString = filters
     .map((item) => `${item.type}=${encodeURIComponent(item.value.toString())}`)
     .join("&");
-  const { employees, mutate, isLoading, isError } = getAllEmployees({
+  const { units, mutate, isLoading, isError } = getAllUnits({
     encodedString: filterString,
     filter: {
       page: page,
     },
   });
-  const data = employees?.data;
+  const data = units?.data;
+  const [openFilter, setOpenFilter] = useState(false);
+
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+
   const table = useReactTable({
     data,
     columns,
@@ -227,29 +191,15 @@ const EmployeeTable = () => {
       rowSelection,
     },
   });
+
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     let stringToFilter = "";
     data.filters.forEach((item) => {
       stringToFilter = stringToFilter.concat(`&${item.type}=${item.value}`);
     });
     setOpenFilter(false);
-    router.push(`/manage/employee?page=1${stringToFilter}`);
+    router.push(`/manage/unit?page=1${stringToFilter}`);
   };
-  const months = [
-    { value: "1", label: "Tháng 1" },
-    { value: "2", label: "Tháng 2" },
-    { value: "3", label: "Tháng 3" },
-    { value: "4", label: "Tháng 4" },
-    { value: "5", label: "Tháng 5" },
-    { value: "6", label: "Tháng 6" },
-    { value: "7", label: "Tháng 7" },
-    { value: "8", label: "Tháng 8" },
-    { value: "9", label: "Tháng 9" },
-    { value: "10", label: "Tháng 10" },
-    { value: "11", label: "Tháng 11" },
-    { value: "12", label: "Tháng 12" },
-  ];
-  const [openFilter, setOpenFilter] = useState(false);
 
   if (isLoading) {
     return (
@@ -274,9 +224,9 @@ const EmployeeTable = () => {
         ]}
       ></TableSkeleton>
     );
-  } else if (isError || employees.hasOwnProperty("message")) {
+  } else if (isError || units.hasOwnProperty("message")) {
     return <div>Failed to load</div>;
-  } else {
+  } else
     return (
       <div className="w-full flex flex-col overflow-x-auto">
         <div className="mb-7 flex gap-3">
@@ -312,92 +262,11 @@ const EmployeeTable = () => {
                           {name?.name}
                         </label>
                         <div className=" flex gap-1 items-center">
-                          {item.type === "unit" ? (
-                            <Controller
-                              control={control}
-                              name={`filters.${index}.value`}
-                              render={({ field }) => (
-                                <UnitList
-                                  isId={false}
-                                  unit={field.value}
-                                  setUnit={(unit: string | number) =>
-                                    field.onChange(unit)
-                                  }
-                                />
-                              )}
-                            />
-                          ) : item.type === "male" ? (
-                            <Controller
-                              control={control}
-                              name={`filters.${index}.value`}
-                              render={({ field }) => (
-                                <Select
-                                  value={field.value}
-                                  onValueChange={(value: string) => {
-                                    field.onChange(value);
-                                  }}
-                                >
-                                  <SelectTrigger className="flex-1 h-10 rounded-full">
-                                    <SelectValue placeholder="Chọn giới tính" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectGroup>
-                                      <SelectItem key={"true"} value={"true"}>
-                                        Nam
-                                      </SelectItem>
-                                      <SelectItem key={"false"} value={"false"}>
-                                        Nữ
-                                      </SelectItem>
-                                    </SelectGroup>
-                                  </SelectContent>
-                                </Select>
-                              )}
-                            />
-                          ) : item.type === "monthDOB" ? (
-                            <Controller
-                              control={control}
-                              name={`filters.${index}.value`}
-                              render={({ field }) => (
-                                <Select
-                                  value={field.value}
-                                  onValueChange={(value: string) => {
-                                    field.onChange(value);
-                                  }}
-                                >
-                                  <SelectTrigger className="w-full h-10 rounded-full">
-                                    <SelectValue placeholder="Chọn tháng" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectGroup>
-                                      {months.map((item) => (
-                                        <SelectItem
-                                          key={item.value}
-                                          value={item.value}
-                                        >
-                                          {item.label}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectGroup>
-                                  </SelectContent>
-                                </Select>
-                              )}
-                            />
-                          ) : item.type === "yearDOB" ? (
-                            <Input
-                              {...register(`filters.${index}.value`)}
-                              className="flex-1 rounded-full"
-                              type="number"
-                              min={1900}
-                              max={2024}
-                              title="Năm sinh không hợp lệ"
-                            ></Input>
-                          ) : (
-                            <Input
-                              {...register(`filters.${index}.value`)}
-                              className="flex-1 rounded-full"
-                              type="text"
-                            ></Input>
-                          )}
+                          <Input
+                            {...register(`filters.${index}.value`)}
+                            className="flex-1 rounded-full"
+                            type="text"
+                          ></Input>
                           <Button
                             variant={"ghost"}
                             className={`h-9 w-9 p-0 rounded-full`}
@@ -463,18 +332,13 @@ const EmployeeTable = () => {
                   <p>
                     {name?.name}
                     {": "}
-                    {item.type === "male"
-                      ? item.value === "true"
-                        ? "Nam"
-                        : "Nữ"
-                      : item.value}
+                    {item.value}
                   </p>
                 </div>
               );
             })}
           </div>
         </div>
-
         <div className="rounded-md border overflow-x-auto flex-1 min-w-full max-w-[50vw]">
           <Table className="min-w-full w-max">
             <TableHeader>
@@ -536,38 +400,8 @@ const EmployeeTable = () => {
             </TableBody>
           </Table>
         </div>
-        <div className="flex items-center justify-end space-x-2 py-4">
-          <Paging
-            page={page}
-            totalPage={employees.paging.totalPages}
-            onNavigateBack={() =>
-              router.push(
-                `/manage/employee?page=${Number(page) - 1}${filterString}`
-              )
-            }
-            onNavigateNext={() =>
-              router.push(
-                `/manage/employee?page=${Number(page) + 1}${filterString}`
-              )
-            }
-            onPageSelect={(selectedPage) =>
-              router.push(
-                `/manage/employee?page=${selectedPage}${filterString}`
-              )
-            }
-            onNavigateLast={() =>
-              router.push(
-                `/manage/employee?page=${employees.paging.totalPages}${filterString}`
-              )
-            }
-            onNavigateFirst={() =>
-              router.push(`/manage/employee?page=${1}${filterString}`)
-            }
-          />
-        </div>
       </div>
     );
-  }
 };
 
-export default EmployeeTable;
+export default UnitTable;
