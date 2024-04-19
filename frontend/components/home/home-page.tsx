@@ -20,12 +20,12 @@ const HomePage = () => {
 
   return (
     <div className="flex xl:flex-row flex-col-reverse">
-      <div className="flex flex-col gap-8 xl:mr-8">
+      <div className="flex basis-2/3 flex-col gap-8 xl:mr-8">
         <NewsContainer />
         <NewsContainer />
       </div>
       <div className="flex flex-col flex-1 justify-start gap-8 mb-8">
-        <div className="flex 2xl:flex-row  xl:flex-col-reverse sm:flex-row flex-col gap-8">
+        <div className="flex xl:flex-col-reverse sm:flex-row flex-col gap-8">
           <Noti />
           <div className="flex justify-center rounded-xl card-shadow bg-white lg:min-w-[24rem]">
             <Calendar
@@ -44,7 +44,7 @@ const HomePage = () => {
             />
           </div>
         </div>
-        <div className="flex 2xl:flex-row xl:flex-col sm:flex-row flex-col gap-8">
+        <div className="flex xl:flex-col sm:flex-row flex-col gap-8">
           <SmallNews />
           <SmallNews />
         </div>
