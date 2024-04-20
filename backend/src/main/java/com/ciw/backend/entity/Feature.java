@@ -14,7 +14,7 @@ import org.hibernate.validator.constraints.Length;
 @Entity
 @Table(
 		name = "feature",
-		uniqueConstraints = {@UniqueConstraint(columnNames = {"feature"}, name = "Tên")}
+		uniqueConstraints = {@UniqueConstraint(columnNames = {"name"}, name = "Tên")}
 )
 public class Feature {
 	@Id
