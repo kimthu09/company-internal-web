@@ -56,6 +56,8 @@ const config = {
         "hover-accent": "hsl(var(--hover-accent))",
         "green-primary": "hsl(var(--green-primary))",
         "green-hover": "hsl(var(--green-hover))",
+        "blue-primary": "hsl(var(--blue-primary))",
+        "blue-hover": "hsl(var(--blue-hover))",
       },
       borderRadius: {
         lg: "var(--radius)",

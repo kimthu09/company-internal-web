@@ -18,6 +18,18 @@ export type Unit = {
     name: string;
     image: string;
   };
+  staffs: {
+    id: number;
+    email: string;
+    phone: string;
+    name: string;
+    image: string;
+  }[];
+  features: {
+    id: number;
+    name: string;
+    has: boolean;
+  }[];
 };
 export type Employee = {
   id: number;
@@ -32,4 +44,8 @@ export type Employee = {
     id: number;
     name: string;
   };
+};
+export type Feature = {
+  id: number;
+  name: string;
 };

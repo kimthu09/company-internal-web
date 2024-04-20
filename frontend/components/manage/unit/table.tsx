@@ -50,7 +50,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { AiOutlineClose } from "react-icons/ai";
-import UnitList from "./unit-list";
+import Paging from "@/components/paging";
 type FormValues = {
   filters: {
     type: string;
@@ -89,12 +89,14 @@ const columns: ColumnDef<Unit>[] = [
     header: () => {},
     cell: ({ row }) => (
       <div className="flex justify-end">
-        <Avatar>
-          <AvatarImage src={row.original.manager.image} alt="avatar" />
-          <AvatarFallback>
-            {row.original.manager.name.substring(0, 2)}
-          </AvatarFallback>
-        </Avatar>
+        {row.original.manager ? (
+          <Avatar>
+            <AvatarImage src={row.original.manager.image} alt="avatar" />
+            <AvatarFallback>
+              {row.original.manager.name.substring(0, 2)}
+            </AvatarFallback>
+          </Avatar>
+        ) : null}
       </div>
     ),
   },
@@ -105,12 +107,18 @@ const columns: ColumnDef<Unit>[] = [
     },
     cell: ({ row }) => (
       <div className="leading-6 flex flex-col">
-        <span className="capitalize leading-6 text-base">
-          {row.original.manager.name}
-        </span>
-        <span className="text-sm leading-6 font-light">
-          {row.original.manager.email} | {row.original.manager.phone}
-        </span>
+        {row.original.manager ? (
+          <>
+            <span className="capitalize leading-6 text-base">
+              {row.original.manager.name}
+            </span>
+            <span className="text-sm leading-6 font-light">
+              {row.original.manager.email} | {row.original.manager.phone}
+            </span>
+          </>
+        ) : (
+          <span>Không có trưởng phòng</span>
+        )}
       </div>
     ),
   },
@@ -226,7 +234,7 @@ const UnitTable = () => {
     );
   } else if (isError || units.hasOwnProperty("message")) {
     return <div>Failed to load</div>;
-  } else
+  } else {
     return (
       <div className="w-full flex flex-col overflow-x-auto">
         <div className="mb-7 flex gap-3">
@@ -400,8 +408,36 @@ const UnitTable = () => {
             </TableBody>
           </Table>
         </div>
+        <div className="flex items-center justify-end space-x-2 py-4">
+          <Paging
+            page={page}
+            totalPage={units.paging.totalPages}
+            onNavigateBack={() =>
+              router.push(
+                `/manage/unit?page=${Number(page) - 1}${filterString}`
+              )
+            }
+            onNavigateNext={() =>
+              router.push(
+                `/manage/unit?page=${Number(page) + 1}${filterString}`
+              )
+            }
+            onPageSelect={(selectedPage) =>
+              router.push(`/manage/unit?page=${selectedPage}${filterString}`)
+            }
+            onNavigateLast={() =>
+              router.push(
+                `/manage/unit?page=${units.paging.totalPages}${filterString}`
+              )
+            }
+            onNavigateFirst={() =>
+              router.push(`/manage/employee?page=${1}${filterString}`)
+            }
+          />
+        </div>
       </div>
     );
+  }
 };
 
 export default UnitTable;
