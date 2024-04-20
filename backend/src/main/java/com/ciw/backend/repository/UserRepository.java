@@ -19,7 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	Optional<User> findByEmail(String email);
 
-	@Query("SELECT u FROM User u WHERE u.unit = :unitId AND u.isDeleted <> true")
+	@Query("SELECT u FROM User u WHERE u.unit.id = :unitId AND u.isDeleted <> true")
 	List<User> findByUnitIdAndNotDeleted(Long unitId);
 
 	@Modifying
