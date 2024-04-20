@@ -1,8 +1,15 @@
 import { apiKey, endpoint } from "@/constants";
 import axios from "axios";
 
-export default async function createEmployee({ employee }: { employee: {} }) {
-  const url = `${endpoint}/staff`;
+export default async function createUnit({
+  unit,
+}: {
+  unit: {
+    name: string;
+    features: number[];
+  };
+}) {
+  const url = `${endpoint}/unit`;
   // const token = await getApiKey();
   const headers = {
     accept: "*/*",
@@ -13,7 +20,7 @@ export default async function createEmployee({ employee }: { employee: {} }) {
 
   // Make a POST request with headers
   const res = axios
-    .post(url, employee, { headers: headers })
+    .post(url, unit, { headers: headers })
     .then((response) => {
       if (response) return response.data;
     })

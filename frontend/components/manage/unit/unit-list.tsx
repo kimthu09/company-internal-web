@@ -23,8 +23,9 @@ export interface UnitListProps {
   unit: string | number;
   setUnit: (unit: string | number) => void;
   isId: boolean;
+  readonly?: boolean;
 }
-const UnitList = ({ isId, unit, setUnit }: UnitListProps) => {
+const UnitList = ({ isId, unit, setUnit, readonly }: UnitListProps) => {
   const [open, setOpen] = useState(false);
   const { units, isLoading, isError } = getAllUnits({
     filter: { limit: "1000", page: "1" },
@@ -37,13 +38,13 @@ const UnitList = ({ isId, unit, setUnit }: UnitListProps) => {
   }, [units]);
   if (isError) return <div>Failed to load</div>;
   if (!units) {
-    <div>Loading</div>;
     return <DropdownSkeleton />;
   } else {
     return (
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
+            disabled={readonly}
             variant="outline"
             role="combobox"
             aria-expanded={open}

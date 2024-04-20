@@ -50,6 +50,7 @@ import {
 } from "@/components/ui/popover";
 import { Employee } from "@/types";
 import UnitList from "../unit/unit-list";
+import Link from "next/link";
 
 type FormValues = {
   filters: {
@@ -88,9 +89,12 @@ const columns: ColumnDef<Employee>[] = [
     },
     cell: ({ row }) => (
       <div className="leading-6 flex flex-col">
-        <span className="capitalize leading-6 text-base">
+        <Link
+          href={`/manage/employee/${row.original.id}`}
+          className="capitalize leading-6 text-base link___primary"
+        >
           {row.getValue("name")}
-        </span>
+        </Link>
         <span className="text-sm leading-6 font-light">
           {row.original.address}
         </span>
@@ -511,7 +515,9 @@ const EmployeeTable = () => {
                         key={cell.id}
                         onClick={() => {
                           if (!cell.id.includes("select")) {
-                            // router.push(`/staff/${row.getValue("id")}`);
+                            // router.push(
+                            //   `/manage/employee/${row.getValue("id")}`
+                            // );
                           }
                         }}
                       >
