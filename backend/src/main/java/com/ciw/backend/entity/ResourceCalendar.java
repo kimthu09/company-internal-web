@@ -4,7 +4,6 @@ import com.ciw.backend.payload.calendar.ShiftType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
@@ -43,8 +42,4 @@ public class ResourceCalendar {
 	@JoinColumn(name = "created_by", nullable = false, updatable = false)
 	@CreatedBy
 	private User createdBy;
-
-	@CreatedDate
-	@Column(name = "created_at", nullable = false, updatable = false)
-	private Date createdAt;
 }

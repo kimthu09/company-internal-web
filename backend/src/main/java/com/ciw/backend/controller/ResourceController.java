@@ -1,6 +1,7 @@
 package com.ciw.backend.controller;
 
 import com.ciw.backend.payload.ListResponse;
+import com.ciw.backend.payload.MapResponseWithoutPage;
 import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.page.AppPageRequest;
 import com.ciw.backend.payload.resource.*;
@@ -80,6 +81,42 @@ public class ResourceController {
 			@PathVariable Long id,
 			@Valid @RequestBody UpdateResourceRequest request) {
 		return new ResponseEntity<>(resourceService.updateResource(id, request), HttpStatus.OK);
+	}
+
+	@DeleteMapping("/{id}")
+	@SecurityRequirement(
+			name = "Bearer Authentication"
+	)
+	@Operation(
+			summary = "Delete resource",
+			description = "Delete resource"
+	)
+	@ApiResponse(
+			responseCode = "200",
+			description = "Http Status is 200 OK"
+	)
+	@PreAuthorize("hasAnyAuthority('ADMIN')")
+	public ResponseEntity<SimpleResponse> deleteResource(
+			@PathVariable Long id) {
+		return new ResponseEntity<>(resourceService.deleteResource(id), HttpStatus.OK);
+	}
+
+	@GetMapping("/books")
+	@SecurityRequirement(
+			name = "Bearer Authentication"
+	)
+	@Operation(
+			summary = "Fetch resource books",
+			description = "Fetch resource books from database by filter"
+	)
+	@ApiResponse(
+			responseCode = "200",
+			description = "Http Status is 200 OK"
+	)
+	@PreAuthorize("hasAnyAuthority('ADMIN')")
+	public ResponseEntity<MapResponseWithoutPage<ResourceCalendarDayResponse, ResourceCalendarFilter>> getResourceBooks(
+			@Valid ResourceCalendarFilter filter) {
+		return new ResponseEntity<>(resourceService.getResourceCalendar(filter), HttpStatus.OK);
 	}
 
 	@PostMapping("/books/{id}")
