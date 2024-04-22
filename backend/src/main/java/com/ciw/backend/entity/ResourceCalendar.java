@@ -15,7 +15,10 @@ import java.util.Date;
 @Builder
 @Entity
 @Table(
-		name = "resource_calendar"
+		name = "resource_calendar",
+		uniqueConstraints = {
+				@UniqueConstraint(columnNames = {"date", "shift_type", "meeting_room_id"}, name = "Bảng ghi")
+		}
 )
 @EntityListeners(AuditingEntityListener.class)
 public class ResourceCalendar {
