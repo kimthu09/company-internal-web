@@ -40,7 +40,7 @@ public class TagController {
 			responseCode = "200",
 			description = "Http Status is 200 OK"
 	)
-	public ResponseEntity<SimpleListResponse<TagResponse>> fetchAllTag(){
+	public ResponseEntity<SimpleListResponse<TagResponse>> fetchAllTag() {
 		return new ResponseEntity<>(tagService.fetchAllTag(), HttpStatus.OK);
 	}
 
@@ -59,7 +59,7 @@ public class TagController {
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'POST')")
 	public ResponseEntity<TagResponse> createTag(
 			@Valid @RequestBody CreateTagRequest request
-	){
+	) {
 		return new ResponseEntity<>(tagService.createTag(request), HttpStatus.CREATED);
 	}
 
@@ -79,7 +79,7 @@ public class TagController {
 	public ResponseEntity<TagResponse> updateTag(
 			@PathVariable Long id,
 			@Valid @RequestBody UpdateTagRequest request
-	){
+	) {
 		return new ResponseEntity<>(tagService.updateTag(id, request), HttpStatus.OK);
 	}
 
@@ -98,7 +98,7 @@ public class TagController {
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'POST')")
 	public ResponseEntity<SimpleResponse> deleteTag(
 			@PathVariable Long id
-	){
+	) {
 		return new ResponseEntity<>(tagService.deleteTag(id), HttpStatus.OK);
 	}
 }

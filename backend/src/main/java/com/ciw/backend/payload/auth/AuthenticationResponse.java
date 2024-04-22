@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthenticationResponse {
-	@Schema(name = "token", example = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyQGdtYWlsLmNvbSIsImlhdCI6MTcxMjcxOTUzNCwiZXhwIjoxNzEyNzIwOTc0fQ.UZHm76iYy9VkoDhk4OZ2PXKiLJ4rREs2NJU63BwPkeM")
+	@Schema(name = "token",
+			example = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyQGdtYWlsLmNvbSIsImlhdCI6MTcxMjcxOTUzNCwiZXhwIjoxNzEyNzIwOTc0fQ.UZHm76iYy9VkoDhk4OZ2PXKiLJ4rREs2NJU63BwPkeM")
 	private String token;
 }

@@ -16,9 +16,4 @@ public class BackendApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BackendApplication.class, args);
 	}
-
-	private final UserRepository userRepository;
-	private final UnitRepository unitRepository;
-	private final FeatureRepository featureRepository;
-	private final PasswordEncoder passwordEncoder;
 }

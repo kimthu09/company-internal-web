@@ -34,6 +34,7 @@ public class ListConverter<T> implements AttributeConverter<List<T>, String> {
 			throw new AppException(HttpStatus.INTERNAL_SERVER_ERROR, Message.COMMON_ERR);
 		}
 	}
+
 	@SuppressWarnings("unchecked")
 
 	private Class<T> getType() {

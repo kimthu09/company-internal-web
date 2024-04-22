@@ -21,10 +21,10 @@ public class PostSpecs {
 
 	public static Specification<Post> isUpdatedAfter(String updatedAtFromDate) {
 		LocalDateTime updatedAtFrom;
-		try{
+		try {
 			updatedAtFrom = LocalDateTime.parse(updatedAtFromDate,
-											  DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-		} catch (Exception e){
+												DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		} catch (Exception e) {
 			throw new AppException(HttpStatus.BAD_REQUEST, Message.TIME_INVALID_FORMAT);
 		}
 		return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("updatedAt"), updatedAtFrom);
@@ -32,10 +32,10 @@ public class PostSpecs {
 
 	public static Specification<Post> isUpdatedBefore(String updatedAtToDate) {
 		LocalDateTime updatedAtTo;
-		try{
+		try {
 			updatedAtTo = LocalDateTime.parse(updatedAtToDate,
 											  DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-		} catch (Exception e){
+		} catch (Exception e) {
 			throw new AppException(HttpStatus.BAD_REQUEST, Message.TIME_INVALID_FORMAT);
 		}
 

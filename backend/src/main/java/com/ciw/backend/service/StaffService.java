@@ -66,7 +66,7 @@ public class StaffService {
 		Common.updateIfNotNull(request.getAddress(), user::setAddress);
 		Common.updateIfNotNull(request.getImage(), user::setImage);
 		Common.updateIfNotNull(request.getMale(), user::setMale);
-		if (request.getUnit()!=null) {
+		if (request.getUnit() != null) {
 			updateUnit(user, user.getUnit(), request.getUnit());
 		}
 
@@ -88,7 +88,7 @@ public class StaffService {
 
 	private void deleteUnit(Long userId, Unit unit) {
 		unit.setNumberStaffs(unit.getNumberStaffs() - 1);
-		if (unit.getManagerId()!=null && unit.getManagerId().equals(userId)) {
+		if (unit.getManagerId() != null && unit.getManagerId().equals(userId)) {
 			unit.setManagerId(null);
 		}
 		unitRepository.save(unit);
@@ -102,9 +102,9 @@ public class StaffService {
 		String email = userDetails.getUsername();
 
 		if (user.getEmail().equals(email)) {
-		    throw new AppException(HttpStatus.BAD_REQUEST, Message.User.CAN_NOT_DELETE_YOURSELF);
+			throw new AppException(HttpStatus.BAD_REQUEST, Message.User.CAN_NOT_DELETE_YOURSELF);
 		} else if (user.getEmail().equals(ApplicationConst.ADMIN_EMAIL)) {
-		    throw new AppException(HttpStatus.BAD_REQUEST, Message.User.CAN_NOT_DELETE_ADMIN);
+			throw new AppException(HttpStatus.BAD_REQUEST, Message.User.CAN_NOT_DELETE_ADMIN);
 		}
 
 		userRepository.deleteUserById(userId);
