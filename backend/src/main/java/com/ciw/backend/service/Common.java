@@ -152,7 +152,7 @@ public class Common {
 
 		int currShiftTypeIndex = shiftStartIndex;
 		LocalDate currDate = start;
-		while (currDate.isBefore(end) || currShiftTypeIndex < shiftEndIndex) {
+		while (currDate.isBefore(end) || (currDate.equals(end) && currShiftTypeIndex <= shiftEndIndex)) {
 			ShiftType currentShiftType = shiftTypes[currShiftTypeIndex];
 			res.add(new CalendarPart(currDate.format(formatter), currentShiftType));
 

@@ -10,7 +10,9 @@ public class Message {
 	public static final String TOKEN_EXPIRED = "Token đã hết hạn. Xin vui lòng điền lại form quên mật khẩu";
 	public static final String COMMON_ERR = "Đã có lỗi xảy ra. Xin hãy thử lại sau";
 	public static final String JSON_ERR = "JSON không đúng định dạng";
-	public static final String TIME_INVALID_FORMAT = "Thời gian cần có định dạng yyyy-MM-dd HH:mm:ss";
+	public static final String TIME_INVALID_FORMAT_YYYY_MM_DD_HH_mm_ss
+			= "Thời gian cần có định dạng yyyy-MM-dd HH:mm:ss";
+	public static final String TIME_INVALID_FORMAT_DD_MM_YYYY = "Thời gian cần có định dạng dd/MM/yyyy";
 	public static final String IMAGE_INVALID_FORMAT = "ĐỊnh dạng ảnh không hợp lệ";
 
 	public static class User {
@@ -76,6 +78,7 @@ public class Message {
 		public static final String BOOKED_FROM_VALIDATE = "Cần phải cung cấp thời điểm bắt đầu";
 		public static final String BOOKED_TO_VALIDATE = "Cần phải cung cấp thời điểm kết thúc";
 		public static final String BOOK_EMPTY = "Không có lịch đặt tương ứng";
+		public static final String CAN_NOT_DELETE_BOOKED = "Không thể xóa phòng họp đang được đặt lịch";
 	}
 
 	public static class Calendar {
@@ -91,5 +94,6 @@ public class Message {
 		public static final String BOOKED_FROM_VALIDATE = "Cần phải cung cấp thời điểm bắt đầu";
 		public static final String BOOKED_TO_VALIDATE = "Cần phải cung cấp thời điểm kết thúc";
 		public static final String BOOK_EMPTY = "Không có lịch đặt tương ứng";
+		public static final String CAN_NOT_DELETE_BOOKED = "Không thể xóa tài nguyên đang được đặt lịch";
 	}
 }
