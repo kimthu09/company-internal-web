@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class UserController {
 	private final UserService userService;
+
 	@SecurityRequirement(
 			name = "Bearer Authentication"
 	)
@@ -38,7 +39,7 @@ public class UserController {
 	@PostMapping("/password")
 	public ResponseEntity<SimpleResponse> changePassword(
 			@Valid @RequestBody ChangePasswordRequest request
-	){
+	) {
 		return new ResponseEntity<>(userService.changePassword(request), HttpStatus.OK);
 	}
 

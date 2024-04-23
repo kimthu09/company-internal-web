@@ -27,6 +27,7 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 	void deleteUserById(Long userId);
 
 	List<User> findByNameContains(String name);
+
 	default Page<User> findAllNotDeletedAndNotYourself(Specification<User> specs, Pageable pageable, String email) {
 		Specification<User> spec = UserSpecs.isNotDeleted()
 											.and(UserSpecs.notHaveEmail(email));

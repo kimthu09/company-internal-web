@@ -38,7 +38,7 @@ public class AuthenticationController {
 	@PermitAll
 	public ResponseEntity<AuthenticationResponse> authenticate(
 			@Valid @RequestBody AuthenticationRequest request
-	){
+	) {
 		return ResponseEntity.ok(authService.authenticate(request));
 	}
 
@@ -54,7 +54,7 @@ public class AuthenticationController {
 	@PermitAll
 	public ResponseEntity<SimpleResponse> sendEmailToResetPassword(
 			@Valid @RequestBody EmailRequest request
-	){
+	) {
 		return ResponseEntity.ok(authService.sendEmailToResetPassword(request));
 	}
 
@@ -70,7 +70,7 @@ public class AuthenticationController {
 	@PermitAll
 	public ResponseEntity<SimpleResponse> resetPassword(
 			@Valid @RequestBody ResetPasswordRequest request,
-			@PathVariable String token){
+			@PathVariable String token) {
 		return ResponseEntity.ok(authService.resetPassword(request, token));
 	}
 }

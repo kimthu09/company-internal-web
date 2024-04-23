@@ -58,14 +58,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 			return createErrorResponse(String.format("%s đã tồn tại trong hệ thống", key),
 									   webRequest,
 									   HttpStatus.BAD_REQUEST);
-		} else if (exceptionMessage.contains("not-null")){
+		} else if (exceptionMessage.contains("not-null")) {
 			return createErrorResponse("Có trường bị thiếu trong request",
 									   webRequest,
 									   HttpStatus.BAD_REQUEST);
 		}
 		return createErrorResponse("Đã có lỗi xảy ra với database. Xin hãy thử lại",
-										  webRequest,
-										  HttpStatus.BAD_REQUEST);
+								   webRequest,
+								   HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(AppException.class)

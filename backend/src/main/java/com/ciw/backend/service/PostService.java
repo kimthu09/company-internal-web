@@ -111,7 +111,7 @@ public class PostService {
 		String email = userDetails.getUsername();
 
 		if (!post.getCreatedBy().getEmail().equals(email)) {
-		    throw new AppException(HttpStatus.BAD_REQUEST, Message.Post.CAN_NOT_EDIT_OTHER_POST);
+			throw new AppException(HttpStatus.BAD_REQUEST, Message.Post.CAN_NOT_EDIT_OTHER_POST);
 		}
 
 		Common.updateIfNotNull(request.getTitle(), post::setTitle);
@@ -122,7 +122,7 @@ public class PostService {
 
 		Post savedPost = postRepository.save(post);
 
-		if (post.getTags()!=null) {
+		if (post.getTags() != null) {
 			Set<Tag> tags = updateTags(post, post.getTags(), request.getTags());
 			savedPost.setTags(tags);
 		}

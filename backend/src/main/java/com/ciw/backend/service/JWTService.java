@@ -27,7 +27,7 @@ public class JWTService {
 		return claimsResolver.apply(claims);
 	}
 
-	public String generateToken(UserDetails userDetails){
+	public String generateToken(UserDetails userDetails) {
 		return generateToken(new HashMap<>(), userDetails);
 	}
 
@@ -41,7 +41,7 @@ public class JWTService {
 				   .compact();
 	}
 
-	public boolean isTokenValid(String token, UserDetails userDetails){
+	public boolean isTokenValid(String token, UserDetails userDetails) {
 		final String username = extractUsername(token);
 		return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
 	}

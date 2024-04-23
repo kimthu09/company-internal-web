@@ -11,7 +11,8 @@ import lombok.Data;
 public class SimpleResponse {
 	@Schema(name = "data", example = "true")
 	private boolean data;
-	public SimpleResponse(){
+
+	public SimpleResponse() {
 		data = true;
 	}
 }
