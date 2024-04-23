@@ -5,10 +5,12 @@ import com.ciw.backend.utils.validation.dob.ValidDOBFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
+@Builder
 public class CalendarPart {
 	@Schema(name = "date", example = "12/12/2000")
 	@ValidDOBFormat(message = Message.Calendar.DATE_VALIDATE)
