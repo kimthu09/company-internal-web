@@ -96,4 +96,10 @@ public class Message {
 		public static final String BOOK_EMPTY = "Không có lịch đặt tương ứng";
 		public static final String CAN_NOT_DELETE_BOOKED = "Không thể xóa tài nguyên đang được đặt lịch";
 	}
+
+	public static class UnitShift {
+		public static final String NEED_TO_HAVE_SHIFT_INFORMATION = "Thông tin làm việc không được để trống";
+		public static final String FROM_VALIDATE = "Cần phải cung cấp thời điểm bắt đầu";
+		public static final String TO_VALIDATE = "Cần phải cung cấp thời điểm kết thúc";
+	}
 }
