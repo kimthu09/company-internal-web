@@ -1,7 +1,7 @@
 package com.ciw.backend.payload.calendar;
 
 import com.ciw.backend.constants.Message;
-import com.ciw.backend.utils.validation.dob.ValidDOBFormat;
+import com.ciw.backend.utils.validation.dob.ValidDDMMYYYYFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import lombok.Data;
 @Builder
 public class CalendarPart {
 	@Schema(name = "date", example = "12/12/2000")
-	@ValidDOBFormat(message = Message.Calendar.DATE_VALIDATE)
+	@ValidDDMMYYYYFormat(message = Message.Calendar.DATE_VALIDATE)
 	@NotNull(message = Message.Calendar.DATE_VALIDATE)
 	private String date;
 

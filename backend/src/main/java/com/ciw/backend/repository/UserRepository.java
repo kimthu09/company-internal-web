@@ -22,6 +22,12 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 	@Query("SELECT u FROM User u WHERE u.unit.id = :unitId AND u.isDeleted <> true")
 	List<User> findByUnitIdAndNotDeleted(Long unitId);
 
+	@Query("SELECT u FROM User u WHERE u.isDeleted <> true")
+	List<User> findAllNotDeleted();
+
+	@Query("SELECT u FROM User u WHERE u.id <> :excludedId AND u.id IN :ids AND u.isDeleted <> true")
+	List<User> findByIdInAndNotDeletedAndIdNotEqual(List<Long> ids, Long excludedId);
+
 	@Modifying
 	@Query("UPDATE User u SET u.isDeleted = true, u.unit = null WHERE u.id = :userId")
 	void deleteUserById(Long userId);

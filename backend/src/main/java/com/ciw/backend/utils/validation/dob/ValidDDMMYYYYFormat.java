@@ -9,8 +9,8 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = DOBFormatValidator.class)
 @Documented
-public @interface ValidDOBFormat {
-	String message() default "Invalid date of birth format. It must be in the format dd/MM/yyyy";
+public @interface ValidDDMMYYYYFormat {
+	String message() default "Invalid date format. It must be in the format dd/MM/yyyy";
 
 	Class<?>[] groups() default {};
 

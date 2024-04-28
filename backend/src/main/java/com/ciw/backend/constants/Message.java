@@ -106,4 +106,12 @@ public class Message {
 		public static final String FROM_VALIDATE = "Cần phải cung cấp thời điểm bắt đầu";
 		public static final String TO_VALIDATE = "Cần phải cung cấp thời điểm kết thúc";
 	}
+
+	public static class Notification {
+		public static final String TITLE_VALIDATE = "Tiêu đề bài viết không được để trống và có tối đa 100 ký tự";
+		public static final String DESCRIPTION_VALIDATE = "Mô tả bài viết có tối đa 200 ký tự";
+		public static final String RECEIVERS_VALIDATE = "Phải có ít nhất 1 người nhận";
+		public static final String NOTIFICATION_NOT_EXIST = "Thông báo không tồn tại";
+		public static final String CAN_NOT_READ_OTHER_S_NOTIFICATION = "Không thể đọc thông báo của người khác";
+	}
 }

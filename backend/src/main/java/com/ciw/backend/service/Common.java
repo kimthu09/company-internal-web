@@ -9,6 +9,8 @@ import com.ciw.backend.payload.feature.FeatureResponse;
 import com.ciw.backend.payload.post.PostAttachment;
 import com.ciw.backend.repository.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -164,5 +166,27 @@ public class Common {
 		}
 
 		return res;
+	}
+
+	public static User findCurrUser(UserRepository userRepository) {
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String email = userDetails.getUsername();
+
+		return Common.findUserByEmail(email, userRepository);
+	}
+
+	public static Notification findNotificationById(Long notificationId,
+													NotificationRepository repository) {
+		Notification notification = repository.findById(notificationId)
+											  .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST,
+																				  Message.Notification.NOTIFICATION_NOT_EXIST));
+
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String email = userDetails.getUsername();
+		if (!notification.getToUser().getEmail().equals(email)) {
+			throw new AppException(HttpStatus.BAD_REQUEST, Message.Notification.CAN_NOT_READ_OTHER_S_NOTIFICATION);
+		}
+
+		return notification;
 	}
 }
