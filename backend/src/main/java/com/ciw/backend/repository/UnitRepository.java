@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface UnitRepository extends JpaRepository<Unit, Long>, JpaSpecificationExecutor<Unit> {
 	Optional<Unit> findByName(String name);
+	Optional<Unit> findByManagerId(Long managerId);
 }

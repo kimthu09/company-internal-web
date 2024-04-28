@@ -54,6 +54,10 @@ public class Message {
 		public static final String UNIT_NAME_VALIDATE = "Tên phòng ban không được để trống và tối đa 100 ký tự";
 		public static final String UNIT_NAME_FILTER_VALIDATE = "Tên phòng ban không được quá 100 ký tự";
 		public static final String UNIT_NOT_EXIST = "Phòng ban không tồn tại";
+		public static final String UNIT_MANAGER_EXIST = "Nhân viên đã là trưởng phòng của phòng ban khác";
+		public static final String UNIT_MANAGER_NOTEXIST = "Trưởng phòng là nhân viên không tồn tại";
+
+
 	}
 
 	public static class Feature {
