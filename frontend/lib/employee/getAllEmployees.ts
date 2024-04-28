@@ -12,7 +12,7 @@ export type EmployeeProps = {
   monthDOB?: number;
   yearDOB?: number;
 };
-const fetcher = (url: string) => {
+export const fetcher = (url: string) => {
   // const token = await getApiKey();
   return axios
     .get(url, {
