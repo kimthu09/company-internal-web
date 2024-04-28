@@ -1,5 +1,7 @@
 import UnitTable from "@/components/manage/unit/table";
+import TableSkeleton from "@/components/skeleton/table-skeleton";
 import Link from "next/link";
+import { Suspense } from "react";
 
 const UnitManage = () => {
   return (
@@ -10,7 +12,32 @@ const UnitManage = () => {
           Thêm phòng ban
         </Link>
       </div>
-      <UnitTable />
+      <Suspense
+        fallback={
+          <TableSkeleton
+            isHasExtensionAction={false}
+            isHasFilter={true}
+            isHasSearch={true}
+            isHasChooseVisibleRow={false}
+            isHasCheckBox={false}
+            isHasPaging={true}
+            numberRow={5}
+            cells={[
+              {
+                percent: 1,
+              },
+              {
+                percent: 5,
+              },
+              {
+                percent: 1,
+              },
+            ]}
+          ></TableSkeleton>
+        }
+      >
+        <UnitTable />
+      </Suspense>
     </div>
   );
 };

@@ -87,7 +87,6 @@ const EmployeeEditDetail = ({ params }: { params: { employeeId: string } }) => {
       address: data.address,
       phone: data.phone,
       name: data.name,
-      image: employee.image,
       male: data.male,
       unit: data.unit,
       dob: format(data.dob, "dd/MM/yyyy", { locale: vi }),
@@ -162,13 +161,7 @@ const EmployeeEditDetail = ({ params }: { params: { employeeId: string } }) => {
       console.log(imgRes);
       const response: Promise<any> = updateEmployee({
         id: params.employeeId,
-        address: employee.address,
-        phone: employee.phone,
-        name: employee.name,
         image: imgRes.file,
-        male: employee.male,
-        unit: employee.unit.id,
-        dob: format(employee.dob, "dd/MM/yyyy", { locale: vi }),
       });
       const data = await response;
       hideLoading();
@@ -380,7 +373,9 @@ const EmployeeEditDetail = ({ params }: { params: { employeeId: string } }) => {
               ) : null}
               <Button
                 title="Chỉnh sửa"
-                className="px-2 sm:flex-initial flex-1 flex gap-1 flex-nowrap whitespace-nowrap"
+                className={`px-2 sm:flex-initial flex-1 flex gap-1 flex-nowrap whitespace-nowrap ${
+                  readOnly ? "" : "hidden"
+                }`}
                 type="button"
                 onClick={() => {
                   setReadOnly(false);

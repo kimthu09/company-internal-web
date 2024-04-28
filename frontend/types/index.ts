@@ -49,3 +49,8 @@ export type Feature = {
   id: number;
   name: string;
 };
+export type UnitLink = {
+  value: string;
+  label: string;
+  href: string;
+};

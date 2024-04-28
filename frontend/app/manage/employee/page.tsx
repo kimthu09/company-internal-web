@@ -1,6 +1,7 @@
 import EmployeeTable from "@/components/manage/employee/table";
+import TableSkeleton from "@/components/skeleton/table-skeleton";
 import Link from "next/link";
-import React from "react";
+import React, { Suspense } from "react";
 
 const EmployeeManage = async () => {
   return (
@@ -11,7 +12,32 @@ const EmployeeManage = async () => {
           Thêm nhân viên
         </Link>
       </div>
-      <EmployeeTable />
+      <Suspense
+        fallback={
+          <TableSkeleton
+            isHasExtensionAction={false}
+            isHasFilter={true}
+            isHasSearch={true}
+            isHasChooseVisibleRow={false}
+            isHasCheckBox={false}
+            isHasPaging={true}
+            numberRow={5}
+            cells={[
+              {
+                percent: 1,
+              },
+              {
+                percent: 5,
+              },
+              {
+                percent: 1,
+              },
+            ]}
+          ></TableSkeleton>
+        }
+      >
+        <EmployeeTable />
+      </Suspense>
     </div>
   );
 };

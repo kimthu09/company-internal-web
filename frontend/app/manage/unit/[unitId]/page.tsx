@@ -1,54 +1,115 @@
 "use client";
 
+import ChangeManager from "@/components/manage/unit/change-manager";
 import UnitDetailSkeleton from "@/components/manage/unit/unit-detail.skeleton";
+import UnitTitleLinks from "@/components/manage/unit/unit-title-links";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "@/components/ui/use-toast";
+import { useLoading } from "@/hooks/loading-context";
 import getUnit from "@/lib/unit/getUnit";
-import Link from "next/link";
-
-export const links = [
-  {
-    value: "info",
-    label: "Thông tin",
-    href: "",
-  },
-  {
-    value: "employee",
-    label: "Nhân viên",
-    href: "/employee",
-  },
-  {
-    value: "calendar",
-    label: "Lịch",
-    href: "/calendar",
-  },
-];
-
+import updateUnit from "@/lib/unit/updateUnit";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { features } from "process";
+import { useEffect, useState } from "react";
+import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { z } from "zod";
+const FormSchema = z.object({
+  features: z.array(z.object({ featureId: z.coerce.number() })),
+});
 const UnitDetail = ({ params }: { params: { unitId: string } }) => {
-  const selectedPage = 0;
   const { data, isLoading, isError, mutate } = getUnit(params.unitId);
+  const { showLoading, hideLoading } = useLoading();
+  const [readOnly, setReadOnly] = useState(true);
+
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+  });
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { isDirty },
+  } = form;
+  const { fields, append, remove } = useFieldArray({
+    control: control,
+    name: "features",
+  });
+
+  const onSelect = (featureId: number) => {
+    if (readOnly) {
+      return;
+    }
+    const selectedIndex = fields.findIndex(
+      (feature) => feature.featureId === featureId
+    );
+    if (selectedIndex > -1) {
+      remove(selectedIndex);
+    } else {
+      append({ featureId: featureId });
+    }
+  };
+  const resetForm = () => {
+    if (data) {
+      const hasFeature: { featureId: number }[] = [];
+      data.features.forEach((item) => {
+        if (item.has) {
+          hasFeature.push({ featureId: item.id });
+        }
+      });
+      reset({ features: hasFeature });
+    }
+  };
+  useEffect(() => {
+    resetForm();
+  }, [data]);
+  const onSubmit: SubmitHandler<z.infer<typeof FormSchema>> = async (data) => {
+    console.log(data);
+    setReadOnly(true);
+    showLoading();
+    const response: Promise<any> = updateUnit({
+      id: params.unitId,
+      features: data.features.map((item) => item.featureId),
+    });
+    const responseData = await response;
+    hideLoading();
+    if (
+      responseData.hasOwnProperty("response") &&
+      responseData.response.hasOwnProperty("data") &&
+      responseData.response.data.hasOwnProperty("message") &&
+      responseData.response.data.hasOwnProperty("status")
+    ) {
+      toast({
+        variant: "destructive",
+        title: "Có lỗi",
+        description: responseData.response.data.message,
+      });
+    } else if (
+      responseData.hasOwnProperty("code") &&
+      responseData.code.includes("ERR")
+    ) {
+      toast({
+        variant: "destructive",
+        title: "Có lỗi",
+        description: responseData.message,
+      });
+    } else {
+      toast({
+        variant: "success",
+        title: "Thành công",
+        description: "Chỉnh sửa chức năng phòng ban thành công",
+      });
+      mutate();
+    }
+  };
   if (isLoading) return <UnitDetailSkeleton />;
   else if (isError) return <div>Failed to load</div>;
   else
     return (
       <div className="card___style flex flex-col whitespace-nowrap">
-        <div className="pb-5 border-b w-full flex flex-row gap-5 items-end">
-          <h1 className="table___title uppercase">{data.name}</h1>
-          {links.map((item, index) => (
-            <Link
-              key={item.value}
-              className={`${
-                selectedPage === index
-                  ? "text-blue-primary"
-                  : "text-muted-foreground"
-              } hover:text-blue-primary transition-colors font-medium tracking-wide`}
-              href={`/manage/unit/${params.unitId}${item.href}`}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </div>
+        <UnitTitleLinks data={data} selectedPage={0} />
 
         <div className="flex gap-4 py-7 border-b justify-between">
           {data.manager ? (
@@ -75,18 +136,41 @@ const UnitDetail = ({ params }: { params: { unitId: string } }) => {
             <span>Không có trưởng phòng</span>
           )}
 
-          <Button className="font-semibold tracking-widest rounded-full hover:bg-hover-accent">
-            Sửa
-          </Button>
+          <ChangeManager unitId={params.unitId} />
         </div>
         <div className="flex flex-col py-7">
           <div className="flex justify-between">
             <label className="font-medium text-black" htmlFor="features">
               Chức năng
             </label>
-            <Button className="font-semibold tracking-widest rounded-full hover:bg-hover-accent">
-              Sửa
-            </Button>
+            {readOnly ? (
+              <Button
+                className="font-semibold tracking-widest rounded-full hover:bg-hover-accent"
+                onClick={() => setReadOnly(false)}
+              >
+                Sửa
+              </Button>
+            ) : (
+              <div className="flex gap-2">
+                <Button
+                  variant={"outline"}
+                  className="bg-white border-rose-700 text-rose-700 hover:text-rose-700 hover:bg-rose-50/30 whitespace-nowrap  font-semibold tracking-widest rounded-full"
+                  onClick={() => {
+                    setReadOnly(true);
+                    resetForm();
+                  }}
+                >
+                  Hủy
+                </Button>
+                <Button
+                  className="whitespace-nowrap bg-green-primary hover:bg-green-hover font-semibold tracking-widest rounded-full"
+                  disabled={!isDirty}
+                  onClick={() => handleSubmit(onSubmit)()}
+                >
+                  Lưu
+                </Button>
+              </div>
+            )}
           </div>
 
           <div className="col-span-2 grid xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-y-4 gap-x-4 mt-4 items-end">
@@ -94,14 +178,14 @@ const UnitDetail = ({ params }: { params: { unitId: string } }) => {
               <div key={item.id} className="flex gap-1 items-baseline">
                 <Checkbox
                   id={item.name}
-                  checked={item.has}
-                  // onClick={() => onSelect(item.id)}
+                  checked={
+                    fields.findIndex(
+                      (feature) => feature.featureId === item.id
+                    ) > -1
+                  }
+                  onClick={() => onSelect(item.id)}
                 ></Checkbox>
-                <label
-                // onClick={() => onSelect(item.id)}
-                >
-                  {item.name}
-                </label>
+                <label onClick={() => onSelect(item.id)}>{item.name}</label>
               </div>
             ))}
           </div>
