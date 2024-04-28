@@ -9,14 +9,8 @@ import java.util.List;
 @Data
 @Builder
 public class UnitShiftDayResponse {
-	@Schema(name = "drawn")
-	private List<UnitShiftDayDetailResponse> drawn;
-
-	@Schema(name = "morning")
-	private List<UnitShiftDayDetailResponse> morning;
-
-	@Schema(name = "evening")
-	private List<UnitShiftDayDetailResponse> evening;
+	@Schema(name = "day")
+	private List<UnitShiftDayDetailResponse> day;
 
 	@Schema(name = "night")
 	private List<UnitShiftDayDetailResponse> night;
