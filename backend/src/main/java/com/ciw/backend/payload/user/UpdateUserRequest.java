@@ -2,7 +2,7 @@ package com.ciw.backend.payload.user;
 
 import com.ciw.backend.constants.ApplicationConst;
 import com.ciw.backend.constants.Message;
-import com.ciw.backend.utils.validation.dob.ValidDOBFormat;
+import com.ciw.backend.utils.validation.date.ValidDDMMYYYYFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
@@ -19,7 +19,7 @@ public class UpdateUserRequest {
 	private String phone;
 
 	@Schema(name = "dob", example = "12/12/2000")
-	@ValidDOBFormat(message = Message.User.DOB_VALIDATE)
+	@ValidDDMMYYYYFormat(message = Message.User.DOB_VALIDATE)
 	private String dob;
 
 	@Schema(name = "address", example = "TPHCM")

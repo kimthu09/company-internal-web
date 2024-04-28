@@ -6,9 +6,11 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 
@@ -25,7 +27,8 @@ public class MailSender {
 
 		Message message = setUpMessageForResetPassword(session, user.getEmail(), user.getName(), url);
 
-		Transport.send(message);
+		Transport t = session.getTransport();
+		t.sendMessage(message, new Address[]{new InternetAddress(user.getEmail())});
 	}
 
 	private Message setUpMessageForResetPassword(Session session, String emailTo, String nameTo, String url) throws
@@ -41,14 +44,11 @@ public class MailSender {
 							 "<p> Notice: This link will be expired after 5 minutes.</p>" +
 							 "<p> Thank you <br> Reset User's Password Portal Service";
 		message.setText(mailContent);
-		message.setContent(mailContent, "text/html");
+		message.setContent(mailContent, "text/html;charset=utf-8");
 		return message;
 	}
 
 	private Session setUpSession() {
-		final String username = "nguyenlengocmai000@gmail.com";
-		final String password = "fyfo xyfe xswy toav";
-
 		Properties prop = new Properties();
 		prop.put("mail.smtp.host", "smtp.gmail.com");
 		prop.put("mail.smtp.port", "465");
@@ -58,8 +58,53 @@ public class MailSender {
 
 		return Session.getInstance(prop, new jakarta.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(username, password);
+				return new PasswordAuthentication(MAIL_USERNAME, MAIL_PASSWORD);
 			}
 		});
+	}
+
+	@Async
+	public void sendEmail(String title, String description, List<String> receiverMails) {
+		Session session = setUpSession();
+
+		Transport t = null;
+		try {
+			Address[] cc = new Address[receiverMails.size()];
+			int index = 0;
+			for (String receiverMail : receiverMails) {
+				Address internetAddress = new InternetAddress(receiverMail);
+				cc[index++] = internetAddress;
+			}
+
+			Message message = setUpMessageForMail(session, title, description, cc);
+
+			t = session.getTransport("smtp");
+			t.connect();
+			t.sendMessage(message, message.getAllRecipients());
+		} catch (Exception e) {
+			System.err.println("Error sending email: " + e.getMessage());
+			e.printStackTrace(System.out);
+		} finally {
+			if (t != null) {
+				try {
+					t.close();
+				} catch (MessagingException me) {
+					System.err.println("Error closing transport: " + me.getMessage());
+					me.printStackTrace(System.out);
+				}
+			}
+		}
+	}
+
+	private Message setUpMessageForMail(Session session, String title, String description, Address[] addresses) throws
+			MessagingException {
+		Message message = new MimeMessage(session);
+
+		message.setFrom(new InternetAddress("from@gmail.com"));
+		message.setRecipients(Message.RecipientType.BCC, addresses);
+		message.setSubject(title);
+		message.setText(description);
+		message.setContent(description, "text/html;charset=utf-8");
+		return message;
 	}
 }
