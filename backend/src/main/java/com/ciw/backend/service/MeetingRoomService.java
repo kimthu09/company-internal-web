@@ -220,27 +220,19 @@ import java.util.*;
 
 		Map<String, MeetingRoomCalendarDayResponse> res = new HashMap<>();
 		for (Map.Entry<String, List<MeetingRoomCalendar>> entry : maps.entrySet()) {
-			List<MeetingRoomCalendarResponse> drawn = new ArrayList<>();
-			List<MeetingRoomCalendarResponse> morning = new ArrayList<>();
-			List<MeetingRoomCalendarResponse> evening = new ArrayList<>();
+			List<MeetingRoomCalendarResponse> day = new ArrayList<>();
 			List<MeetingRoomCalendarResponse> night = new ArrayList<>();
 
 			for (MeetingRoomCalendar meetingRoomCalendar : entry.getValue()) {
-				if (meetingRoomCalendar.getShiftType() == ShiftType.DRAWN) {
-					drawn.add(mapToDTO(meetingRoomCalendar));
-				} else if (meetingRoomCalendar.getShiftType() == ShiftType.MORNING) {
-					morning.add(mapToDTO(meetingRoomCalendar));
-				} else if (meetingRoomCalendar.getShiftType() == ShiftType.EVENING) {
-					evening.add(mapToDTO(meetingRoomCalendar));
+				if (meetingRoomCalendar.getShiftType() == ShiftType.DAY) {
+					day.add(mapToDTO(meetingRoomCalendar));
 				} else if (meetingRoomCalendar.getShiftType() == ShiftType.NIGHT) {
 					night.add(mapToDTO(meetingRoomCalendar));
 				}
 			}
 
 			res.put(entry.getKey(), MeetingRoomCalendarDayResponse.builder()
-																  .drawn(drawn)
-																  .morning(morning)
-																  .evening(evening)
+																  .day(day)
 																  .night(night)
 																  .build());
 		}
