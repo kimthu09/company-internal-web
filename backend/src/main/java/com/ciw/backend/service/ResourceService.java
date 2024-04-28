@@ -218,27 +218,19 @@ public class ResourceService {
 
 		Map<String, ResourceCalendarDayResponse> res = new HashMap<>();
 		for (Map.Entry<String, List<ResourceCalendar>> entry : maps.entrySet()) {
-			List<ResourceCalendarResponse> drawn = new ArrayList<>();
-			List<ResourceCalendarResponse> morning = new ArrayList<>();
-			List<ResourceCalendarResponse> evening = new ArrayList<>();
+			List<ResourceCalendarResponse> day = new ArrayList<>();
 			List<ResourceCalendarResponse> night = new ArrayList<>();
 
 			for (ResourceCalendar resourceCalendar : entry.getValue()) {
-				if (resourceCalendar.getShiftType() == ShiftType.DRAWN) {
-					drawn.add(mapToDTO(resourceCalendar));
-				} else if (resourceCalendar.getShiftType() == ShiftType.MORNING) {
-					morning.add(mapToDTO(resourceCalendar));
-				} else if (resourceCalendar.getShiftType() == ShiftType.EVENING) {
-					evening.add(mapToDTO(resourceCalendar));
+				if (resourceCalendar.getShiftType() == ShiftType.DAY) {
+					day.add(mapToDTO(resourceCalendar));
 				} else if (resourceCalendar.getShiftType() == ShiftType.NIGHT) {
 					night.add(mapToDTO(resourceCalendar));
 				}
 			}
 
 			res.put(entry.getKey(), ResourceCalendarDayResponse.builder()
-															   .drawn(drawn)
-															   .morning(morning)
-															   .evening(evening)
+															   .day(day)
 															   .night(night)
 															   .build());
 		}

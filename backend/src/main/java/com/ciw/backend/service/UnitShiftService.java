@@ -148,14 +148,8 @@ import java.util.*;
 		Map<ShiftType, Map<Long, UnitShiftDayDetailResponse>> map = new HashMap<>();
 
 		for (UnitShift shift : shifts) {
-			if (shift.isHasDrawnShift()) {
-				mappingToShiftType(map, shift, ShiftType.DRAWN);
-			}
-			if (shift.isHasMorningShift()) {
-				mappingToShiftType(map, shift, ShiftType.MORNING);
-			}
-			if (shift.isHasEveningShift()) {
-				mappingToShiftType(map, shift, ShiftType.EVENING);
+			if (shift.isHasDayShift()) {
+				mappingToShiftType(map, shift, ShiftType.DAY);
 			}
 			if (shift.isHasNightShift()) {
 				mappingToShiftType(map, shift, ShiftType.NIGHT);
@@ -167,9 +161,7 @@ import java.util.*;
 		}
 
 		return UnitShiftDayResponse.builder()
-								   .drawn(map.get(ShiftType.DRAWN).values().stream().toList())
-								   .morning(map.get(ShiftType.MORNING).values().stream().toList())
-								   .evening(map.get(ShiftType.EVENING).values().stream().toList())
+								   .day(map.get(ShiftType.DAY).values().stream().toList())
 								   .night(map.get(ShiftType.NIGHT).values().stream().toList())
 								   .build();
 	}
@@ -230,9 +222,7 @@ import java.util.*;
 			unitShifts.add(UnitShift.builder()
 									.unit(unit)
 									.dayOfWeek(day)
-									.isHasDrawnShift(detail.isHasDrawnShift())
-									.isHasMorningShift(detail.isHasMorningShift())
-									.isHasEveningShift(detail.isHasEveningShift())
+									.isHasDayShift(detail.isHasDayShift())
 									.isHasNightShift(detail.isHasNightShift())
 									.build());
 		}
@@ -268,9 +258,7 @@ import java.util.*;
 		for (UnitShift shiftEntity : shiftEntities) {
 			shifts.put(shiftEntity.getDayOfWeek(),
 					   UnitShiftDetailResponse.builder()
-											  .isHasDrawnShift(shiftEntity.isHasDrawnShift())
-											  .isHasMorningShift(shiftEntity.isHasMorningShift())
-											  .isHasEveningShift(shiftEntity.isHasEveningShift())
+											  .isHasDayShift(shiftEntity.isHasDayShift())
 											  .isHasNightShift(shiftEntity.isHasNightShift())
 											  .build());
 		}

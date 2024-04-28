@@ -17,7 +17,7 @@ public class CalendarPart {
 	@NotNull(message = Message.Calendar.DATE_VALIDATE)
 	private String date;
 
-	@Schema(name = "shiftType", example = "DRAWN")
+	@Schema(name = "shiftType", example = "DAY")
 	@NotNull(message = Message.Calendar.SHIFT_TYPE_VALIDATE)
 	private ShiftType shiftType;
 }

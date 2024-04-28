@@ -26,14 +26,8 @@ public class UnitShift {
 	@Column(name = "day_of_week")
 	private DayOfWeek dayOfWeek;
 
-	@Column(name = "is_has_drawn_shift", nullable = false)
-	private boolean isHasDrawnShift = false;
-
-	@Column(name = "is_has_morning_shift", nullable = false)
-	private boolean isHasMorningShift = false;
-
-	@Column(name = "is_has_evening_shift", nullable = false)
-	private boolean isHasEveningShift = false;
+	@Column(name = "is_has_day_shift", nullable = false)
+	private boolean isHasDayShift = false;
 
 	@Column(name = "is_has_night_shift", nullable = false)
 	private boolean isHasNightShift = false;
