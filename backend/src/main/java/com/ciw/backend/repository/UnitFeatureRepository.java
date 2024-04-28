@@ -9,5 +9,6 @@ import java.util.Optional;
 
 public interface UnitFeatureRepository extends JpaRepository<UnitFeature, UnitFeatureId> {
 	Optional<UnitFeature> findFirstByFeatureId(Long featureId);
+
 	List<UnitFeature> findByUnitId(Long unitId);
 }

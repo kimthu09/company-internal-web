@@ -1,13 +1,9 @@
 package com.ciw.backend.controller;
 
-import com.ciw.backend.entity.UnitFeature;
 import com.ciw.backend.payload.ListResponse;
 import com.ciw.backend.payload.SimpleResponse;
-import com.ciw.backend.payload.feature.FeatureResponse;
 import com.ciw.backend.payload.page.AppPageRequest;
 import com.ciw.backend.payload.unit.*;
-import com.ciw.backend.payload.user.UpdateUserRequest;
-import com.ciw.backend.payload.user.UserResponse;
 import com.ciw.backend.service.UnitService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,8 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/unit")

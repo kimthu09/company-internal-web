@@ -1,7 +1,7 @@
 package com.ciw.backend.payload.calendar;
 
 import com.ciw.backend.constants.Message;
-import com.ciw.backend.utils.validation.dob.ValidDDMMYYYYFormat;
+import com.ciw.backend.utils.validation.date.ValidDDMMYYYYFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

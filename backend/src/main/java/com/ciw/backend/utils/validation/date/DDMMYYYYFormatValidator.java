@@ -1,4 +1,4 @@
-package com.ciw.backend.utils.validation.dob;
+package com.ciw.backend.utils.validation.date;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -6,7 +6,7 @@ import jakarta.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class DOBFormatValidator implements ConstraintValidator<ValidDDMMYYYYFormat, String> {
+public class DDMMYYYYFormatValidator implements ConstraintValidator<ValidDDMMYYYYFormat, String> {
 	private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 	@Override

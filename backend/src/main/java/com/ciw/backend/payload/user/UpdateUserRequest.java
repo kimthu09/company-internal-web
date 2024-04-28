@@ -2,7 +2,7 @@ package com.ciw.backend.payload.user;
 
 import com.ciw.backend.constants.ApplicationConst;
 import com.ciw.backend.constants.Message;
-import com.ciw.backend.utils.validation.dob.ValidDDMMYYYYFormat;
+import com.ciw.backend.utils.validation.date.ValidDDMMYYYYFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
