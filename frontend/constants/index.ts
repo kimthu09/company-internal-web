@@ -1,4 +1,4 @@
-import { SidebarItem } from "@/types";
+import { SidebarItem, UnitLink } from "@/types";
 import { FiHome } from "react-icons/fi";
 import { IoNewspaperOutline } from "react-icons/io5";
 import { IoCalendarOutline } from "react-icons/io5";
@@ -7,7 +7,7 @@ import { CgWorkAlt } from "react-icons/cg";
 import { z } from "zod";
 
 export const apiKey =
-  "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE3MTM0NTA3OTcsImV4cCI6MTcxMzY2Njc5N30.hMnKkiArfvq-JHVTTJXfl4LNlOXVQ3l41tSD6WS_KAZ7SN3UQtQmX6-dFuRgWkVb";
+  "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE3MTQxOTk4MzYsImV4cCI6MTcxNDQxNTgzNn0.lYU959dQ5cipkQrUL1x6NI-FWS4OT2ONgdPzNZh_J5dC6nuYLH3PWHLv1T48nW_o";
 export const endpoint = "http://localhost:8080/api/v1";
 export const required = z.string().min(1, "Không để trống trường này");
 export const phoneRegex = new RegExp(/(0[3|5|7|8|9])+([0-9]{8})\b/g);
@@ -52,5 +52,22 @@ export const sidebarItems: SidebarItem[] = [
       { title: "Tài nguyên", href: "/manage/resources" },
       { title: "Phòng họp", href: "/manage/room" },
     ],
+  },
+];
+export const unitLinks: UnitLink[] = [
+  {
+    value: "info",
+    label: "Thông tin",
+    href: "",
+  },
+  {
+    value: "employee",
+    label: "Nhân viên",
+    href: "/employee",
+  },
+  {
+    value: "calendar",
+    label: "Lịch",
+    href: "/calendar",
   },
 ];

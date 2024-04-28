@@ -1,40 +1,20 @@
 "use client";
-import { links } from "../page";
 import Link from "next/link";
 import getUnit from "@/lib/unit/getUnit";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FaPhoneAlt } from "react-icons/fa";
 import { TbMailFilled } from "react-icons/tb";
 import UnitEmployeeSkeleton from "@/components/manage/unit/unit-employee-skeleton";
+import { unitLinks } from "@/constants";
+import UnitTitleLinks from "@/components/manage/unit/unit-title-links";
 const UnitEmployee = ({ params }: { params: { unitId: string } }) => {
-  const selectedPage = 1;
   const { data, isLoading, isError, mutate } = getUnit(params.unitId);
   if (isLoading) return <UnitEmployeeSkeleton />;
   else if (isError) return <div>Failed to load</div>;
   else
     return (
       <div className="card___style flex flex-col">
-        <div className="pb-5 border-b w-full flex flex-row gap-5 items-end flex-wrap">
-          <h1 className="table___title uppercase">{data.name}</h1>
-          {links.map((item, index) => (
-            <Link
-              key={item.value}
-              className={`${
-                selectedPage === index
-                  ? "text-blue-primary"
-                  : "text-muted-foreground"
-              } hover:text-blue-primary transition-colors font-medium tracking-wide whitespace-nowrap`}
-              href={`/manage/unit/${params.unitId}${item.href}`}
-            >
-              {item.label}
-            </Link>
-          ))}
-          {selectedPage === 1 ? (
-            <span className="whitespace-nowrap text-muted-foreground ml-auto">
-              Tổng số nhân viên: {data.numberStaffs}
-            </span>
-          ) : null}
-        </div>
+        <UnitTitleLinks data={data} selectedPage={1} />
         <div className="flex flex-col">
           {data.staffs.map((item) => {
             return (
