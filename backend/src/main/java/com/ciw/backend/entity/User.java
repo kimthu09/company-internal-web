@@ -3,10 +3,7 @@ package com.ciw.backend.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,18 +19,27 @@ import java.util.List;
 @Entity
 @Table(
 		name = "user",
-		uniqueConstraints = {@UniqueConstraint(columnNames = {"email"}, name = "Email")}
+		uniqueConstraints = {@UniqueConstraint(
+				columnNames = {"email"},
+				name = "Email"
+		)}
 )
 public class User implements UserDetails {
-	@Id
+	@Getter @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(nullable = false)
-	@Length(min = 1, max = 200)
+	@Length(
+			min = 1,
+			max = 200
+	)
 	private String name;
 
-	@Column(unique = true, nullable = false)
+	@Column(
+			unique = true,
+			nullable = false
+	)
 	@Email
 	@NotEmpty
 	private String email;
@@ -45,19 +51,31 @@ public class User implements UserDetails {
 	@JoinColumn(name = "unit_id")
 	private Unit unit;
 
-	@Column(nullable = false, columnDefinition = "text")
+	@Column(
+			nullable = false,
+			columnDefinition = "text"
+	)
 	private String image;
 
 	@Column(nullable = false)
-	@Length(min = 10, max = 10)
+	@Length(
+			min = 10,
+			max = 10
+	)
 	private String dob;
 
 	@Column(nullable = false)
-	@Length(min = 1, max = 50)
+	@Length(
+			min = 1,
+			max = 50
+	)
 	private String address;
 
 	@Column(nullable = false)
-	@Length(min = 10, max = 11)
+	@Length(
+			min = 10,
+			max = 11
+	)
 	private String phone;
 
 	@Column(nullable = false)
@@ -76,23 +94,28 @@ public class User implements UserDetails {
 		return res;
 	}
 
-	@Override public String getUsername() {
+	@Override
+	public String getUsername() {
 		return email;
 	}
 
-	@Override public boolean isAccountNonExpired() {
+	@Override
+	public boolean isAccountNonExpired() {
 		return true;
 	}
 
-	@Override public boolean isAccountNonLocked() {
+	@Override
+	public boolean isAccountNonLocked() {
 		return true;
 	}
 
-	@Override public boolean isCredentialsNonExpired() {
+	@Override
+	public boolean isCredentialsNonExpired() {
 		return true;
 	}
 
-	@Override public boolean isEnabled() {
+	@Override
+	public boolean isEnabled() {
 		return true;
 	}
 }

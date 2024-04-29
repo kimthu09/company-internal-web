@@ -26,8 +26,14 @@ public class PasswordResetToken {
 
 	private String token;
 
-	@ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
-	@JoinColumn(name = "user_id", nullable = false)
+	@ManyToOne(
+			targetEntity = User.class,
+			fetch = FetchType.EAGER
+	)
+	@JoinColumn(
+			name = "user_id",
+			nullable = false
+	)
 	private User user;
 
 	private Date expiryDate;

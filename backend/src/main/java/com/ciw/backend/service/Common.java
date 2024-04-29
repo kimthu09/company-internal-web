@@ -1,8 +1,11 @@
 package com.ciw.backend.service;
 
+import com.ciw.backend.constants.ApplicationConst;
 import com.ciw.backend.constants.Message;
 import com.ciw.backend.entity.*;
 import com.ciw.backend.exception.AppException;
+import com.ciw.backend.mail.MailSender;
+import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.calendar.CalendarPart;
 import com.ciw.backend.payload.calendar.ShiftType;
 import com.ciw.backend.payload.feature.FeatureResponse;
@@ -188,5 +191,69 @@ public class Common {
 		}
 
 		return notification;
+	}
+
+	public static SimpleResponse sendNotification(NotificationRepository notificationRepository,
+												  MailSender mailSender,
+												  List<User> receivers,
+												  User sender,
+												  String title,
+												  String description) {
+		List<Notification> notifications = receivers.stream()
+													.map(receiver -> Notification.builder()
+																				 .title(title)
+																				 .description(description)
+																				 .fromUser(sender)
+																				 .toUser(receiver)
+																				 .seen(false)
+																				 .build())
+													.toList();
+
+		notificationRepository.saveAll(notifications);
+
+		mailSender.sendEmail(title,
+							 description,
+							 receivers.stream().map(User::getEmail).toList());
+
+		return new SimpleResponse();
+	}
+
+	public static void sendNotification(NotificationRepository notificationRepository,
+										MailSender mailSender,
+										User receiver,
+										User sender,
+										String title,
+										String description) {
+
+		Notification notification = Notification.builder()
+												.title(title)
+												.description(description)
+												.fromUser(sender)
+												.toUser(receiver)
+												.seen(false)
+												.build();
+
+		notificationRepository.save(notification);
+
+		mailSender.sendEmail(title,
+							 description,
+							 List.of(receiver.getEmail()));
+
+	}
+
+	public static void checkAdminOrManager(UserRepository userRepository, Long managerId) {
+		User curr = Common.findCurrUser(userRepository);
+		if (!curr.getUnit().getName().contains(ApplicationConst.ADMIN_UNIT_NAME) &&
+			!curr.getId().equals(managerId)) {
+			throw new AppException(HttpStatus.BAD_REQUEST, Message.USER_NOT_HAVE_FEATURE);
+		}
+	}
+
+	public static void checkAdminOrInUnit(UserRepository userRepository, Long unitId) {
+		User curr = Common.findCurrUser(userRepository);
+		if (!curr.getUnit().getName().contains(ApplicationConst.ADMIN_UNIT_NAME) &&
+			!curr.getUnit().getId().equals(unitId)) {
+			throw new AppException(HttpStatus.BAD_REQUEST, Message.USER_NOT_HAVE_FEATURE);
+		}
 	}
 }

@@ -14,13 +14,27 @@ import org.hibernate.validator.constraints.Length;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChangePasswordRequest {
-	@Schema(name = "oldPassword", example = "123456")
-	@Length(min = 6, max = 20, message = Message.PASSWORD_VALIDATE)
+	@Schema(
+			name = "oldPassword",
+			example = "123456"
+	)
+	@Length(
+			min = 6,
+			max = 20,
+			message = Message.PASSWORD_VALIDATE
+	)
 	@NotNull(message = Message.PASSWORD_VALIDATE)
 	private String oldPassword;
 
-	@Schema(name = "newPassword", example = "123456")
-	@Length(min = 6, max = 20, message = Message.PASSWORD_VALIDATE)
+	@Schema(
+			name = "newPassword",
+			example = "123456"
+	)
+	@Length(
+			min = 6,
+			max = 20,
+			message = Message.PASSWORD_VALIDATE
+	)
 	@NotNull(message = Message.PASSWORD_VALIDATE)
 	private String newPassword;
 }

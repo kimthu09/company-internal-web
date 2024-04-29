@@ -16,14 +16,24 @@ import org.hibernate.validator.constraints.Length;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthenticationRequest {
-	@Schema(name = "email", example = "admin@gmail.com")
+	@Schema(
+			name = "email",
+			example = "admin@gmail.com"
+	)
 	@Email(message = Message.EMAIL_VALIDATE)
 	@NotEmpty(message = Message.EMAIL_VALIDATE)
 	@NotNull(message = Message.EMAIL_VALIDATE)
 	private String email;
 
-	@Schema(name = "password", example = "123456")
-	@Length(min = 6, max = 20, message = Message.PASSWORD_VALIDATE)
+	@Schema(
+			name = "password",
+			example = "123456"
+	)
+	@Length(
+			min = 6,
+			max = 20,
+			message = Message.PASSWORD_VALIDATE
+	)
 	@NotNull(message = Message.PASSWORD_VALIDATE)
 	private String password;
 }

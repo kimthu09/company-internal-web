@@ -33,11 +33,17 @@ public class Post {
 	private Long id;
 
 	@Column(nullable = false)
-	@Length(min = 1, max = 100)
+	@Length(
+			min = 1,
+			max = 100
+	)
 	private String title;
 
 	@Column(nullable = false)
-	@Length(min = 0, max = 200)
+	@Length(
+			min = 0,
+			max = 200
+	)
 	private String description;
 
 	@Convert(converter = HashMapConverter.class)
@@ -52,12 +58,20 @@ public class Post {
 	private List<PostAttachment> attachments;
 
 	@ManyToOne
-	@JoinColumn(name = "created_by", nullable = false, updatable = false)
+	@JoinColumn(
+			name = "created_by",
+			nullable = false,
+			updatable = false
+	)
 	@CreatedBy
 	private User createdBy;
 
 	@CreatedDate
-	@Column(name = "created_at", nullable = false, updatable = false)
+	@Column(
+			name = "created_at",
+			nullable = false,
+			updatable = false
+	)
 	private Date createdAt;
 
 	@LastModifiedDate
@@ -68,7 +82,8 @@ public class Post {
 	@JoinTable(
 			name = "post_tag",
 			joinColumns = @JoinColumn(name = "post_id"),
-			inverseJoinColumns = @JoinColumn(name = "tag_id"))
+			inverseJoinColumns = @JoinColumn(name = "tag_id")
+	)
 	private Set<Tag> tags;
 }
 

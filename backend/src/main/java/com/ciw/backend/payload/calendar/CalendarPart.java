@@ -12,12 +12,18 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 public class CalendarPart {
-	@Schema(name = "date", example = "12/12/2000")
+	@Schema(
+			name = "date",
+			example = "12/12/2000"
+	)
 	@ValidDDMMYYYYFormat(message = Message.Calendar.DATE_VALIDATE)
 	@NotNull(message = Message.Calendar.DATE_VALIDATE)
 	private String date;
 
-	@Schema(name = "shiftType", example = "DAY")
+	@Schema(
+			name = "shiftType",
+			example = "DAY"
+	)
 	@NotNull(message = Message.Calendar.SHIFT_TYPE_VALIDATE)
 	private ShiftType shiftType;
 }

@@ -74,7 +74,7 @@ public class NotificationController {
 			responseCode = "201",
 			description = "Http Status is 201 CREATED"
 	)
-	@PreAuthorize("hasAnyAuthority('ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'NOTI')")
 	public ResponseEntity<SimpleResponse> sendNotificationForAll(@Valid CreateNotificationForAllRequest request) {
 		return new ResponseEntity<>(notificationService.sendNotificationForAllStaff(request), HttpStatus.OK);
 	}
@@ -93,7 +93,7 @@ public class NotificationController {
 			responseCode = "201",
 			description = "Http Status is 201 CREATED"
 	)
-	@PreAuthorize("hasAnyAuthority('ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'NOTI')")
 	public ResponseEntity<SimpleResponse> sendNotificationForListStaffs(@Valid CreateNotificationForListStaffRequest request) {
 		return new ResponseEntity<>(notificationService.sendNotificationForListStaff(request), HttpStatus.OK);
 	}

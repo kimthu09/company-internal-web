@@ -15,31 +15,73 @@ import org.hibernate.validator.constraints.Length;
 @NoArgsConstructor
 @Builder
 public class UserFilter {
-	@Schema(name = "name", example = "Tên người dùng")
-	@Length(max = 200, message = Message.User.NAME_FILTER_VALIDATE)
+	@Schema(
+			name = "name",
+			example = "Tên người dùng"
+	)
+	@Length(
+			max = 200,
+			message = Message.User.NAME_FILTER_VALIDATE
+	)
 	private String name;
 
-	@Schema(name = "email", example = "a@gmail.com")
+	@Schema(
+			name = "email",
+			example = "a@gmail.com"
+	)
 	private String email;
 
-	@Schema(name = "phone", example = "0123456789")
-	@Length(max = 11, message = Message.User.PHONE_FILTER_VALIDATE)
+	@Schema(
+			name = "phone",
+			example = "0123456789"
+	)
+	@Length(
+			max = 11,
+			message = Message.User.PHONE_FILTER_VALIDATE
+	)
 	private String phone;
 
-	@Schema(name = "unit", example = "Tên phòng ban")
-	@Length(max = 100, message = Message.Unit.UNIT_NAME_FILTER_VALIDATE)
+	@Schema(
+			name = "unit",
+			example = "Tên phòng ban"
+	)
+	@Length(
+			max = 100,
+			message = Message.Unit.UNIT_NAME_FILTER_VALIDATE
+	)
 	private String unit;
 
-	@Schema(name = "male", example = "true")
+	@Schema(
+			name = "male",
+			example = "true"
+	)
 	private Boolean male;
 
-	@Schema(name = "monthDOB", example = "1")
-	@Min(value = 1, message = Message.User.DOB_VALIDATE)
-	@Max(value = 12, message = Message.User.DOB_VALIDATE)
+	@Schema(
+			name = "monthDOB",
+			example = "1"
+	)
+	@Min(
+			value = 1,
+			message = Message.User.DOB_VALIDATE
+	)
+	@Max(
+			value = 12,
+			message = Message.User.DOB_VALIDATE
+	)
 	private Integer monthDOB;
 
-	@Schema(name = "yearDOB", example = "1900")
-	@Min(value = 1900, message = Message.User.DOB_VALIDATE)
-	@Max(value = 2024, message = Message.User.DOB_VALIDATE)
+	@Schema(
+			name = "yearDOB",
+			example = "1900"
+	)
+	@Min(
+			value = 1900,
+			message = Message.User.DOB_VALIDATE
+	)
+	@Max(
+			value = 2024,
+			message = Message.User.DOB_VALIDATE
+	)
 	private Integer yearDOB;
 }

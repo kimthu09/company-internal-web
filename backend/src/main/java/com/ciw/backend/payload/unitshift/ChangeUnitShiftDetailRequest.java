@@ -7,9 +7,15 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ChangeUnitShiftDetailRequest {
-	@Schema(name = "isHasDayShift", example = "true")
+	@Schema(
+			name = "isHasDayShift",
+			example = "true"
+	)
 	private boolean isHasDayShift = false;
 
-	@Schema(name = "isHasNightShift", example = "true")
+	@Schema(
+			name = "isHasNightShift",
+			example = "true"
+	)
 	private boolean isHasNightShift = false;
 }

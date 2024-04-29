@@ -14,8 +14,15 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 @Builder
 public class ResetPasswordRequest {
-	@Schema(name = "password", example = "123456")
-	@Length(min = 6, max = 20, message = Message.PASSWORD_VALIDATE)
+	@Schema(
+			name = "password",
+			example = "123456"
+	)
+	@Length(
+			min = 6,
+			max = 20,
+			message = Message.PASSWORD_VALIDATE
+	)
 	@NotNull(message = Message.PASSWORD_VALIDATE)
 	private String password;
 }

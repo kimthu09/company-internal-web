@@ -11,9 +11,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class SimpleFeatureResponse {
-	@Schema(name = "id", example = "1")
+	@Schema(
+			name = "id",
+			example = "1"
+	)
 	private Long id;
 
-	@Schema(name = "name", example = "Tên chức năng")
+	@Schema(
+			name = "name",
+			example = "Tên chức năng"
+	)
 	private String name;
 }

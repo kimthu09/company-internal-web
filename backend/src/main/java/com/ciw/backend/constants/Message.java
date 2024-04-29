@@ -83,6 +83,7 @@ public class Message {
 		public static final String BOOKED_TO_VALIDATE = "Cần phải cung cấp thời điểm kết thúc";
 		public static final String BOOK_EMPTY = "Không có lịch đặt tương ứng";
 		public static final String CAN_NOT_DELETE_BOOKED = "Không thể xóa phòng họp đang được đặt lịch";
+
 	}
 
 	public static class Calendar {

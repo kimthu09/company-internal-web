@@ -17,23 +17,37 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 public class SimplePostResponse {
-	@Schema(name = "id", example = "1")
+	@Schema(
+			name = "id",
+			example = "1"
+	)
 	private Long id;
 
-	@Schema(name = "title", example = "Tiêu đề bài post")
+	@Schema(
+			name = "title",
+			example = "Tiêu đề bài post"
+	)
 	private String title;
 
-	@Schema(name = "description",
-			example = "Bài post siêu hay. super hay. Nên đọc. <3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333")
+	@Schema(
+			name = "description",
+			example = "Bài post siêu hay. super hay. Nên đọc. <3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+	)
 	private String description;
 
-	@Schema(name = "image", example = ApplicationConst.DEFAULT_POST_IMAGE)
+	@Schema(
+			name = "image",
+			example = ApplicationConst.DEFAULT_POST_IMAGE
+	)
 	private String image;
 
 	@Schema(name = "createdBy")
 	private SimpleUserResponse createdBy;
 
-	@Schema(name = "updatedAt", example = "2024-04-16 5:14:43")
+	@Schema(
+			name = "updatedAt",
+			example = "2024-04-16 5:14:43"
+	)
 	private Date updatedAt;
 
 	@Schema(name = "tags")

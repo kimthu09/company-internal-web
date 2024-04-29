@@ -11,9 +11,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class UnitWithIdAndNameResponse {
-	@Schema(name = "id", example = "1")
+	@Schema(
+			name = "id",
+			example = "1"
+	)
 	private Long id;
 
-	@Schema(name = "name", example = "Tên phòng ban")
+	@Schema(
+			name = "name",
+			example = "Tên phòng ban"
+	)
 	private String name;
 }

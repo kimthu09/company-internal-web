@@ -13,14 +13,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class NotificationFilter {
-	@Schema(name = "sender", example = "1")
+	@Schema(
+			name = "sender",
+			example = "1"
+	)
 	private String sender;
 
-	@Schema(name = "fromDate", example = "12/12/2000")
+	@Schema(
+			name = "fromDate",
+			example = "12/12/2000"
+	)
 	@ValidDDMMYYYYFormat(message = Message.Calendar.DATE_VALIDATE)
 	private String fromDate;
 
-	@Schema(name = "toDate", example = "12/12/2000")
+	@Schema(
+			name = "toDate",
+			example = "12/12/2000"
+	)
 	@ValidDDMMYYYYFormat(message = Message.Calendar.DATE_VALIDATE)
 	private String toDate;
 }

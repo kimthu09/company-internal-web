@@ -9,7 +9,10 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class SimpleResponse {
-	@Schema(name = "data", example = "true")
+	@Schema(
+			name = "data",
+			example = "true"
+	)
 	private boolean data;
 
 	public SimpleResponse() {

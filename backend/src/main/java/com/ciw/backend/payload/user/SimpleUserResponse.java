@@ -12,18 +12,33 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class SimpleUserResponse {
-	@Schema(name = "id", example = "1")
+	@Schema(
+			name = "id",
+			example = "1"
+	)
 	private Long id;
 
-	@Schema(name = "email", example = "admin@gmail.com")
+	@Schema(
+			name = "email",
+			example = "admin@gmail.com"
+	)
 	private String email;
 
-	@Schema(name = "phone", example = "0123456789")
+	@Schema(
+			name = "phone",
+			example = "0123456789"
+	)
 	private String phone;
 
-	@Schema(name = "name", example = "Nguyễn Văn A")
+	@Schema(
+			name = "name",
+			example = "Nguyễn Văn A"
+	)
 	private String name;
 
-	@Schema(name = "image", example = ApplicationConst.DEFAULT_AVATAR)
+	@Schema(
+			name = "image",
+			example = ApplicationConst.DEFAULT_AVATAR
+	)
 	private String image;
 }

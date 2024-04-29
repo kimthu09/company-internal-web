@@ -16,19 +16,15 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/unit/shift")
+@RequestMapping("/api/v1/unit")
 @RequiredArgsConstructor
-@Tag(
-		name = "Unit Shift"
-)
+@Tag(name = "Unit Shift")
 @Validated
 public class UnitShiftController {
 	private final UnitShiftService unitShiftService;
 
-	@GetMapping("/{id}")
-	@SecurityRequirement(
-			name = "Bearer Authentication"
-	)
+	@GetMapping("/{id}/shift")
+	@SecurityRequirement(name = "Bearer Authentication")
 	@Operation(
 			summary = "Fetch unit shift by week",
 			description = "Fetch unit shift by week from database"
@@ -37,31 +33,35 @@ public class UnitShiftController {
 			responseCode = "200",
 			description = "Http Status is 200 OK"
 	)
+	//Set feature in function already
 	public ResponseEntity<UnitShiftResponse> getUnitShiftByWeek(@PathVariable Long id) {
 		return new ResponseEntity<>(unitShiftService.fetchShiftByWeek(id), HttpStatus.OK);
 	}
 
-	@GetMapping("/day")
-	@SecurityRequirement(
-			name = "Bearer Authentication"
-	)
+	@GetMapping("/shift/day")
+	@SecurityRequirement(name = "Bearer Authentication")
 	@Operation(
 			summary = "Fetch unit shift by day",
-			description = "Fetch unit shift by day from database"
+			description = "Fetch unit shift by day from database.\n" +
+						  "Note:\n" +
+						  "-From and to are required.\n" +
+						  "-Only admin and user can see their unit's calendar.\n" +
+						  "-Only admin can see all unit's calendar.\n" +
+						  "-If don't have unit in request body:\n" +
+						  "+if user is admin, it will get all unit's calendar.\n" +
+						  "+if user is not admin, it will get user's unit's calendar."
 	)
 	@ApiResponse(
 			responseCode = "200",
 			description = "Http Status is 200 OK"
 	)
-	public ResponseEntity<MapResponseWithoutPage<UnitShiftDayResponse, UnitShiftDayFilter>> getUnitShiftByDay(
-			@Valid UnitShiftDayFilter filter) {
+	//Set feature in function already
+	public ResponseEntity<MapResponseWithoutPage<UnitShiftDayResponse, UnitShiftDayFilter>> getUnitShiftByDay(@Valid UnitShiftDayFilter filter) {
 		return new ResponseEntity<>(unitShiftService.fetchShiftByDay(filter), HttpStatus.OK);
 	}
 
-	@PostMapping("/{id}")
-	@SecurityRequirement(
-			name = "Bearer Authentication"
-	)
+	@PostMapping("/{id}/shift")
+	@SecurityRequirement(name = "Bearer Authentication")
 	@Operation(
 			summary = "Change unit shift",
 			description = "Change unit shift"
@@ -70,16 +70,14 @@ public class UnitShiftController {
 			responseCode = "201",
 			description = "Http Status is 201 CREATED"
 	)
-	public ResponseEntity<UnitShiftResponse> changeUnitShiftByWeek(
-			@PathVariable Long id,
-			@Valid ChangeUnitShiftRequest request) {
+	//Set feature in function already
+	public ResponseEntity<UnitShiftResponse> changeUnitShiftByWeek(@PathVariable Long id,
+																   @Valid @RequestBody ChangeUnitShiftRequest request) {
 		return new ResponseEntity<>(unitShiftService.changeShift(id, request), HttpStatus.CREATED);
 	}
 
 	@PostMapping("/{id}/absent")
-	@SecurityRequirement(
-			name = "Bearer Authentication"
-	)
+	@SecurityRequirement(name = "Bearer Authentication")
 	@Operation(
 			summary = "Absent unit shift",
 			description = "Register to absent for unit"
@@ -88,9 +86,9 @@ public class UnitShiftController {
 			responseCode = "201",
 			description = "Http Status is 201 CREATED"
 	)
-	public ResponseEntity<SimpleResponse> absentUnitShift(
-			@PathVariable Long id,
-			@Valid AbsentUnitShiftRequest request) {
+	//Set feature in function already
+	public ResponseEntity<SimpleResponse> absentUnitShift(@PathVariable Long id,
+														  @Valid @RequestBody AbsentUnitShiftRequest request) {
 		return new ResponseEntity<>(unitShiftService.absentUnitShift(id, request), HttpStatus.CREATED);
 	}
 }

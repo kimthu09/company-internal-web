@@ -5,6 +5,7 @@ import com.ciw.backend.entity.MeetingRoom;
 import com.ciw.backend.entity.MeetingRoomCalendar;
 import com.ciw.backend.entity.User;
 import com.ciw.backend.exception.AppException;
+import com.ciw.backend.mail.MailSender;
 import com.ciw.backend.payload.ListResponse;
 import com.ciw.backend.payload.MapResponseWithoutPage;
 import com.ciw.backend.payload.SimpleResponse;
@@ -16,6 +17,7 @@ import com.ciw.backend.payload.page.AppPageResponse;
 import com.ciw.backend.payload.user.SimpleUserResponse;
 import com.ciw.backend.repository.MeetingRoomCalendarRepository;
 import com.ciw.backend.repository.MeetingRoomRepository;
+import com.ciw.backend.repository.NotificationRepository;
 import com.ciw.backend.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -35,11 +37,15 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-@Service @RequiredArgsConstructor public class MeetingRoomService {
+@Service
+@RequiredArgsConstructor
+public class MeetingRoomService {
 	private final ObjectMapper objectMapper;
 	private final MeetingRoomRepository meetingRoomRepository;
 	private final MeetingRoomCalendarRepository meetingRoomCalendarRepository;
 	private final UserRepository userRepository;
+	private final NotificationRepository notificationRepository;
+	private final MailSender mailSender;
 
 	@Transactional
 	public ListResponse<MeetingRoomResponse, MeetingRoomFilter> getMeetingRooms(AppPageRequest page,
@@ -76,7 +82,8 @@ import java.util.*;
 		return spec;
 	}
 
-	@Transactional public MeetingRoomResponse createMeetingRoom(CreateMeetingRoomRequest request) {
+	@Transactional
+	public MeetingRoomResponse createMeetingRoom(CreateMeetingRoomRequest request) {
 		MeetingRoom meetingRoom = mapToMeetingRoomEntity(request);
 		if (meetingRoom.getLocation() == null) {
 			meetingRoom.setLocation(meetingRoom.getName());
@@ -87,7 +94,8 @@ import java.util.*;
 		return mapToDTO(savedMeetingRoom);
 	}
 
-	@Transactional public MeetingRoomResponse updateMeetingRoom(Long meetingRoomId, UpdateMeetingRoomRequest request) {
+	@Transactional
+	public MeetingRoomResponse updateMeetingRoom(Long meetingRoomId, UpdateMeetingRoomRequest request) {
 		MeetingRoom meetingRoom = Common.findMeetingRoomById(meetingRoomId, meetingRoomRepository);
 
 		Common.updateIfNotNull(request.getName(), meetingRoom::setName);
@@ -98,7 +106,8 @@ import java.util.*;
 		return mapToDTO(savedMeetingRoom);
 	}
 
-	@Transactional public SimpleResponse deleteMeetingRoom(Long meetingRoomId) {
+	@Transactional
+	public SimpleResponse deleteMeetingRoom(Long meetingRoomId) {
 		MeetingRoom meetingRoom = Common.findMeetingRoomById(meetingRoomId, meetingRoomRepository);
 
 		if (meetingRoomCalendarRepository.existsByMeetingRoomIdAndDateAfter(meetingRoomId, new Date())) {
@@ -144,7 +153,8 @@ import java.util.*;
 		return spec;
 	}
 
-	@Transactional public SimpleResponse bookMeetingRoom(Long id, BookMeetingRoomRequest request) {
+	@Transactional
+	public SimpleResponse bookMeetingRoom(Long id, BookMeetingRoomRequest request) {
 		MeetingRoom meetingRoom = Common.findMeetingRoomById(id, meetingRoomRepository);
 
 		User bookedBy = Common.findUserById(request.getBookedBy(), userRepository);
@@ -166,14 +176,36 @@ import java.util.*;
 
 		meetingRoomCalendarRepository.saveAll(calendars);
 
+		Common.sendNotification(notificationRepository,
+								mailSender,
+								bookedBy,
+								bookedBy,
+								"Phòng họp đã được đặt",
+								String.format(
+										"Bạn đã đặt phòng họp %s thành công.\nNếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
+										meetingRoom.getName()));
+
 		return new SimpleResponse();
 	}
 
-	@Transactional public SimpleResponse deleteBookMeetingRoom(Long bookId) {
+	@Transactional
+	public SimpleResponse deleteBookMeetingRoom(Long bookId) {
 		MeetingRoomCalendar meetingRoomCalendar = Common.findMeetingRoomCalendarById(bookId,
 																					 meetingRoomCalendarRepository);
 
 		meetingRoomCalendarRepository.delete(meetingRoomCalendar);
+
+		User sender = Common.findCurrUser(userRepository);
+
+		Common.sendNotification(notificationRepository,
+								mailSender,
+								meetingRoomCalendar.getBookedBy(),
+								sender,
+								"Lịch phòng họp của bạn có sự thay đổi",
+								String.format(
+										"Lịch phòng họp %s vào buổi %s đã bị xóa.\nNếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
+										meetingRoomCalendar.getMeetingRoom().getName(),
+										meetingRoomCalendar.getShiftType() == ShiftType.DAY ? "sáng" : "tối"));
 
 		return new SimpleResponse();
 	}

@@ -17,21 +17,37 @@ import java.util.Set;
 @Entity
 @Table(
 		name = "tag",
-		uniqueConstraints = {@UniqueConstraint(columnNames = {"name"}, name = "Tên")}
+		uniqueConstraints = {@UniqueConstraint(
+				columnNames = {"name"},
+				name = "Tên"
+		)}
 )
 public class Tag {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false, unique = true)
-	@Length(min = 1, max = 50)
+	@Column(
+			nullable = false,
+			unique = true
+	)
+	@Length(
+			min = 1,
+			max = 50
+	)
 	private String name;
 
-	@Column(name = "number_post", nullable = false)
+	@Column(
+			name = "number_post",
+			nullable = false
+	)
 	private int numberPost = 0;
 
 	@JsonIgnore
-	@ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+	@ManyToMany(
+			mappedBy = "tags",
+			fetch = FetchType.LAZY,
+			cascade = CascadeType.MERGE
+	)
 	private Set<Post> posts;
 }
