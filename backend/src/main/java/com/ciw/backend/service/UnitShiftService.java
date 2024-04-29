@@ -1,11 +1,13 @@
 package com.ciw.backend.service;
 
+import com.ciw.backend.constants.ApplicationConst;
 import com.ciw.backend.constants.Message;
 import com.ciw.backend.entity.Unit;
 import com.ciw.backend.entity.UnitShift;
 import com.ciw.backend.entity.UnitShiftAbsent;
 import com.ciw.backend.entity.User;
 import com.ciw.backend.exception.AppException;
+import com.ciw.backend.mail.MailSender;
 import com.ciw.backend.payload.MapResponseWithoutPage;
 import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.calendar.CalendarPart;
@@ -14,9 +16,7 @@ import com.ciw.backend.payload.calendar.ShiftType;
 import com.ciw.backend.payload.unit.UnitWithIdAndNameResponse;
 import com.ciw.backend.payload.unitshift.*;
 import com.ciw.backend.payload.user.SimpleUserResponse;
-import com.ciw.backend.repository.UnitRepository;
-import com.ciw.backend.repository.UnitShiftAbsentRepository;
-import com.ciw.backend.repository.UnitShiftRepository;
+import com.ciw.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -29,21 +29,28 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-@Service @RequiredArgsConstructor public class UnitShiftService {
+@Service
+@RequiredArgsConstructor
+public class UnitShiftService {
 	private final UnitShiftRepository unitShiftRepository;
 	private final UnitShiftAbsentRepository unitShiftAbsentRepository;
 	private final UnitRepository unitRepository;
+	private final UserRepository userRepository;
+	private final NotificationRepository notificationRepository;
+	private final MailSender mailSender;
 
-	@Transactional public UnitShiftResponse fetchShiftByWeek(Long unitId) {
-		Common.findUnitById(unitId, unitRepository);
+	@Transactional
+	public UnitShiftResponse fetchShiftByWeek(Long unitId) {
+		Unit unit = Common.findUnitById(unitId, unitRepository);
+		Common.checkAdminOrInUnit(userRepository, unitId);
 
 		List<UnitShift> shifts = unitShiftRepository.findByUnitId(unitId);
 
-		return mapToDTO(shifts);
+		return mapToDTO(shifts, unit);
 	}
 
-	@Transactional public MapResponseWithoutPage<UnitShiftDayResponse, UnitShiftDayFilter> fetchShiftByDay(
-			UnitShiftDayFilter filter) {
+	@Transactional
+	public MapResponseWithoutPage<UnitShiftDayResponse, UnitShiftDayFilter> fetchShiftByDay(UnitShiftDayFilter filter) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 		Date from;
@@ -55,9 +62,28 @@ import java.util.*;
 			throw new AppException(HttpStatus.BAD_REQUEST, Message.Calendar.DATE_VALIDATE);
 		}
 
-		List<UnitShiftAbsent> absents = unitShiftAbsentRepository.findByDateBetween(from, to);
+		List<UnitShiftAbsent> absents;
+		List<UnitShift> shifts;
 
-		List<UnitShift> shifts = unitShiftRepository.findAll();
+		User curr = Common.findCurrUser(userRepository);
+
+		if (filter.getUnitIds() == null || filter.getUnitIds().isEmpty()) {
+			if (curr.getEmail().equals(ApplicationConst.ADMIN_EMAIL)) {
+				absents = unitShiftAbsentRepository.findByDateBetween(from, to);
+				shifts  = unitShiftRepository.findAll();
+			} else {
+				Unit unit = curr.getUnit();
+				absents = unitShiftAbsentRepository.findByDateBetweenAndUnitIdEqual(from, to, unit.getId());
+				shifts  = unitShiftRepository.findByUnitId(unit.getId());
+			}
+		} else {
+			if (!curr.getEmail().equals(ApplicationConst.ADMIN_EMAIL)) {
+				throw new AppException(HttpStatus.BAD_REQUEST, Message.USER_NOT_HAVE_FEATURE);
+			}
+
+			absents = unitShiftAbsentRepository.findByDateBetweenAndUnitIdInList(from, to, filter.getUnitIds());
+			shifts  = unitShiftRepository.findAllByUnitIdIn(filter.getUnitIds());
+		}
 
 		return MapResponseWithoutPage.<UnitShiftDayResponse, UnitShiftDayFilter>builder()
 									 .data(mapToDTO(filter.getFrom(), filter.getTo(), shifts, absents))
@@ -74,10 +100,9 @@ import java.util.*;
 
 		Map<String, UnitShiftDayResponse> res = new HashMap<>();
 		for (String s : shiftMap.keySet()) {
-			res.put(s, getUnitShiftDayDetailResponse(
-					shiftMap.get(s).stream().toList(),
-					absentMap.getOrDefault(s, new ArrayList<>()).stream().toList()
-			));
+			res.put(s,
+					getUnitShiftDayDetailResponse(shiftMap.get(s).stream().toList(),
+												  absentMap.getOrDefault(s, new ArrayList<>()).stream().toList()));
 		}
 
 		return res;
@@ -99,6 +124,8 @@ import java.util.*;
 			}
 
 			res.put(formatter.format(start), shiftMap.get(dayOfWeek));
+
+			start = start.plusDays(1);
 		}
 
 		return res;
@@ -143,8 +170,7 @@ import java.util.*;
 		return res;
 	}
 
-	private UnitShiftDayResponse getUnitShiftDayDetailResponse(List<UnitShift> shifts,
-															   List<UnitShiftAbsent> absents) {
+	private UnitShiftDayResponse getUnitShiftDayDetailResponse(List<UnitShift> shifts, List<UnitShiftAbsent> absents) {
 		Map<ShiftType, Map<Long, UnitShiftDayDetailResponse>> map = new HashMap<>();
 
 		for (UnitShift shift : shifts) {
@@ -161,8 +187,8 @@ import java.util.*;
 		}
 
 		return UnitShiftDayResponse.builder()
-								   .day(map.get(ShiftType.DAY).values().stream().toList())
-								   .night(map.get(ShiftType.NIGHT).values().stream().toList())
+								   .day(map.getOrDefault(ShiftType.DAY, new HashMap<>()).values().stream().toList())
+								   .night(map.getOrDefault(ShiftType.NIGHT, new HashMap<>()).values().stream().toList())
 								   .build();
 	}
 
@@ -181,8 +207,7 @@ import java.util.*;
 		}
 	}
 
-	private void mappingToShiftType(Map<ShiftType, Map<Long, UnitShiftDayDetailResponse>> map,
-									UnitShiftAbsent absent) {
+	private void mappingToShiftType(Map<ShiftType, Map<Long, UnitShiftDayDetailResponse>> map, UnitShiftAbsent absent) {
 		if (map.containsKey(absent.getShiftType())) {
 			Map<Long, UnitShiftDayDetailResponse> shiftMap = map.get(absent.getShiftType());
 			if (shiftMap.containsKey(absent.getUnit().getId())) {
@@ -190,28 +215,26 @@ import java.util.*;
 				detail.setAbsent(mapToDTO(absent));
 			} else {
 				UnitShiftDayDetailResponse detail = UnitShiftDayDetailResponse.builder()
-																			  .unit(mapToDTO(
-																					  absent.getUnit()))
-																			  .absent(mapToDTO(
-																					  absent))
+																			  .unit(mapToDTO(absent.getUnit()))
+																			  .absent(mapToDTO(absent))
 																			  .build();
 				shiftMap.put(absent.getUnit().getId(), detail);
 			}
 		} else {
 			Map<Long, UnitShiftDayDetailResponse> shiftMap = new HashMap<>();
 			UnitShiftDayDetailResponse detail = UnitShiftDayDetailResponse.builder()
-																		  .unit(mapToDTO(
-																				  absent.getUnit()))
-																		  .absent(mapToDTO(
-																				  absent))
+																		  .unit(mapToDTO(absent.getUnit()))
+																		  .absent(mapToDTO(absent))
 																		  .build();
 			shiftMap.put(absent.getUnit().getId(), detail);
 			map.put(absent.getShiftType(), shiftMap);
 		}
 	}
 
-	@Transactional public UnitShiftResponse changeShift(Long unitId, ChangeUnitShiftRequest request) {
+	@Transactional
+	public UnitShiftResponse changeShift(Long unitId, ChangeUnitShiftRequest request) {
 		Unit unit = Common.findUnitById(unitId, unitRepository);
+		Common.checkAdminOrManager(userRepository, unit.getManagerId());
 
 		List<UnitShift> unitShifts = new ArrayList<>();
 		List<DayOfWeek> days = Arrays.stream(DayOfWeek.values()).toList();
@@ -227,11 +250,26 @@ import java.util.*;
 									.build());
 		}
 
-		return mapToDTO(unitShiftRepository.saveAll(unitShifts));
+		UnitShiftResponse response = mapToDTO(unitShiftRepository.saveAll(unitShifts), unit);
+
+		List<User> staffs = userRepository.findByUnitIdAndNotDeleted(unitId);
+		User manager = Common.findUserById(unit.getManagerId(), userRepository);
+		Common.sendNotification(notificationRepository,
+								mailSender,
+								staffs,
+								manager,
+								"Lịch phòng ban đã có sự thay đổi",
+								String.format(
+										"Lịch phòng ban %s hàng tuần đã bị thay đổi. Nếu có sự nhầm lẫn, xin hãy liên hệ lại với chúng tôi.",
+										unit.getName()));
+
+		return response;
 	}
 
-	@Transactional public SimpleResponse absentUnitShift(Long unitId, AbsentUnitShiftRequest request) {
+	@Transactional
+	public SimpleResponse absentUnitShift(Long unitId, AbsentUnitShiftRequest request) {
 		Unit unit = Common.findUnitById(unitId, unitRepository);
+		Common.checkAdminOrManager(userRepository, unit.getManagerId());
 
 		List<CalendarPart> calendarParts = Common.generateCalendarPart(request.getFrom(), request.getTo());
 
@@ -245,24 +283,39 @@ import java.util.*;
 
 		unitShiftAbsentRepository.saveAll(absents);
 
+		List<User> staffs = userRepository.findByUnitIdAndNotDeleted(unitId);
+		User manager = Common.findUserById(unit.getManagerId(), userRepository);
+		Common.sendNotification(notificationRepository,
+								mailSender,
+								staffs,
+								manager,
+								"Lịch phòng ban đã có sự thay đổi",
+								String.format(
+										"Lịch phòng ban %s đã bị thay đổi, nhân viên sẽ được nghỉ vào buổi %s ngày %s đến hết buổi %s vào ngày %s. Nếu có sự nhầm lẫn, xin hãy liên hệ lại với chúng tôi.",
+										unit.getName(),
+										request.getFrom().getShiftType() == ShiftType.DAY ? "sáng" : "tối",
+										request.getFrom().getDate(),
+										request.getTo().getShiftType() == ShiftType.DAY ? "sáng" : "tối",
+										request.getTo().getDate()));
+
 		return new SimpleResponse();
 	}
 
-	private UnitShiftResponse mapToDTO(List<UnitShift> shiftEntities) {
-		if (shiftEntities.stream()
-						 .anyMatch(shift -> !shift.getUnit().getId().equals(shiftEntities.get(0).getUnit().getId()))) {
+	private UnitShiftResponse mapToDTO(List<UnitShift> shiftEntities, Unit unit) {
+		if (shiftEntities.stream().anyMatch(shift -> !shift.getUnit().getId().equals(unit.getId()))) {
 			throw new AppException(HttpStatus.INTERNAL_SERVER_ERROR, Message.COMMON_ERR);
 		}
 
 		Map<DayOfWeek, UnitShiftDetailResponse> shifts = new HashMap<>();
-		for (UnitShift shiftEntity : shiftEntities) {
-			shifts.put(shiftEntity.getDayOfWeek(),
-					   UnitShiftDetailResponse.builder()
-											  .isHasDayShift(shiftEntity.isHasDayShift())
-											  .isHasNightShift(shiftEntity.isHasNightShift())
-											  .build());
+		for (DayOfWeek value : DayOfWeek.values()) {
+			shifts.put(value, UnitShiftDetailResponse.builder().isHasDayShift(false).isHasNightShift(false).build());
 		}
-		return UnitShiftResponse.builder().unit(mapToDTO(shiftEntities.get(0).getUnit())).shifts(shifts).build();
+		for (UnitShift shiftEntity : shiftEntities) {
+			UnitShiftDetailResponse shiftDayDetail = shifts.get(shiftEntity.getDayOfWeek());
+			shiftDayDetail.setHasDayShift(shiftEntity.isHasDayShift());
+			shiftDayDetail.setHasNightShift(shiftEntity.isHasNightShift());
+		}
+		return UnitShiftResponse.builder().unit(mapToDTO(unit)).shifts(shifts).build();
 	}
 
 	private UnitWithIdAndNameResponse mapToDTO(Unit unit) {

@@ -8,8 +8,15 @@ import org.hibernate.validator.constraints.Length;
 
 @Data
 public class CreateResourceRequest {
-	@Schema(name = "name", example = "Micro 1")
-	@Length(min = 1, max = 50, message = Message.Resource.NAME_VALIDATE)
+	@Schema(
+			name = "name",
+			example = "Micro 1"
+	)
+	@Length(
+			min = 1,
+			max = 50,
+			message = Message.Resource.NAME_VALIDATE
+	)
 	@NotNull(message = Message.Resource.NAME_VALIDATE)
 	private String name;
 }

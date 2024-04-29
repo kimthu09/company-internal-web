@@ -11,7 +11,10 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CreateNotificationForListStaffRequest extends CreateNotificationForAllRequest {
-	@Schema(name = "receivers", example = "[1, 2]")
+	@Schema(
+			name = "receivers",
+			example = "[1, 2]"
+	)
 	@NotNull(message = Message.Notification.RECEIVERS_VALIDATE)
 	private List<Long> receivers;
 }

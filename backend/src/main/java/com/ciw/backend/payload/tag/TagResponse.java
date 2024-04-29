@@ -11,11 +11,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class TagResponse {
-	@Schema(name = "id", example = "1")
+	@Schema(
+			name = "id",
+			example = "1"
+	)
 	private Long id;
-	@Schema(name = "name", example = "Sự kiện")
+	@Schema(
+			name = "name",
+			example = "Sự kiện"
+	)
 	private String name;
-	@Schema(name = "numberPost", example = "0")
+	@Schema(
+			name = "numberPost",
+			example = "0"
+	)
 	private int numberPost;
 }
 

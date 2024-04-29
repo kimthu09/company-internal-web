@@ -14,10 +14,16 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class SimpleUnitWithFeatureResponse {
-	@Schema(name = "id", example = "1")
+	@Schema(
+			name = "id",
+			example = "1"
+	)
 	private Long id;
 
-	@Schema(name = "name", example = "Tên phòng ban")
+	@Schema(
+			name = "name",
+			example = "Tên phòng ban"
+	)
 	private String name;
 
 	@Schema(name = "features")

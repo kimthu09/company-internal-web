@@ -14,14 +14,20 @@ import org.hibernate.validator.constraints.Length;
 @Entity
 @Table(
 		name = "feature",
-		uniqueConstraints = {@UniqueConstraint(columnNames = {"name"}, name = "Tên")}
+		uniqueConstraints = {@UniqueConstraint(
+				columnNames = {"name"},
+				name = "Tên"
+		)}
 )
 public class Feature {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false, unique = true)
+	@Column(
+			nullable = false,
+			unique = true
+	)
 	@Length(max = 32)
 	private String code;
 

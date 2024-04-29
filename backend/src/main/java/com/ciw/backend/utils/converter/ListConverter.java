@@ -18,7 +18,8 @@ import java.util.List;
 public class ListConverter<T> implements AttributeConverter<List<T>, String> {
 	private final ObjectMapper objectMapper;
 
-	@Override public String convertToDatabaseColumn(List<T> ts) {
+	@Override
+	public String convertToDatabaseColumn(List<T> ts) {
 		try {
 			return objectMapper.writeValueAsString(ts);
 		} catch (JsonProcessingException e) {
@@ -26,7 +27,8 @@ public class ListConverter<T> implements AttributeConverter<List<T>, String> {
 		}
 	}
 
-	@Override public List<T> convertToEntityAttribute(String string) {
+	@Override
+	public List<T> convertToEntityAttribute(String string) {
 		try {
 			return objectMapper.readValue(string,
 										  objectMapper.getTypeFactory().constructCollectionType(List.class, getType()));

@@ -11,12 +11,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class FeatureResponse {
-	@Schema(name = "id", example = "1")
+	@Schema(
+			name = "id",
+			example = "1"
+	)
 	private Long id;
 
-	@Schema(name = "name", example = "Tên chức năng")
+	@Schema(
+			name = "name",
+			example = "Tên chức năng"
+	)
 	private String name;
 
-	@Schema(name = "has", example = "false")
+	@Schema(
+			name = "has",
+			example = "false"
+	)
 	private boolean has;
 }

@@ -5,6 +5,7 @@ import com.ciw.backend.entity.Resource;
 import com.ciw.backend.entity.ResourceCalendar;
 import com.ciw.backend.entity.User;
 import com.ciw.backend.exception.AppException;
+import com.ciw.backend.mail.MailSender;
 import com.ciw.backend.payload.ListResponse;
 import com.ciw.backend.payload.MapResponseWithoutPage;
 import com.ciw.backend.payload.SimpleResponse;
@@ -14,6 +15,7 @@ import com.ciw.backend.payload.page.AppPageRequest;
 import com.ciw.backend.payload.page.AppPageResponse;
 import com.ciw.backend.payload.resource.*;
 import com.ciw.backend.payload.user.SimpleUserResponse;
+import com.ciw.backend.repository.NotificationRepository;
 import com.ciw.backend.repository.ResourceCalendarRepository;
 import com.ciw.backend.repository.ResourceRepository;
 import com.ciw.backend.repository.UserRepository;
@@ -42,6 +44,8 @@ public class ResourceService {
 	private final ResourceRepository resourceRepository;
 	private final ResourceCalendarRepository resourceCalendarRepository;
 	private final UserRepository userRepository;
+	private final NotificationRepository notificationRepository;
+	private final MailSender mailSender;
 
 	@Transactional
 	public ListResponse<ResourceResponse, ResourceFilter> getResources(AppPageRequest page,
@@ -97,7 +101,8 @@ public class ResourceService {
 		return mapToDTO(savedResource);
 	}
 
-	@Transactional public SimpleResponse deleteResource(Long resourceId) {
+	@Transactional
+	public SimpleResponse deleteResource(Long resourceId) {
 		Resource resource = Common.findResourceById(resourceId, resourceRepository);
 
 		if (resourceCalendarRepository.existsByResourceIdAndDateAfter(resourceId, new Date())) {
@@ -143,7 +148,8 @@ public class ResourceService {
 		return spec;
 	}
 
-	@Transactional public SimpleResponse bookResource(Long id, BookResourceRequest request) {
+	@Transactional
+	public SimpleResponse bookResource(Long id, BookResourceRequest request) {
 		Resource resource = Common.findResourceById(id, resourceRepository);
 
 		User bookedBy = Common.findUserById(request.getBookedBy(), userRepository);
@@ -165,13 +171,35 @@ public class ResourceService {
 
 		resourceCalendarRepository.saveAll(calendars);
 
+		Common.sendNotification(notificationRepository,
+								mailSender,
+								bookedBy,
+								bookedBy,
+								"Tài nguyên đã được đặt",
+								String.format(
+										"Bạn đã đặt tài nguyên %s thành công.\nNếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
+										resource.getName()));
+
 		return new SimpleResponse();
 	}
 
-	@Transactional public SimpleResponse deleteResourceCalendar(Long bookId) {
+	@Transactional
+	public SimpleResponse deleteResourceCalendar(Long bookId) {
 		ResourceCalendar resourceCalendar = Common.findResourceCalendarById(bookId, resourceCalendarRepository);
 
 		resourceCalendarRepository.delete(resourceCalendar);
+
+		User sender = Common.findCurrUser(userRepository);
+
+		Common.sendNotification(notificationRepository,
+								mailSender,
+								resourceCalendar.getBookedBy(),
+								sender,
+								"Lịch tài nguyên của bạn có sự thay đổi",
+								String.format(
+										"Lịch tài nguyên %s vào buổi %s đã bị xóa.\nNếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
+										resourceCalendar.getResource().getName(),
+										resourceCalendar.getShiftType() == ShiftType.DAY ? "sáng" : "tối"));
 
 		return new SimpleResponse();
 	}

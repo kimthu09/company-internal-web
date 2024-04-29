@@ -16,7 +16,10 @@ import java.util.Set;
 @Entity
 @Table(
 		name = "unit",
-		uniqueConstraints = {@UniqueConstraint(columnNames = {"name"}, name = "Tên")}
+		uniqueConstraints = {@UniqueConstraint(
+				columnNames = {"name"},
+				name = "Tên"
+		)}
 )
 public class Unit {
 	@Id
@@ -24,17 +27,22 @@ public class Unit {
 	private Long id;
 
 	@Column(nullable = false)
-	@Length(min = 1, max = 100)
+	@Length(
+			min = 1,
+			max = 100
+	)
 	private String name;
 
 	@Column(name = "manager_id")
 	private Long managerId;
 
-	@OneToMany(fetch = FetchType.EAGER,
-			   mappedBy = "unit",
-			   cascade = CascadeType.ALL,
-			   orphanRemoval = true,
-			   targetEntity = UnitFeature.class)
+	@OneToMany(
+			fetch = FetchType.EAGER,
+			mappedBy = "unit",
+			cascade = CascadeType.ALL,
+			orphanRemoval = true,
+			targetEntity = UnitFeature.class
+	)
 	private Set<UnitFeature> unitFeatures;
 
 	@Column(nullable = false)

@@ -16,17 +16,32 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class PostFilter {
-	@Schema(name = "title", example = "Tiêu đề bài post")
-	@Length(max = 100, message = Message.Post.POST_TITLE_FILTER_VALIDATE)
+	@Schema(
+			name = "title",
+			example = "Tiêu đề bài post"
+	)
+	@Length(
+			max = 100,
+			message = Message.Post.POST_TITLE_FILTER_VALIDATE
+	)
 	private String title;
 
-	@Schema(name = "updatedAtFrom", example = "2024-04-16 05:20:42")
+	@Schema(
+			name = "updatedAtFrom",
+			example = "2024-04-16 05:20:42"
+	)
 	private String updatedAtFrom;
 
-	@Schema(name = "updatedAtTo", example = "2024-04-16 05:20:42")
+	@Schema(
+			name = "updatedAtTo",
+			example = "2024-04-16 05:20:42"
+	)
 	private String updatedAtTo;
 
-	@Schema(name = "tags", example = "[\"1\", \"2\"]")
+	@Schema(
+			name = "tags",
+			example = "[\"1\", \"2\"]"
+	)
 	@JsonProperty("tags")
 	private List<String> tags;
 }

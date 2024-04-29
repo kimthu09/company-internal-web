@@ -17,7 +17,10 @@ import java.util.Date;
 @Table(
 		name = "unit_shift_absent",
 		uniqueConstraints = {
-				@UniqueConstraint(columnNames = {"date", "shift_type", "unit_id"}, name = "Bảng ghi")
+				@UniqueConstraint(
+						columnNames = {"date", "shift_type", "unit_id"},
+						name = "Bảng ghi"
+				)
 		}
 )
 @EntityListeners(AuditingEntityListener.class)
@@ -26,19 +29,32 @@ public class UnitShiftAbsent {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
-	@JoinColumn(name = "unit_id", nullable = false)
+	@ManyToOne(
+			targetEntity = Unit.class,
+			fetch = FetchType.LAZY
+	)
+	@JoinColumn(
+			name = "unit_id",
+			nullable = false
+	)
 	private Unit unit;
 
 	@Column(nullable = false)
 	private Date date;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "shift_type", nullable = false)
+	@Column(
+			name = "shift_type",
+			nullable = false
+	)
 	private ShiftType shiftType;
 
 	@ManyToOne
-	@JoinColumn(name = "created_by", nullable = false, updatable = false)
+	@JoinColumn(
+			name = "created_by",
+			nullable = false,
+			updatable = false
+	)
 	@CreatedBy
 	private User createdBy;
 }

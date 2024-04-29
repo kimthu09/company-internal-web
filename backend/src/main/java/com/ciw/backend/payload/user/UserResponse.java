@@ -13,28 +13,52 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class UserResponse {
-	@Schema(name = "id", example = "1")
+	@Schema(
+			name = "id",
+			example = "1"
+	)
 	private Long id;
 
-	@Schema(name = "email", example = "admin@gmail.com")
+	@Schema(
+			name = "email",
+			example = "admin@gmail.com"
+	)
 	private String email;
 
-	@Schema(name = "name", example = "Nguyễn Văn A")
+	@Schema(
+			name = "name",
+			example = "Nguyễn Văn A"
+	)
 	private String name;
 
-	@Schema(name = "phone", example = "0123456789")
+	@Schema(
+			name = "phone",
+			example = "0123456789"
+	)
 	private String phone;
 
-	@Schema(name = "dob", example = "12/12/2000")
+	@Schema(
+			name = "dob",
+			example = "12/12/2000"
+	)
 	private String dob;
 
-	@Schema(name = "address", example = "TPHCM")
+	@Schema(
+			name = "address",
+			example = "TPHCM"
+	)
 	private String address;
 
-	@Schema(name = "image", example = ApplicationConst.DEFAULT_AVATAR)
+	@Schema(
+			name = "image",
+			example = ApplicationConst.DEFAULT_AVATAR
+	)
 	private String image;
 
-	@Schema(name = "male", example = "true")
+	@Schema(
+			name = "male",
+			example = "true"
+	)
 	private boolean male;
 
 	@Schema(name = "unit")

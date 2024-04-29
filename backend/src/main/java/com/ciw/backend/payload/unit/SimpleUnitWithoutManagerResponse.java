@@ -11,12 +11,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class SimpleUnitWithoutManagerResponse {
-	@Schema(name = "id", example = "1")
+	@Schema(
+			name = "id",
+			example = "1"
+	)
 	private Long id;
 
-	@Schema(name = "name", example = "Tên phòng ban")
+	@Schema(
+			name = "name",
+			example = "Tên phòng ban"
+	)
 	private String name;
 
-	@Schema(name = "numberStaffs", example = "1")
+	@Schema(
+			name = "numberStaffs",
+			example = "1"
+	)
 	private int numberStaffs = 0;
 }

@@ -17,7 +17,10 @@ import java.util.Date;
 @Table(
 		name = "meeting_room_calendar",
 		uniqueConstraints = {
-				@UniqueConstraint(columnNames = {"date", "shift_type", "meeting_room_id"}, name = "Bảng ghi")
+				@UniqueConstraint(
+						columnNames = {"date", "shift_type", "meeting_room_id"},
+						name = "Bảng ghi"
+				)
 		}
 )
 @EntityListeners(AuditingEntityListener.class)
@@ -26,23 +29,41 @@ public class MeetingRoomCalendar {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "date", nullable = false)
+	@Column(
+			name = "date",
+			nullable = false
+	)
 	private Date date;
 
 	@ManyToOne
-	@JoinColumn(name = "booked_by", nullable = false, updatable = false)
+	@JoinColumn(
+			name = "booked_by",
+			nullable = false,
+			updatable = false
+	)
 	private User bookedBy;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "shift_type", nullable = false)
+	@Column(
+			name = "shift_type",
+			nullable = false
+	)
 	private ShiftType shiftType;
 
 	@ManyToOne
-	@JoinColumn(name = "meeting_room_id", nullable = false, updatable = false)
+	@JoinColumn(
+			name = "meeting_room_id",
+			nullable = false,
+			updatable = false
+	)
 	private MeetingRoom meetingRoom;
 
 	@ManyToOne
-	@JoinColumn(name = "created_by", nullable = false, updatable = false)
+	@JoinColumn(
+			name = "created_by",
+			nullable = false,
+			updatable = false
+	)
 	@CreatedBy
 	private User createdBy;
 }

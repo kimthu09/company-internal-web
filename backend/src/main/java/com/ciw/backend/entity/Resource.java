@@ -12,7 +12,10 @@ import org.hibernate.validator.constraints.Length;
 @Entity
 @Table(
 		name = "resource",
-		uniqueConstraints = {@UniqueConstraint(columnNames = {"name"}, name = "Tên")}
+		uniqueConstraints = {@UniqueConstraint(
+				columnNames = {"name"},
+				name = "Tên"
+		)}
 )
 public class Resource {
 	@Id
@@ -20,6 +23,9 @@ public class Resource {
 	private Long id;
 
 	@Column(nullable = false)
-	@Length(min = 1, max = 50)
+	@Length(
+			min = 1,
+			max = 50
+	)
 	private String name;
 }

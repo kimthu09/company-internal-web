@@ -17,11 +17,17 @@ import lombok.NoArgsConstructor;
 )
 @IdClass(UnitFeatureId.class)
 public class UnitFeature {
-	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Unit.class)
+	@ManyToOne(
+			fetch = FetchType.LAZY,
+			targetEntity = Unit.class
+	)
 	@Id
 	private Unit unit;
 
-	@ManyToOne(fetch = FetchType.EAGER, targetEntity = Feature.class)
+	@ManyToOne(
+			fetch = FetchType.EAGER,
+			targetEntity = Feature.class
+	)
 	@Id
 	private Feature feature;
 }

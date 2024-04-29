@@ -16,8 +16,14 @@ import lombok.*;
 )
 @IdClass(UnitShiftId.class)
 public class UnitShift {
-	@ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
-	@JoinColumn(name = "unit_id", nullable = false)
+	@ManyToOne(
+			targetEntity = Unit.class,
+			fetch = FetchType.LAZY
+	)
+	@JoinColumn(
+			name = "unit_id",
+			nullable = false
+	)
 	@Id
 	private Unit unit;
 
@@ -26,9 +32,15 @@ public class UnitShift {
 	@Column(name = "day_of_week")
 	private DayOfWeek dayOfWeek;
 
-	@Column(name = "is_has_day_shift", nullable = false)
+	@Column(
+			name = "is_has_day_shift",
+			nullable = false
+	)
 	private boolean isHasDayShift = false;
 
-	@Column(name = "is_has_night_shift", nullable = false)
+	@Column(
+			name = "is_has_night_shift",
+			nullable = false
+	)
 	private boolean isHasNightShift = false;
 }

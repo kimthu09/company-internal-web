@@ -15,7 +15,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmailRequest {
-	@Schema(name = "email", example = "iamzerorei@gmail.com")
+	@Schema(
+			name = "email",
+			example = "iamzerorei@gmail.com"
+	)
 	@Email(message = Message.EMAIL_VALIDATE)
 	@NotEmpty(message = Message.EMAIL_VALIDATE)
 	@NotNull(message = Message.EMAIL_VALIDATE)

@@ -23,7 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service @RequiredArgsConstructor public class NotificationService {
+@Service
+@RequiredArgsConstructor
+public class NotificationService {
 	private final NotificationRepository notificationRepository;
 	private final UserRepository userRepository;
 	private final MailSender mailSender;
@@ -77,7 +79,8 @@ import java.util.List;
 		return spec;
 	}
 
-	@Transactional public NumberNotificationNotSeenResponse getNumberUnseenNotification() {
+	@Transactional
+	public NumberNotificationNotSeenResponse getNumberUnseenNotification() {
 		User currUser = Common.findCurrUser(userRepository);
 
 		return NumberNotificationNotSeenResponse.builder()
@@ -86,59 +89,52 @@ import java.util.List;
 												.build();
 	}
 
-	@Transactional public SimpleListResponse<NotificationResponse> getUnseenNotifications() {
+	@Transactional
+	public SimpleListResponse<NotificationResponse> getUnseenNotifications() {
 		User currUser = Common.findCurrUser(userRepository);
 		List<Notification> notifications = notificationRepository.findAllUnseenByFromUserId(currUser.getId());
 
 		return new SimpleListResponse<>(notifications.stream().map(this::mapToDTO).toList());
 	}
 
-	@Transactional public SimpleResponse sendNotificationForAllStaff(CreateNotificationForAllRequest request) {
+	@Transactional
+	public SimpleResponse sendNotificationForAllStaff(CreateNotificationForAllRequest request) {
 		User sender = Common.findCurrUser(userRepository);
 
 		List<User> receivers = userRepository.findAllNotDeleted();
 
-		return sendNotification(receivers, sender, request.getTitle(), request.getDescription());
+		return Common.sendNotification(notificationRepository,
+									   mailSender,
+									   receivers,
+									   sender,
+									   request.getTitle(),
+									   request.getDescription());
 	}
 
-	@Transactional public SimpleResponse sendNotificationForListStaff(CreateNotificationForListStaffRequest request) {
+	@Transactional
+	public SimpleResponse sendNotificationForListStaff(CreateNotificationForListStaffRequest request) {
 		User sender = Common.findCurrUser(userRepository);
 
 		List<User> receivers = userRepository.findByIdInAndNotDeletedAndIdNotEqual(request.getReceivers(),
 																				   sender.getId());
 
-		return sendNotification(receivers, sender, request.getTitle(), request.getDescription());
+		return Common.sendNotification(notificationRepository,
+									   mailSender,
+									   receivers,
+									   sender,
+									   request.getTitle(),
+									   request.getDescription());
 	}
 
-	private SimpleResponse sendNotification(List<User> receivers, User sender, String title, String description) {
-
-
-		List<Notification> notifications = receivers.stream()
-													.map(receiver -> Notification.builder()
-																				 .title(title)
-																				 .description(description)
-																				 .fromUser(sender)
-																				 .toUser(receiver)
-																				 .seen(false)
-																				 .build())
-													.toList();
-
-		notificationRepository.saveAll(notifications);
-
-		mailSender.sendEmail(title,
-							 description,
-							 receivers.stream().map(User::getEmail).toList());
-
-		return new SimpleResponse();
-	}
-
-	@Transactional public NotificationResponse seeNotification(Long notificationId) {
+	@Transactional
+	public NotificationResponse seeNotification(Long notificationId) {
 		Notification notification = Common.findNotificationById(notificationId, notificationRepository);
 		notification.setSeen(true);
 		return mapToDTO(notificationRepository.save(notification));
 	}
 
-	@Transactional public SimpleResponse seeAllNotification() {
+	@Transactional
+	public SimpleResponse seeAllNotification() {
 		User user = Common.findCurrUser(userRepository);
 		List<Notification> notifications = notificationRepository.findAllByFromUserId(user.getId());
 

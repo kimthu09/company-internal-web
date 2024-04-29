@@ -17,11 +17,21 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class CreateUnitRequest {
-	@Schema(name = "name", example = "Tên phòng ban")
-	@Length(min = 1, max = 100, message = Message.Unit.UNIT_NAME_VALIDATE)
+	@Schema(
+			name = "name",
+			example = "Tên phòng ban"
+	)
+	@Length(
+			min = 1,
+			max = 100,
+			message = Message.Unit.UNIT_NAME_VALIDATE
+	)
 	@NotNull(message = Message.Unit.UNIT_NAME_VALIDATE)
 	private String name;
 
-	@Schema(name = "features", example = "[0, 1]")
+	@Schema(
+			name = "features",
+			example = "[0, 1]"
+	)
 	private List<Long> features = new ArrayList<>();
 }

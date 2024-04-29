@@ -7,12 +7,21 @@ import lombok.Data;
 @Data
 @Builder
 public class MeetingRoomResponse {
-	@Schema(name = "id", example = "1")
+	@Schema(
+			name = "id",
+			example = "1"
+	)
 	private Long id;
 
-	@Schema(name = "name", example = "Phòng họp A2")
+	@Schema(
+			name = "name",
+			example = "Phòng họp A2"
+	)
 	private String name;
 
-	@Schema(name = "location", example = "A2.3")
+	@Schema(
+			name = "location",
+			example = "A2.3"
+	)
 	private String location;
 }

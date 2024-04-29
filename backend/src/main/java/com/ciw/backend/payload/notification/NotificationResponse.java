@@ -10,13 +10,22 @@ import java.util.Date;
 @Data
 @Builder
 public class NotificationResponse {
-	@Schema(name = "id", example = "1")
+	@Schema(
+			name = "id",
+			example = "1"
+	)
 	private Long id;
 
-	@Schema(name = "title", example = "Tiêu đề bài viết")
+	@Schema(
+			name = "title",
+			example = "Tiêu đề bài viết"
+	)
 	private String title;
 
-	@Schema(name = "description", example = "Mô tả bài viết")
+	@Schema(
+			name = "description",
+			example = "Mô tả bài viết"
+	)
 	private String description;
 
 	@Schema(name = "from")

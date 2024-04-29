@@ -15,10 +15,16 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class UnitResponse {
-	@Schema(name = "id", example = "0")
+	@Schema(
+			name = "id",
+			example = "0"
+	)
 	private Long id;
 
-	@Schema(name = "name", example = "Tên phòng ban")
+	@Schema(
+			name = "name",
+			example = "Tên phòng ban"
+	)
 	private String name;
 
 	@Schema(name = "manager")
@@ -30,6 +36,9 @@ public class UnitResponse {
 	@Schema(name = "features")
 	private List<FeatureResponse> features;
 
-	@Schema(name = "numberStaffs", example = "1")
+	@Schema(
+			name = "numberStaffs",
+			example = "1"
+	)
 	private int numberStaffs = 0;
 }
