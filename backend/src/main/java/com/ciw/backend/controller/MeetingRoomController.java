@@ -119,6 +119,24 @@ public class MeetingRoomController {
 		return new ResponseEntity<>(meetingRoomService.getMeetingRoomCalendar(filter), HttpStatus.OK);
 	}
 
+	@GetMapping("/books/day/unbook")
+	@SecurityRequirement(
+			name = "Bearer Authentication"
+	)
+	@Operation(
+			summary = "Fetch unbook meeting room by date",
+			description = "Fetch unbook meeting room from database by date"
+	)
+	@ApiResponse(
+			responseCode = "200",
+			description = "Http Status is 200 OK"
+	)
+	@PreAuthorize("hasAnyAuthority('ADMIN')")
+	public ResponseEntity<GetUnbookMeetingRoomResponse> getUnbookMeetingRoomInSpecificDate(
+			@Valid GetUnbookMeetingRoomRequest request) {
+		return new ResponseEntity<>(meetingRoomService.getUnbookMeetingRoom(request), HttpStatus.OK);
+	}
+
 	@PostMapping("/books/{id}")
 	@SecurityRequirement(
 			name = "Bearer Authentication"

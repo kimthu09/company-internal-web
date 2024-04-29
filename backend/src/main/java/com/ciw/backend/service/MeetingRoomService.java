@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -80,6 +81,40 @@ public class MeetingRoomService {
 			spec = spec.and(MeetingRoomSpecs.hasLocation(filter.getLocation()));
 		}
 		return spec;
+	}
+
+	@Transactional
+	public GetUnbookMeetingRoomResponse getUnbookMeetingRoom(GetUnbookMeetingRoomRequest request) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		Date date;
+		try {
+			date = dateFormat.parse(request.getDate());
+		} catch (ParseException e) {
+			throw new AppException(HttpStatus.BAD_REQUEST, Message.Calendar.DATE_VALIDATE);
+		}
+
+		List<MeetingRoomCalendar> bookedMeetingRoom = meetingRoomCalendarRepository.getByDate(date);
+		List<Long> bookedIdsInDay = bookedMeetingRoom.stream()
+													 .filter(book -> book.getShiftType() == ShiftType.DAY)
+													 .map(book -> book.getMeetingRoom().getId())
+													 .toList();
+		List<Long> bookedIdsInNight = bookedMeetingRoom.stream()
+													   .filter(book -> book.getShiftType() == ShiftType.NIGHT)
+													   .map(book -> book.getMeetingRoom().getId())
+													   .toList();
+
+		List<MeetingRoom> meetingRooms = meetingRoomRepository.findAll();
+		return GetUnbookMeetingRoomResponse.builder()
+										   .day(meetingRooms.stream()
+															.filter(meetingRoom -> !bookedIdsInDay.contains(meetingRoom.getId()))
+															.map(this::mapToDTO)
+															.toList())
+										   .night(meetingRooms.stream()
+															  .filter(meetingRoom -> !bookedIdsInNight.contains(
+																	  meetingRoom.getId()))
+															  .map(this::mapToDTO)
+															  .toList())
+										   .build();
 	}
 
 	@Transactional

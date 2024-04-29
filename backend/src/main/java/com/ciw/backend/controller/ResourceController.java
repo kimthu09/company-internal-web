@@ -119,6 +119,24 @@ public class ResourceController {
 		return new ResponseEntity<>(resourceService.getResourceCalendar(filter), HttpStatus.OK);
 	}
 
+	@GetMapping("/books/day/unbook")
+	@SecurityRequirement(
+			name = "Bearer Authentication"
+	)
+	@Operation(
+			summary = "Fetch unbook resource by date",
+			description = "Fetch unbook resource from database by date"
+	)
+	@ApiResponse(
+			responseCode = "200",
+			description = "Http Status is 200 OK"
+	)
+	@PreAuthorize("hasAnyAuthority('ADMIN')")
+	public ResponseEntity<GetUnbookResourceResponse> getUnbookResourceInSpecificDate(
+			@Valid GetUnbookResourceRequest request) {
+		return new ResponseEntity<>(resourceService.getUnbookResource(request), HttpStatus.OK);
+	}
+
 	@PostMapping("/books/{id}")
 	@SecurityRequirement(
 			name = "Bearer Authentication"
