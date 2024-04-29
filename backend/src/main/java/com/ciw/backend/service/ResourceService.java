@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -79,6 +80,39 @@ public class ResourceService {
 			spec = ResourceSpecs.hasName(filter.getName());
 		}
 		return spec;
+	}
+
+	@Transactional
+	public GetUnbookResourceResponse getUnbookResource(GetUnbookResourceRequest request) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		Date date;
+		try {
+			date = dateFormat.parse(request.getDate());
+		} catch (ParseException e) {
+			throw new AppException(HttpStatus.BAD_REQUEST, Message.Calendar.DATE_VALIDATE);
+		}
+
+		List<ResourceCalendar> bookedResource = resourceCalendarRepository.getByDate(date);
+		List<Long> bookedIdsInDay = bookedResource.stream()
+												  .filter(book -> book.getShiftType() == ShiftType.DAY)
+												  .map(book -> book.getResource().getId())
+												  .toList();
+		List<Long> bookedIdsInNight = bookedResource.stream()
+													.filter(book -> book.getShiftType() == ShiftType.NIGHT)
+													.map(book -> book.getResource().getId())
+													.toList();
+
+		List<Resource> resources = resourceRepository.findAll();
+		return GetUnbookResourceResponse.builder()
+										.day(resources.stream()
+													  .filter(resource -> !bookedIdsInDay.contains(resource.getId()))
+													  .map(this::mapToDTO)
+													  .toList())
+										.night(resources.stream()
+														.filter(resource -> !bookedIdsInNight.contains(resource.getId()))
+														.map(this::mapToDTO)
+														.toList())
+										.build();
 	}
 
 	@Transactional
@@ -136,8 +170,8 @@ public class ResourceService {
 		if (filter.getCreatedBy() != null) {
 			spec = spec.and(ResourceCalendarSpecs.isCreatedBy(filter.getCreatedBy()));
 		}
-		if (filter.getMeetingRoom() != null) {
-			spec = spec.and(ResourceCalendarSpecs.hasMeetingRoom(filter.getMeetingRoom()));
+		if (filter.getResource() != null) {
+			spec = spec.and(ResourceCalendarSpecs.hasMeetingRoom(filter.getResource()));
 		}
 		if (filter.getFrom() != null) {
 			spec = spec.and(ResourceCalendarSpecs.isDateBookedAtAfter(filter.getFrom()));

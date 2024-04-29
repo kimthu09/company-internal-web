@@ -20,10 +20,10 @@ public class ResourceCalendarFilter {
 	private String createdBy;
 
 	@Schema(
-			name = "meetingRoom",
+			name = "resource",
 			example = "1"
 	)
-	private String meetingRoom;
+	private String resource;
 
 	@Schema(
 			name = "from",
