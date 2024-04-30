@@ -8,6 +8,7 @@ import com.ciw.backend.exception.AppException;
 import com.ciw.backend.mail.MailSender;
 import com.ciw.backend.payload.ListResponse;
 import com.ciw.backend.payload.MapResponseWithoutPage;
+import com.ciw.backend.payload.SimpleListResponse;
 import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.calendar.CalendarPart;
 import com.ciw.backend.payload.calendar.ShiftType;
@@ -115,6 +116,46 @@ public class MeetingRoomService {
 															  .map(this::mapToDTO)
 															  .toList())
 										   .build();
+	}
+
+	@Transactional
+	public SimpleListResponse<MeetingRoomResponse> getUnbookMeetingRoomByDateRange(GetUnbookMeetingRoomDateRangeRequest request) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		Date from;
+		Date to;
+		try {
+			from = dateFormat.parse(request.getFrom().getDate());
+			to   = dateFormat.parse(request.getTo().getDate());
+		} catch (ParseException e) {
+			throw new AppException(HttpStatus.BAD_REQUEST, Message.Calendar.DATE_VALIDATE);
+		}
+
+		List<MeetingRoomCalendar> bookedMeetingRoom = meetingRoomCalendarRepository.getByDateBetween(from, to);
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		List<Long> bookedIds = bookedMeetingRoom.stream().filter(book -> {
+			LocalDate localDate = book.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			if (localDate.format(formatter).equals(request.getFrom().getDate())) {
+				if (book.getShiftType() == ShiftType.NIGHT) {
+					return true;
+				}
+				return request.getFrom().getShiftType() == ShiftType.DAY;
+			} else if (localDate.format(formatter).equals(request.getTo().getDate())) {
+				if (book.getShiftType() == ShiftType.DAY) {
+					return true;
+				}
+				return request.getTo().getShiftType() == ShiftType.NIGHT;
+			}
+			return true;
+		}).map(book -> book.getMeetingRoom().getId()).toList();
+
+		List<MeetingRoom> meetingRooms = meetingRoomRepository.findAll();
+
+		List<MeetingRoomResponse> res = meetingRooms.stream()
+													.filter(meetingRoom -> !bookedIds.contains(meetingRoom.getId()))
+													.map(this::mapToDTO)
+													.toList();
+		return new SimpleListResponse<>(res);
 	}
 
 	@Transactional
