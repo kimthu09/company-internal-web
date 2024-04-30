@@ -8,6 +8,7 @@ import com.ciw.backend.exception.AppException;
 import com.ciw.backend.mail.MailSender;
 import com.ciw.backend.payload.ListResponse;
 import com.ciw.backend.payload.MapResponseWithoutPage;
+import com.ciw.backend.payload.SimpleListResponse;
 import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.calendar.CalendarPart;
 import com.ciw.backend.payload.calendar.ShiftType;
@@ -49,11 +50,8 @@ public class ResourceService {
 	private final MailSender mailSender;
 
 	@Transactional
-	public ListResponse<ResourceResponse, ResourceFilter> getResources(AppPageRequest page,
-																	   ResourceFilter filter) {
-		Pageable pageable = PageRequest.of(page.getPage() - 1,
-										   page.getLimit(),
-										   Sort.by(Sort.Direction.ASC, "name"));
+	public ListResponse<ResourceResponse, ResourceFilter> getResources(AppPageRequest page, ResourceFilter filter) {
+		Pageable pageable = PageRequest.of(page.getPage() - 1, page.getLimit(), Sort.by(Sort.Direction.ASC, "name"));
 		Specification<Resource> spec = filterResources(filter);
 
 		Page<Resource> ResourcePage = resourceRepository.findAll(spec, pageable);
@@ -83,7 +81,7 @@ public class ResourceService {
 	}
 
 	@Transactional
-	public GetUnbookResourceResponse getUnbookResource(GetUnbookResourceRequest request) {
+	public GetUnbookResourceResponse getUnbookResourceBySpecificDate(GetUnbookResourceRequest request) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		Date date;
 		try {
@@ -113,6 +111,46 @@ public class ResourceService {
 														.map(this::mapToDTO)
 														.toList())
 										.build();
+	}
+
+	@Transactional
+	public SimpleListResponse<ResourceResponse> getUnbookResourceByDateRange(GetUnbookResourceDateRangeRequest request) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		Date from;
+		Date to;
+		try {
+			from = dateFormat.parse(request.getFrom().getDate());
+			to   = dateFormat.parse(request.getTo().getDate());
+		} catch (ParseException e) {
+			throw new AppException(HttpStatus.BAD_REQUEST, Message.Calendar.DATE_VALIDATE);
+		}
+
+		List<ResourceCalendar> bookedResource = resourceCalendarRepository.getByDateBetween(from, to);
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		List<Long> bookedIds = bookedResource.stream().filter(book -> {
+			LocalDate localDate = book.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			if (localDate.format(formatter).equals(request.getFrom().getDate())) {
+				if (book.getShiftType() == ShiftType.NIGHT) {
+					return true;
+				}
+				return request.getFrom().getShiftType() == ShiftType.DAY;
+			} else if (localDate.format(formatter).equals(request.getTo().getDate())) {
+				if (book.getShiftType() == ShiftType.DAY) {
+					return true;
+				}
+				return request.getTo().getShiftType() == ShiftType.NIGHT;
+			}
+			return true;
+		}).map(book -> book.getResource().getId()).toList();
+
+		List<Resource> resources = resourceRepository.findAll();
+
+		List<ResourceResponse> res = resources.stream()
+											  .filter(resource -> !bookedIds.contains(resource.getId()))
+											  .map(this::mapToDTO)
+											  .toList();
+		return new SimpleListResponse<>(res);
 	}
 
 	@Transactional
@@ -291,10 +329,7 @@ public class ResourceService {
 				}
 			}
 
-			res.put(entry.getKey(), ResourceCalendarDayResponse.builder()
-															   .day(day)
-															   .night(night)
-															   .build());
+			res.put(entry.getKey(), ResourceCalendarDayResponse.builder().day(day).night(night).build());
 		}
 
 		return res;

@@ -2,6 +2,7 @@ package com.ciw.backend.controller;
 
 import com.ciw.backend.payload.ListResponse;
 import com.ciw.backend.payload.MapResponseWithoutPage;
+import com.ciw.backend.payload.SimpleListResponse;
 import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.page.AppPageRequest;
 import com.ciw.backend.payload.resource.*;
@@ -134,7 +135,25 @@ public class ResourceController {
 	@PreAuthorize("hasAnyAuthority('ADMIN')")
 	public ResponseEntity<GetUnbookResourceResponse> getUnbookResourceInSpecificDate(
 			@Valid GetUnbookResourceRequest request) {
-		return new ResponseEntity<>(resourceService.getUnbookResource(request), HttpStatus.OK);
+		return new ResponseEntity<>(resourceService.getUnbookResourceBySpecificDate(request), HttpStatus.OK);
+	}
+
+	@PostMapping("/books/day_range/unbook")
+	@SecurityRequirement(
+			name = "Bearer Authentication"
+	)
+	@Operation(
+			summary = "Fetch unbook resource by date range",
+			description = "Fetch unbook resource from database by date range"
+	)
+	@ApiResponse(
+			responseCode = "200",
+			description = "Http Status is 200 OK"
+	)
+	@PreAuthorize("hasAnyAuthority('ADMIN')")
+	public ResponseEntity<SimpleListResponse<ResourceResponse>> getUnbookResourceInDateRange(
+			@Valid @RequestBody GetUnbookResourceDateRangeRequest request) {
+		return new ResponseEntity<>(resourceService.getUnbookResourceByDateRange(request), HttpStatus.OK);
 	}
 
 	@PostMapping("/books/{id}")

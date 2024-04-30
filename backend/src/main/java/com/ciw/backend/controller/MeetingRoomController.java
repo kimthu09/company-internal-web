@@ -2,6 +2,7 @@ package com.ciw.backend.controller;
 
 import com.ciw.backend.payload.ListResponse;
 import com.ciw.backend.payload.MapResponseWithoutPage;
+import com.ciw.backend.payload.SimpleListResponse;
 import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.meetingroom.*;
 import com.ciw.backend.payload.page.AppPageRequest;
@@ -135,6 +136,24 @@ public class MeetingRoomController {
 	public ResponseEntity<GetUnbookMeetingRoomResponse> getUnbookMeetingRoomInSpecificDate(
 			@Valid GetUnbookMeetingRoomRequest request) {
 		return new ResponseEntity<>(meetingRoomService.getUnbookMeetingRoom(request), HttpStatus.OK);
+	}
+
+	@PostMapping("/books/day_range/unbook")
+	@SecurityRequirement(
+			name = "Bearer Authentication"
+	)
+	@Operation(
+			summary = "Fetch unbook meeting room by date range",
+			description = "Fetch unbook meeting room from database by date range"
+	)
+	@ApiResponse(
+			responseCode = "200",
+			description = "Http Status is 200 OK"
+	)
+	@PreAuthorize("hasAnyAuthority('ADMIN')")
+	public ResponseEntity<SimpleListResponse<MeetingRoomResponse>> getUnbookMeetingRoomInDateRange(
+			@Valid @RequestBody GetUnbookMeetingRoomDateRangeRequest request) {
+		return new ResponseEntity<>(meetingRoomService.getUnbookMeetingRoomByDateRange(request), HttpStatus.OK);
 	}
 
 	@PostMapping("/books/{id}")

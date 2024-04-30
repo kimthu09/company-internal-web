@@ -89,6 +89,8 @@ public class Message {
 	public static class Calendar {
 		public static final String DATE_VALIDATE = "Ngày đặt cần theo định dạng dd/MM/yyyy";
 		public static final String SHIFT_TYPE_VALIDATE = "Ca đặt không phù hợp";
+		public static final String MISSING_FROM_CALENDAR_PART = "Không thể bỏ trống thời điểm bắt đầu";
+		public static final String MISSING_TO_CALENDAR_PART = "Không thể bỏ trống thời điểm kết thúc";
 	}
 
 	public static class Resource {
