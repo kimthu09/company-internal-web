@@ -114,7 +114,6 @@ public class MeetingRoomController {
 			responseCode = "200",
 			description = "Http Status is 200 OK"
 	)
-	@PreAuthorize("hasAnyAuthority('ADMIN')")
 	public ResponseEntity<MapResponseWithoutPage<MeetingRoomCalendarDayResponse, MeetingRoomCalendarFilter>> getMeetingRoomBooks(
 			@Valid MeetingRoomCalendarFilter filter) {
 		return new ResponseEntity<>(meetingRoomService.getMeetingRoomCalendar(filter), HttpStatus.OK);
@@ -132,7 +131,6 @@ public class MeetingRoomController {
 			responseCode = "200",
 			description = "Http Status is 200 OK"
 	)
-	@PreAuthorize("hasAnyAuthority('ADMIN')")
 	public ResponseEntity<GetUnbookMeetingRoomResponse> getUnbookMeetingRoomInSpecificDate(
 			@Valid GetUnbookMeetingRoomRequest request) {
 		return new ResponseEntity<>(meetingRoomService.getUnbookMeetingRoom(request), HttpStatus.OK);
@@ -150,7 +148,6 @@ public class MeetingRoomController {
 			responseCode = "200",
 			description = "Http Status is 200 OK"
 	)
-	@PreAuthorize("hasAnyAuthority('ADMIN')")
 	public ResponseEntity<SimpleListResponse<MeetingRoomResponse>> getUnbookMeetingRoomInDateRange(
 			@Valid @RequestBody GetUnbookMeetingRoomDateRangeRequest request) {
 		return new ResponseEntity<>(meetingRoomService.getUnbookMeetingRoomByDateRange(request), HttpStatus.OK);
@@ -168,7 +165,6 @@ public class MeetingRoomController {
 			responseCode = "201",
 			description = "Http Status is 201 CREATED"
 	)
-	@PreAuthorize("hasAnyAuthority('ADMIN')")
 	public ResponseEntity<SimpleResponse> bookMeetingRoom(
 			@PathVariable Long id,
 			@Valid @RequestBody BookMeetingRoomRequest request) {
@@ -180,14 +176,17 @@ public class MeetingRoomController {
 			name = "Bearer Authentication"
 	)
 	@Operation(
-			summary = "Delete book meeting room",
-			description = "Delete book meeting room"
+			summary = "Delete meeting room book",
+			description = "Delete meeting room book.\n" +
+						  "Note:\n" +
+						  "- Admin can delete all meeting room book\n" +
+						  "- Normal user just can delete their book"
 	)
 	@ApiResponse(
 			responseCode = "200",
 			description = "Http Status is 200 OK"
 	)
-	@PreAuthorize("hasAnyAuthority('ADMIN')")
+	//Set feature in function already
 	public ResponseEntity<SimpleResponse> deleteBookMeetingRoom(
 			@PathVariable Long id) {
 		return new ResponseEntity<>(meetingRoomService.deleteBookMeetingRoom(id), HttpStatus.OK);

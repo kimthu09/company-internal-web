@@ -8,13 +8,6 @@ import lombok.Data;
 
 @Data
 public class BookResourceRequest {
-	@Schema(
-			name = "bookedBy",
-			example = "1"
-	)
-	@NotNull(message = Message.Resource.BOOKED_BY_CAN_NOT_BE_NULL)
-	private Long bookedBy;
-
 	@Schema(name = "from")
 	@NotNull(message = Message.Resource.BOOKED_FROM_VALIDATE)
 	private CalendarPart from;

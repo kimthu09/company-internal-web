@@ -14,9 +14,6 @@ public class MeetingRoomCalendarResponse {
 	)
 	private Long id;
 
-	@Schema(name = "bookedBy")
-	private SimpleUserResponse bookedBy;
-
 	@Schema(name = "meetingRoom")
 	private MeetingRoomResponse meetingRoom;
 

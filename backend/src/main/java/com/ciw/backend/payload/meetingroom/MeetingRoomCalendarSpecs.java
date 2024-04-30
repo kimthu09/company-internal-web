@@ -11,10 +11,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class MeetingRoomCalendarSpecs {
-	public static Specification<MeetingRoomCalendar> isBookedBy(String bookedById) {
-		return (root, query, cb) -> cb.equal(root.get("bookedBy").get("id"), bookedById);
-	}
-
 	public static Specification<MeetingRoomCalendar> isCreatedBy(String createdById) {
 		return (root, query, cb) -> cb.equal(root.get("createdBy").get("id"), createdById);
 	}
