@@ -14,9 +14,6 @@ public class ResourceCalendarResponse {
 	)
 	private Long id;
 
-	@Schema(name = "bookedBy")
-	private SimpleUserResponse bookedBy;
-
 	@Schema(name = "resource")
 	private ResourceResponse resource;
 

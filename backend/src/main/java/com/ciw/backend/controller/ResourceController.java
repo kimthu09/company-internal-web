@@ -114,7 +114,6 @@ public class ResourceController {
 			responseCode = "200",
 			description = "Http Status is 200 OK"
 	)
-	@PreAuthorize("hasAnyAuthority('ADMIN')")
 	public ResponseEntity<MapResponseWithoutPage<ResourceCalendarDayResponse, ResourceCalendarFilter>> getResourceBooks(
 			@Valid ResourceCalendarFilter filter) {
 		return new ResponseEntity<>(resourceService.getResourceCalendar(filter), HttpStatus.OK);
@@ -132,7 +131,6 @@ public class ResourceController {
 			responseCode = "200",
 			description = "Http Status is 200 OK"
 	)
-	@PreAuthorize("hasAnyAuthority('ADMIN')")
 	public ResponseEntity<GetUnbookResourceResponse> getUnbookResourceInSpecificDate(
 			@Valid GetUnbookResourceRequest request) {
 		return new ResponseEntity<>(resourceService.getUnbookResourceBySpecificDate(request), HttpStatus.OK);
@@ -150,7 +148,6 @@ public class ResourceController {
 			responseCode = "200",
 			description = "Http Status is 200 OK"
 	)
-	@PreAuthorize("hasAnyAuthority('ADMIN')")
 	public ResponseEntity<SimpleListResponse<ResourceResponse>> getUnbookResourceInDateRange(
 			@Valid @RequestBody GetUnbookResourceDateRangeRequest request) {
 		return new ResponseEntity<>(resourceService.getUnbookResourceByDateRange(request), HttpStatus.OK);
@@ -168,7 +165,6 @@ public class ResourceController {
 			responseCode = "201",
 			description = "Http Status is 201 CREATED"
 	)
-	@PreAuthorize("hasAnyAuthority('ADMIN')")
 	public ResponseEntity<SimpleResponse> bookResource(
 			@PathVariable Long id,
 			@Valid @RequestBody BookResourceRequest request) {
@@ -181,13 +177,16 @@ public class ResourceController {
 	)
 	@Operation(
 			summary = "Delete book resource",
-			description = "Delete book resource"
+			description = "Delete book resource.\n" +
+						  "Note:\n" +
+						  "- Admin can delete all resource\n" +
+						  "- Normal user just can delete their book"
 	)
 	@ApiResponse(
 			responseCode = "200",
 			description = "Http Status is 200 OK"
 	)
-	@PreAuthorize("hasAnyAuthority('ADMIN')")
+	//Set feature in function already
 	public ResponseEntity<SimpleResponse> deleteBookMeetingRoom(
 			@PathVariable Long id) {
 		return new ResponseEntity<>(resourceService.deleteResourceCalendar(id), HttpStatus.OK);

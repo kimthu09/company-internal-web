@@ -1,5 +1,6 @@
 package com.ciw.backend.service;
 
+import com.ciw.backend.constants.ApplicationConst;
 import com.ciw.backend.constants.Message;
 import com.ciw.backend.entity.Resource;
 import com.ciw.backend.entity.ResourceCalendar;
@@ -202,11 +203,8 @@ public class ResourceService {
 
 	private Specification<ResourceCalendar> filterResourceCalendar(ResourceCalendarFilter filter) {
 		Specification<ResourceCalendar> spec = Specification.where(null);
-		if (filter.getBookedBy() != null) {
-			spec = ResourceCalendarSpecs.isBookedBy(filter.getBookedBy());
-		}
 		if (filter.getCreatedBy() != null) {
-			spec = spec.and(ResourceCalendarSpecs.isCreatedBy(filter.getCreatedBy()));
+			spec = ResourceCalendarSpecs.isCreatedBy(filter.getCreatedBy());
 		}
 		if (filter.getResource() != null) {
 			spec = spec.and(ResourceCalendarSpecs.hasMeetingRoom(filter.getResource()));
@@ -224,8 +222,6 @@ public class ResourceService {
 	public SimpleResponse bookResource(Long id, BookResourceRequest request) {
 		Resource resource = Common.findResourceById(id, resourceRepository);
 
-		User bookedBy = Common.findUserById(request.getBookedBy(), userRepository);
-
 		List<CalendarPart> calendarParts = Common.generateCalendarPart(request.getFrom(), request.getTo());
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -234,7 +230,6 @@ public class ResourceService {
 			Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
 			return ResourceCalendar.builder()
-								   .bookedBy(bookedBy)
 								   .resource(resource)
 								   .shiftType(cp.getShiftType())
 								   .date(date)
@@ -243,10 +238,11 @@ public class ResourceService {
 
 		resourceCalendarRepository.saveAll(calendars);
 
+		User curr = Common.findCurrUser(userRepository);
 		Common.sendNotification(notificationRepository,
 								mailSender,
-								bookedBy,
-								bookedBy,
+								curr,
+								curr,
 								"Tài nguyên đã được đặt",
 								String.format(
 										"Bạn đã đặt tài nguyên %s thành công.\nNếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
@@ -258,15 +254,18 @@ public class ResourceService {
 	@Transactional
 	public SimpleResponse deleteResourceCalendar(Long bookId) {
 		ResourceCalendar resourceCalendar = Common.findResourceCalendarById(bookId, resourceCalendarRepository);
+		User curr = Common.findCurrUser(userRepository);
+		if (!curr.getId().equals(resourceCalendar.getCreatedBy().getId()) && !curr.getEmail().equals(
+				ApplicationConst.ADMIN_EMAIL)) {
+			throw new AppException(HttpStatus.BAD_REQUEST, Message.USER_NOT_HAVE_FEATURE);
+		}
 
 		resourceCalendarRepository.delete(resourceCalendar);
 
-		User sender = Common.findCurrUser(userRepository);
-
 		Common.sendNotification(notificationRepository,
 								mailSender,
-								resourceCalendar.getBookedBy(),
-								sender,
+								resourceCalendar.getCreatedBy(),
+								curr,
 								"Lịch tài nguyên của bạn có sự thay đổi",
 								String.format(
 										"Lịch tài nguyên %s vào buổi %s đã bị xóa.\nNếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
@@ -284,7 +283,6 @@ public class ResourceService {
 		return ResourceCalendarResponse.builder()
 									   .id(calendar.getId())
 									   .createdBy(mapToSimpleDTO(calendar.getCreatedBy()))
-									   .bookedBy(mapToSimpleDTO(calendar.getBookedBy()))
 									   .resource(mapToDTO(calendar.getResource()))
 									   .build();
 	}

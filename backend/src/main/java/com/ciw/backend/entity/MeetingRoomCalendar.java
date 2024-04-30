@@ -35,14 +35,6 @@ public class MeetingRoomCalendar {
 	)
 	private Date date;
 
-	@ManyToOne
-	@JoinColumn(
-			name = "booked_by",
-			nullable = false,
-			updatable = false
-	)
-	private User bookedBy;
-
 	@Enumerated(EnumType.STRING)
 	@Column(
 			name = "shift_type",

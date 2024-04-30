@@ -1,5 +1,6 @@
 package com.ciw.backend.service;
 
+import com.ciw.backend.constants.ApplicationConst;
 import com.ciw.backend.constants.Message;
 import com.ciw.backend.entity.MeetingRoom;
 import com.ciw.backend.entity.MeetingRoomCalendar;
@@ -211,11 +212,8 @@ public class MeetingRoomService {
 
 	private Specification<MeetingRoomCalendar> filterMeetingRoomCalendar(MeetingRoomCalendarFilter filter) {
 		Specification<MeetingRoomCalendar> spec = Specification.where(null);
-		if (filter.getBookedBy() != null) {
-			spec = MeetingRoomCalendarSpecs.isBookedBy(filter.getBookedBy());
-		}
 		if (filter.getCreatedBy() != null) {
-			spec = spec.and(MeetingRoomCalendarSpecs.isCreatedBy(filter.getCreatedBy()));
+			spec = MeetingRoomCalendarSpecs.isCreatedBy(filter.getCreatedBy());
 		}
 		if (filter.getMeetingRoom() != null) {
 			spec = spec.and(MeetingRoomCalendarSpecs.hasMeetingRoom(filter.getMeetingRoom()));
@@ -233,8 +231,6 @@ public class MeetingRoomService {
 	public SimpleResponse bookMeetingRoom(Long id, BookMeetingRoomRequest request) {
 		MeetingRoom meetingRoom = Common.findMeetingRoomById(id, meetingRoomRepository);
 
-		User bookedBy = Common.findUserById(request.getBookedBy(), userRepository);
-
 		List<CalendarPart> calendarParts = Common.generateCalendarPart(request.getFrom(), request.getTo());
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -243,7 +239,6 @@ public class MeetingRoomService {
 			Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
 			return MeetingRoomCalendar.builder()
-									  .bookedBy(bookedBy)
 									  .meetingRoom(meetingRoom)
 									  .shiftType(cp.getShiftType())
 									  .date(date)
@@ -252,10 +247,11 @@ public class MeetingRoomService {
 
 		meetingRoomCalendarRepository.saveAll(calendars);
 
+		User curr = Common.findCurrUser(userRepository);
 		Common.sendNotification(notificationRepository,
 								mailSender,
-								bookedBy,
-								bookedBy,
+								curr,
+								curr,
 								"Phòng họp đã được đặt",
 								String.format(
 										"Bạn đã đặt phòng họp %s thành công.\nNếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
@@ -268,15 +264,18 @@ public class MeetingRoomService {
 	public SimpleResponse deleteBookMeetingRoom(Long bookId) {
 		MeetingRoomCalendar meetingRoomCalendar = Common.findMeetingRoomCalendarById(bookId,
 																					 meetingRoomCalendarRepository);
+		User curr = Common.findCurrUser(userRepository);
+		if (!curr.getId().equals(meetingRoomCalendar.getCreatedBy().getId()) && !curr.getEmail().equals(
+				ApplicationConst.ADMIN_EMAIL)) {
+			throw new AppException(HttpStatus.BAD_REQUEST, Message.USER_NOT_HAVE_FEATURE);
+		}
 
 		meetingRoomCalendarRepository.delete(meetingRoomCalendar);
 
-		User sender = Common.findCurrUser(userRepository);
-
 		Common.sendNotification(notificationRepository,
 								mailSender,
-								meetingRoomCalendar.getBookedBy(),
-								sender,
+								meetingRoomCalendar.getCreatedBy(),
+								curr,
 								"Lịch phòng họp của bạn có sự thay đổi",
 								String.format(
 										"Lịch phòng họp %s vào buổi %s đã bị xóa.\nNếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
@@ -294,7 +293,6 @@ public class MeetingRoomService {
 		return MeetingRoomCalendarResponse.builder()
 										  .id(calendar.getId())
 										  .createdBy(mapToSimpleDTO(calendar.getCreatedBy()))
-										  .bookedBy(mapToSimpleDTO(calendar.getBookedBy()))
 										  .meetingRoom(mapToDTO(calendar.getMeetingRoom()))
 										  .build();
 	}

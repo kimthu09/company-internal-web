@@ -8,12 +8,6 @@ import lombok.Data;
 @Data
 public class MeetingRoomCalendarFilter {
 	@Schema(
-			name = "bookedBy",
-			example = "1"
-	)
-	private String bookedBy;
-
-	@Schema(
 			name = "createdBy",
 			example = "1"
 	)
