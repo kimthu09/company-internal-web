@@ -18,8 +18,8 @@ import ItemListSkeleton from "./item-list-skeleton";
 import { Input } from "@/components/ui/input";
 const BookResource = () => {
   const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(2023, 4, 29),
-    to: addDays(new Date(2023, 4, 29), 1),
+    from: new Date(),
+    to: addDays(new Date(), 1),
   });
   const router = useRouter();
   const [resources, setResources] = useState<Resource[]>();
@@ -86,6 +86,7 @@ const BookResource = () => {
           title: "Thành công",
           description: "Đặt lịch sử dụng tài nguyên thành công",
         });
+        fetchResources();
       }
     }
   };

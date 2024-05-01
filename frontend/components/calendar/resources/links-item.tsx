@@ -15,7 +15,7 @@ const CalendarLink = ({ selectedPage }: { selectedPage: number }) => {
               ? "text-blue-primary"
               : "text-muted-foreground"
           } hover:text-blue-primary transition-colors font-medium tracking-wide whitespace-nowrap`}
-          href={`/calendar/resources/${item.href}`}
+          href={`/calendar/resources${item.href}`}
         >
           {item.label}
         </Link>

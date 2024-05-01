@@ -150,8 +150,9 @@ const ResourcesTable = () => {
             handleYes={() => onDelete({ id: row.original.id })}
           >
             <Button
+              title="Xoá tài nguyên"
               size={"icon"}
-              className="rounded-full bg-rose-700 hover:bg-rose-700/85 text"
+              className="rounded-full bg-rose-600 hover:bg-rose-600/85 text"
             >
               <FaTrash />
             </Button>
