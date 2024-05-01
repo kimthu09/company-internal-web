@@ -183,3 +183,15 @@ input[type="date"]::-webkit-input-placeholder {
 .link___primary {
   @apply text-primary hover:text-hover-accent;
 }
+
+.text_line {
+  width: 100%;
+  text-align: left;
+  border-bottom: 1px solid #d9e0e3;
+  line-height: 0.1em;
+  margin: 10px 0 8px;
+}
+.text_line span {
+  background: #fff;
+  padding: 0 10px 0 0;
+}

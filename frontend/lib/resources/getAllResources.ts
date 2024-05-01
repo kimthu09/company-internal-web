@@ -1,5 +1,4 @@
 import { apiKey, endpoint } from "@/constants";
-import { Employee } from "@/types";
 import axios from "axios";
 import useSWR from "swr";
 
@@ -8,28 +7,42 @@ const fetcher = async (url: string) => {
   return axios
     .get(url, {
       headers: {
-        accept: "application/json",
+        accept: "*/*",
         Authorization: `Bearer ${apiKey}`,
       },
     })
     .then((res) => {
       return res.data;
     })
+    .then((json) => {
+      return {
+        paging: json.page,
+        data: json.data,
+      };
+    })
     .catch((error) => {
       console.error("Error:", error);
       return error.response.data;
     });
 };
-export default function getEmployee(id: string) {
+
+export default function getAllResources({
+  name,
+  page,
+}: {
+  name: string;
+  page?: string;
+}) {
+  const encodedString = name ? `&name=${encodeURIComponent(name)}` : "";
   const { data, error, isLoading, mutate } = useSWR(
-    `${endpoint}/staff/${id}`,
+    `${endpoint}/resource?page=${page ?? "1"}&limit=10${encodedString}`,
     fetcher
   );
 
   return {
-    data: data as Employee,
+    resources: data,
     isLoading,
     isError: error,
-    mutate: mutate,
+    mutate,
   };
 }

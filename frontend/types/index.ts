@@ -54,3 +54,16 @@ export type UnitLink = {
   label: string;
   href: string;
 };
+export type Resource = {
+  id: number;
+  name: string;
+};
+export type Room = {
+  id: number;
+  name: string;
+  location: string;
+};
+export enum ShiftType {
+  DAY = "DAY",
+  NIGHT = "NIGHT",
+}

@@ -29,27 +29,19 @@ export default function Sidebar() {
           <div className={`flex items-center my-4 h-[64px]`}>
             <Link href="/">
               <div
-                className={`flex align-middle justify-center items-center gap-4 h-[64px] w-[64px]  rounded-xl ${
+                className={`flex align-middle justify-center items-center gap-4 h-[64px] ml-2 rounded-xl ${
                   isCollapse ? "hidden" : "flex"
                 }`}
               >
                 <Image
-                  src="/android-chrome-192x192.png"
+                  className="h-[48px] w-auto"
+                  src="/companion.png"
                   alt="logo"
-                  width={50}
-                  height={50}
+                  width={300}
+                  height={300}
+                  priority
                 ></Image>
               </div>
-            </Link>
-
-            <Link href="/">
-              <p
-                className={`text-lg ml-2 font-semibold overflow-hidden whitespace-nowrap ${
-                  isCollapse ? "hidden" : "block"
-                }`}
-              >
-                Company
-              </p>
             </Link>
             <div
               className={`hover:text-primary cursor-pointer ${
@@ -151,7 +143,7 @@ const MenuItem = ({
                   ) : null}
 
                   <span
-                    className={`ml-4 text-base overflow-hidden   whitespace-nowrap ${
+                    className={`ml-4 text-lg overflow-hidden   whitespace-nowrap ${
                       isCollapse ? "hidden" : "visible"
                     } ${
                       subItem.href === pathname

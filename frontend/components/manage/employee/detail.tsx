@@ -73,7 +73,7 @@ const EmployeeEditDetail = ({ params }: { params: { employeeId: string } }) => {
     });
   };
   useEffect(() => {
-    if (employee) {
+    if (employee && !employee.hasOwnProperty("message")) {
       resetForm();
     }
   }, [employee]);
@@ -185,6 +185,8 @@ const EmployeeEditDetail = ({ params }: { params: { employeeId: string } }) => {
 
   if (isLoading) {
     return <DetailSkeleton />;
+  } else if (isError || employee.hasOwnProperty("message")) {
+    return <div>Failed to load</div>;
   } else {
     return (
       <div className="card___style flex sm:flex-row flex-col-reverse gap-8">
