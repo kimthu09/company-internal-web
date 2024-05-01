@@ -27,10 +27,8 @@ import TableSkeleton from "@/components/skeleton/table-skeleton";
 
 import { Input } from "@/components/ui/input";
 import Paging from "@/components/paging";
-import getAllResources from "@/lib/resources/getAllResources";
 import { FaPen, FaTrash } from "react-icons/fa";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
-import deleteResource from "@/lib/resources/deleteResource";
 import { useLoading } from "@/hooks/loading-context";
 import { toast } from "@/components/ui/use-toast";
 import getAllRoom from "@/lib/room/getAllRoom";
@@ -164,7 +162,7 @@ const RoomTable = () => {
           >
             <Button
               size={"icon"}
-              className="rounded-full bg-rose-700 hover:bg-rose-700/85 text"
+              className="rounded-full bg-rose-600 hover:bg-rose-600/85 text"
             >
               <FaTrash />
             </Button>
