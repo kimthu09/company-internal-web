@@ -146,7 +146,7 @@ const MenuItem = ({
                     className={`ml-4 text-lg overflow-hidden   whitespace-nowrap ${
                       isCollapse ? "hidden" : "visible"
                     } ${
-                      subItem.href === pathname
+                      pathname.includes(subItem.href)
                         ? "text-primary font-medium"
                         : ""
                     }`}

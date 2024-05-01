@@ -17,7 +17,7 @@ export default async function updateUnit({
 
   const data = {
     ...(managerId && { managerId: managerId }),
-    ...(name && { name: name }),
+    ...(name && { name: name.trim() }),
     ...(features && { features: features }),
   };
 

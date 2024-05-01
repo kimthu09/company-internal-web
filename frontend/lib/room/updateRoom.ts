@@ -13,7 +13,7 @@ export default async function updateRoom({
   const url = `${endpoint}/meeting_room/${id}`;
 
   const data = {
-    ...(name && { name: name }),
+    ...(name && { name: name.trim() }),
     ...(location && { location: location }),
   };
 

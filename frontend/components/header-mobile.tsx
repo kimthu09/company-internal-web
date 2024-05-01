@@ -186,7 +186,7 @@ const MenuItemWithSubMenu: React.FC<MenuItemWithSubMenuProps> = ({
                     href={subItem.href}
                     onClick={() => toggleOpen()}
                     className={`hover:text-primary text-lg ${
-                      subItem.href === pathname ? "font-bold" : ""
+                      pathname.includes(subItem.href) ? "font-bold" : ""
                     }`}
                   >
                     {subItem.title}

@@ -56,7 +56,7 @@ const AddNewEmployee = () => {
   const onSubmit: SubmitHandler<z.infer<typeof Schema>> = async (data) => {
     const response: Promise<any> = createEmployee({
       employee: {
-        name: data.name,
+        name: data.name.trim(),
         email: data.email,
         phone: data.phone,
         dob: format(data.dob, "dd/MM/yyyy", { locale: vi }),

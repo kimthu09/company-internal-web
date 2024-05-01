@@ -13,7 +13,7 @@ export default async function createResource({ name }: { name: string }) {
 
   // Make a POST request with headers
   const res = axios
-    .post(url, { name: name }, { headers: headers })
+    .post(url, { name: name.trim() }, { headers: headers })
     .then((response) => {
       if (response) return response.data;
     })
