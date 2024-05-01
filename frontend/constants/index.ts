@@ -80,7 +80,7 @@ export const calendarLinks: UnitLink[] = [
   },
   {
     value: "personal",
-    label: "Lịch bạn đã đăng ký",
+    label: "Lịch đã đăng ký",
     href: "/personal",
   },
 ];
