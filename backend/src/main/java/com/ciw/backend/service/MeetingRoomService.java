@@ -8,7 +8,7 @@ import com.ciw.backend.entity.User;
 import com.ciw.backend.exception.AppException;
 import com.ciw.backend.mail.MailSender;
 import com.ciw.backend.payload.ListResponse;
-import com.ciw.backend.payload.MapResponseWithoutPage;
+import com.ciw.backend.payload.ListResponseWithoutPage;
 import com.ciw.backend.payload.SimpleListResponse;
 import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.calendar.CalendarPart;
@@ -198,16 +198,16 @@ public class MeetingRoomService {
 	}
 
 	@Transactional
-	public MapResponseWithoutPage<MeetingRoomCalendarDayResponse, MeetingRoomCalendarFilter> getMeetingRoomCalendar(
+	public ListResponseWithoutPage<MeetingRoomCalendarDayResponse, MeetingRoomCalendarFilter> getMeetingRoomCalendar(
 			MeetingRoomCalendarFilter filter) {
 		Specification<MeetingRoomCalendar> spec = filterMeetingRoomCalendar(filter);
 
 		List<MeetingRoomCalendar> calendars = meetingRoomCalendarRepository.findAll(spec);
 
-		return MapResponseWithoutPage.<MeetingRoomCalendarDayResponse, MeetingRoomCalendarFilter>builder()
-									 .data(mapToDTO(calendars))
-									 .filter(filter)
-									 .build();
+		return ListResponseWithoutPage.<MeetingRoomCalendarDayResponse, MeetingRoomCalendarFilter>builder()
+									  .data(mapToDTO(calendars))
+									  .filter(filter)
+									  .build();
 	}
 
 	private Specification<MeetingRoomCalendar> filterMeetingRoomCalendar(MeetingRoomCalendarFilter filter) {
@@ -254,8 +254,13 @@ public class MeetingRoomService {
 								curr,
 								"Phòng họp đã được đặt",
 								String.format(
-										"Bạn đã đặt phòng họp %s thành công.\nNếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
-										meetingRoom.getName()));
+										"Bạn đã đặt phòng họp %s thành công vào buổi %s ngày %s tới hết buổi %s ngày %s.\n" +
+										"Nếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
+										meetingRoom.getName(),
+										request.getFrom().getShiftType() == ShiftType.DAY ? "sáng" : "chiều",
+										request.getFrom().getDate(),
+										request.getFrom().getShiftType() == ShiftType.DAY ? "sáng" : "chiều",
+										request.getFrom().getDate()));
 
 		return new SimpleResponse();
 	}
@@ -265,22 +270,24 @@ public class MeetingRoomService {
 		MeetingRoomCalendar meetingRoomCalendar = Common.findMeetingRoomCalendarById(bookId,
 																					 meetingRoomCalendarRepository);
 		User curr = Common.findCurrUser(userRepository);
-		if (!curr.getId().equals(meetingRoomCalendar.getCreatedBy().getId()) && !curr.getEmail().equals(
-				ApplicationConst.ADMIN_EMAIL)) {
+		if (!curr.getId().equals(meetingRoomCalendar.getCreatedBy().getId()) &&
+			!curr.getEmail().equals(ApplicationConst.ADMIN_EMAIL)) {
 			throw new AppException(HttpStatus.BAD_REQUEST, Message.USER_NOT_HAVE_FEATURE);
 		}
 
 		meetingRoomCalendarRepository.delete(meetingRoomCalendar);
 
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 		Common.sendNotification(notificationRepository,
 								mailSender,
 								meetingRoomCalendar.getCreatedBy(),
 								curr,
 								"Lịch phòng họp của bạn có sự thay đổi",
 								String.format(
-										"Lịch phòng họp %s vào buổi %s đã bị xóa.\nNếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
+										"Lịch phòng họp %s vào buổi %s ngày %s đã bị xóa.\nNếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
 										meetingRoomCalendar.getMeetingRoom().getName(),
-										meetingRoomCalendar.getShiftType() == ShiftType.DAY ? "sáng" : "tối"));
+										meetingRoomCalendar.getShiftType() == ShiftType.DAY ? "sáng" : "chiều",
+										formatter.format(meetingRoomCalendar.getDate())));
 
 		return new SimpleResponse();
 	}
@@ -307,25 +314,25 @@ public class MeetingRoomService {
 								 .build();
 	}
 
-	private Map<String, MeetingRoomCalendarDayResponse> mapToDTO(List<MeetingRoomCalendar> calendars) {
+	private List<MeetingRoomCalendarDayResponse> mapToDTO(List<MeetingRoomCalendar> calendars) {
 		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
-		Map<String, List<MeetingRoomCalendar>> maps = new HashMap<>();
+		Map<String, List<MeetingRoomCalendar>> mapEntity = new HashMap<>();
 		for (MeetingRoomCalendar calendar : calendars) {
 			String date = formatter.format(calendar.getDate());
 
-			if (!maps.containsKey(date)) {
+			if (!mapEntity.containsKey(date)) {
 				List<MeetingRoomCalendar> list = new ArrayList<>();
 				list.add(calendar);
-				maps.put(date, list);
+				mapEntity.put(date, list);
 			} else {
-				List<MeetingRoomCalendar> list = maps.get(date);
+				List<MeetingRoomCalendar> list = mapEntity.get(date);
 				list.add(calendar);
 			}
 		}
 
-		Map<String, MeetingRoomCalendarDayResponse> res = new HashMap<>();
-		for (Map.Entry<String, List<MeetingRoomCalendar>> entry : maps.entrySet()) {
+		Map<String, MeetingRoomCalendarDayResponse> mapRes = new HashMap<>();
+		for (Map.Entry<String, List<MeetingRoomCalendar>> entry : mapEntity.entrySet()) {
 			List<MeetingRoomCalendarResponse> day = new ArrayList<>();
 			List<MeetingRoomCalendarResponse> night = new ArrayList<>();
 
@@ -337,13 +344,15 @@ public class MeetingRoomService {
 				}
 			}
 
-			res.put(entry.getKey(), MeetingRoomCalendarDayResponse.builder()
-																  .day(day)
-																  .night(night)
-																  .build());
+			mapRes.put(entry.getKey(),
+					   MeetingRoomCalendarDayResponse.builder().date(entry.getKey()).day(day).night(night).build());
 		}
 
-		return res;
+		return mapRes.entrySet()
+					 .stream()
+					 .sorted(Map.Entry.comparingByKey(Common.dateComparator))
+					 .map(Map.Entry::getValue)
+					 .toList();
 	}
 
 	private MeetingRoom mapToMeetingRoomEntity(CreateMeetingRoomRequest request) {

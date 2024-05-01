@@ -8,7 +8,7 @@ import com.ciw.backend.entity.UnitShiftAbsent;
 import com.ciw.backend.entity.User;
 import com.ciw.backend.exception.AppException;
 import com.ciw.backend.mail.MailSender;
-import com.ciw.backend.payload.MapResponseWithoutPage;
+import com.ciw.backend.payload.ListResponseWithoutPage;
 import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.calendar.CalendarPart;
 import com.ciw.backend.payload.calendar.DayOfWeek;
@@ -50,7 +50,7 @@ public class UnitShiftService {
 	}
 
 	@Transactional
-	public MapResponseWithoutPage<UnitShiftDayResponse, UnitShiftDayFilter> fetchShiftByDay(UnitShiftDayFilter filter) {
+	public ListResponseWithoutPage<UnitShiftDayResponse, UnitShiftDayFilter> fetchShiftByDay(UnitShiftDayFilter filter) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 		Date from;
@@ -85,27 +85,33 @@ public class UnitShiftService {
 			shifts  = unitShiftRepository.findAllByUnitIdIn(filter.getUnitIds());
 		}
 
-		return MapResponseWithoutPage.<UnitShiftDayResponse, UnitShiftDayFilter>builder()
-									 .data(mapToDTO(filter.getFrom(), filter.getTo(), shifts, absents))
-									 .filter(filter)
-									 .build();
+		return ListResponseWithoutPage.<UnitShiftDayResponse, UnitShiftDayFilter>builder()
+									  .data(mapToDTO(filter.getFrom(), filter.getTo(), shifts, absents))
+									  .filter(filter)
+									  .build();
 	}
 
-	private Map<String, UnitShiftDayResponse> mapToDTO(String from,
-													   String to,
-													   List<UnitShift> shifts,
-													   List<UnitShiftAbsent> absents) {
+	private List<UnitShiftDayResponse> mapToDTO(String from,
+												String to,
+												List<UnitShift> shifts,
+												List<UnitShiftAbsent> absents) {
 		Map<String, List<UnitShift>> shiftMap = mapUnitShiftByDay(from, to, shifts);
 		Map<String, List<UnitShiftAbsent>> absentMap = mapUnitShiftAbsentByDay(absents);
 
-		Map<String, UnitShiftDayResponse> res = new HashMap<>();
+		Map<String, UnitShiftDayResponse> mapRes = new HashMap<>();
 		for (String s : shiftMap.keySet()) {
-			res.put(s,
-					getUnitShiftDayDetailResponse(shiftMap.get(s).stream().toList(),
-												  absentMap.getOrDefault(s, new ArrayList<>()).stream().toList()));
+			mapRes.put(s,
+					   getUnitShiftDayDetailResponse(
+							   s,
+							   shiftMap.get(s).stream().toList(),
+							   absentMap.getOrDefault(s, new ArrayList<>()).stream().toList()));
 		}
 
-		return res;
+		return mapRes.entrySet()
+					 .stream()
+					 .sorted(Map.Entry.comparingByKey(Common.dateComparator))
+					 .map(Map.Entry::getValue)
+					 .toList();
 	}
 
 	private Map<String, List<UnitShift>> mapUnitShiftByDay(String from, String to, List<UnitShift> shifts) {
@@ -170,7 +176,10 @@ public class UnitShiftService {
 		return res;
 	}
 
-	private UnitShiftDayResponse getUnitShiftDayDetailResponse(List<UnitShift> shifts, List<UnitShiftAbsent> absents) {
+	private UnitShiftDayResponse getUnitShiftDayDetailResponse(
+			String date,
+			List<UnitShift> shifts,
+			List<UnitShiftAbsent> absents) {
 		Map<ShiftType, Map<Long, UnitShiftDayDetailResponse>> map = new HashMap<>();
 
 		for (UnitShift shift : shifts) {
@@ -187,6 +196,7 @@ public class UnitShiftService {
 		}
 
 		return UnitShiftDayResponse.builder()
+								   .date(date)
 								   .day(map.getOrDefault(ShiftType.DAY, new HashMap<>()).values().stream().toList())
 								   .night(map.getOrDefault(ShiftType.NIGHT, new HashMap<>()).values().stream().toList())
 								   .build();

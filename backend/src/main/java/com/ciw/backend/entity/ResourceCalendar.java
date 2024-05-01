@@ -18,7 +18,7 @@ import java.util.Date;
 		name = "resource_calendar",
 		uniqueConstraints = {
 				@UniqueConstraint(
-						columnNames = {"date", "shift_type", "meeting_room_id"},
+						columnNames = {"date", "shift_type", "resource_id"},
 						name = "Bảng ghi"
 				)
 		}

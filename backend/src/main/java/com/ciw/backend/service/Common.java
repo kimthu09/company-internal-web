@@ -18,11 +18,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 public class Common {
+	public static Comparator<String> dateComparator = (date1, date2) -> {
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		LocalDate ld1 = LocalDate.parse(date1, dateTimeFormatter);
+		LocalDate ld2 = LocalDate.parse(date2, dateTimeFormatter);
+		return ld1.compareTo(ld2);
+	};
+
 	public static void updateIfNotNull(String newValue, Consumer<String> setter) {
 		if (newValue != null) {
 			setter.accept(newValue);

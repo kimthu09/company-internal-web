@@ -8,7 +8,7 @@ import com.ciw.backend.entity.User;
 import com.ciw.backend.exception.AppException;
 import com.ciw.backend.mail.MailSender;
 import com.ciw.backend.payload.ListResponse;
-import com.ciw.backend.payload.MapResponseWithoutPage;
+import com.ciw.backend.payload.ListResponseWithoutPage;
 import com.ciw.backend.payload.SimpleListResponse;
 import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.calendar.CalendarPart;
@@ -189,16 +189,16 @@ public class ResourceService {
 	}
 
 	@Transactional
-	public MapResponseWithoutPage<ResourceCalendarDayResponse, ResourceCalendarFilter> getResourceCalendar(
+	public ListResponseWithoutPage<ResourceCalendarDayResponse, ResourceCalendarFilter> getResourceCalendar(
 			ResourceCalendarFilter filter) {
 		Specification<ResourceCalendar> spec = filterResourceCalendar(filter);
 
 		List<ResourceCalendar> calendars = resourceCalendarRepository.findAll(spec);
 
-		return MapResponseWithoutPage.<ResourceCalendarDayResponse, ResourceCalendarFilter>builder()
-									 .data(mapToDTO(calendars))
-									 .filter(filter)
-									 .build();
+		return ListResponseWithoutPage.<ResourceCalendarDayResponse, ResourceCalendarFilter>builder()
+									  .data(mapToDTO(calendars))
+									  .filter(filter)
+									  .build();
 	}
 
 	private Specification<ResourceCalendar> filterResourceCalendar(ResourceCalendarFilter filter) {
@@ -207,7 +207,7 @@ public class ResourceService {
 			spec = ResourceCalendarSpecs.isCreatedBy(filter.getCreatedBy());
 		}
 		if (filter.getResource() != null) {
-			spec = spec.and(ResourceCalendarSpecs.hasMeetingRoom(filter.getResource()));
+			spec = spec.and(ResourceCalendarSpecs.hasResource(filter.getResource()));
 		}
 		if (filter.getFrom() != null) {
 			spec = spec.and(ResourceCalendarSpecs.isDateBookedAtAfter(filter.getFrom()));
@@ -229,11 +229,7 @@ public class ResourceService {
 			LocalDate localDate = LocalDate.parse(cp.getDate(), formatter);
 			Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-			return ResourceCalendar.builder()
-								   .resource(resource)
-								   .shiftType(cp.getShiftType())
-								   .date(date)
-								   .build();
+			return ResourceCalendar.builder().resource(resource).shiftType(cp.getShiftType()).date(date).build();
 		}).toList();
 
 		resourceCalendarRepository.saveAll(calendars);
@@ -245,8 +241,13 @@ public class ResourceService {
 								curr,
 								"Tài nguyên đã được đặt",
 								String.format(
-										"Bạn đã đặt tài nguyên %s thành công.\nNếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
-										resource.getName()));
+										"Bạn đã đặt tài nguyên %s thành công vào buổi %s ngày %s tới hết buổi %s ngày %s.\n" +
+										"Nếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
+										resource.getName(),
+										request.getFrom().getShiftType() == ShiftType.DAY ? "sáng" : "chiều",
+										request.getFrom().getDate(),
+										request.getFrom().getShiftType() == ShiftType.DAY ? "sáng" : "chiều",
+										request.getFrom().getDate()));
 
 		return new SimpleResponse();
 	}
@@ -255,22 +256,24 @@ public class ResourceService {
 	public SimpleResponse deleteResourceCalendar(Long bookId) {
 		ResourceCalendar resourceCalendar = Common.findResourceCalendarById(bookId, resourceCalendarRepository);
 		User curr = Common.findCurrUser(userRepository);
-		if (!curr.getId().equals(resourceCalendar.getCreatedBy().getId()) && !curr.getEmail().equals(
-				ApplicationConst.ADMIN_EMAIL)) {
+		if (!curr.getId().equals(resourceCalendar.getCreatedBy().getId()) &&
+			!curr.getEmail().equals(ApplicationConst.ADMIN_EMAIL)) {
 			throw new AppException(HttpStatus.BAD_REQUEST, Message.USER_NOT_HAVE_FEATURE);
 		}
 
 		resourceCalendarRepository.delete(resourceCalendar);
 
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 		Common.sendNotification(notificationRepository,
 								mailSender,
 								resourceCalendar.getCreatedBy(),
 								curr,
 								"Lịch tài nguyên của bạn có sự thay đổi",
 								String.format(
-										"Lịch tài nguyên %s vào buổi %s đã bị xóa.\nNếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
+										"Lịch tài nguyên %s vào buổi %s ngày %s đã bị xóa.\nNếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
 										resourceCalendar.getResource().getName(),
-										resourceCalendar.getShiftType() == ShiftType.DAY ? "sáng" : "tối"));
+										resourceCalendar.getShiftType() == ShiftType.DAY ? "sáng" : "chiều",
+										formatter.format(resourceCalendar.getDate())));
 
 		return new SimpleResponse();
 	}
@@ -297,25 +300,25 @@ public class ResourceService {
 								 .build();
 	}
 
-	private Map<String, ResourceCalendarDayResponse> mapToDTO(List<ResourceCalendar> calendars) {
+	private List<ResourceCalendarDayResponse> mapToDTO(List<ResourceCalendar> calendars) {
 		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
-		Map<String, List<ResourceCalendar>> maps = new HashMap<>();
+		Map<String, List<ResourceCalendar>> mapEntity = new HashMap<>();
 		for (ResourceCalendar calendar : calendars) {
 			String date = formatter.format(calendar.getDate());
 
-			if (!maps.containsKey(date)) {
+			if (!mapEntity.containsKey(date)) {
 				List<ResourceCalendar> list = new ArrayList<>();
 				list.add(calendar);
-				maps.put(date, list);
+				mapEntity.put(date, list);
 			} else {
-				List<ResourceCalendar> list = maps.get(date);
+				List<ResourceCalendar> list = mapEntity.get(date);
 				list.add(calendar);
 			}
 		}
 
-		Map<String, ResourceCalendarDayResponse> res = new HashMap<>();
-		for (Map.Entry<String, List<ResourceCalendar>> entry : maps.entrySet()) {
+		Map<String, ResourceCalendarDayResponse> mapRes = new HashMap<>();
+		for (Map.Entry<String, List<ResourceCalendar>> entry : mapEntity.entrySet()) {
 			List<ResourceCalendarResponse> day = new ArrayList<>();
 			List<ResourceCalendarResponse> night = new ArrayList<>();
 
@@ -327,10 +330,15 @@ public class ResourceService {
 				}
 			}
 
-			res.put(entry.getKey(), ResourceCalendarDayResponse.builder().day(day).night(night).build());
+			mapRes.put(entry.getKey(),
+					   ResourceCalendarDayResponse.builder().date(entry.getKey()).day(day).night(night).build());
 		}
 
-		return res;
+		return mapRes.entrySet()
+					 .stream()
+					 .sorted(Map.Entry.comparingByKey(Common.dateComparator))
+					 .map(Map.Entry::getValue)
+					 .toList();
 	}
 
 	private Resource mapToEntity(CreateResourceRequest request) {
