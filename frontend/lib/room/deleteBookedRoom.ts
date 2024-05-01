@@ -1,25 +1,8 @@
 import { apiKey, endpoint } from "@/constants";
 import axios from "axios";
 
-export type Props = {
-  id: string;
-  name?: string;
-  managerId?: number;
-  features?: number[];
-};
-export default async function updateUnit({
-  id,
-  name,
-  managerId,
-  features,
-}: Props) {
-  const url = `${endpoint}/unit/${id}`;
-
-  const data = {
-    ...(managerId && { managerId: managerId }),
-    ...(name && { name: name.trim() }),
-    ...(features && { features: features }),
-  };
+export default async function deleteBookedRoom({ id }: { id: string }) {
+  const url = `${endpoint}/meeting_room/books/${id}`;
 
   // const token = await getApiKey();
   const headers = {
@@ -31,7 +14,7 @@ export default async function updateUnit({
 
   // Make a POST request with headers
   const res = axios
-    .put(url, data, { headers: headers })
+    .delete(url, { headers: headers })
     .then((response) => {
       if (response) return response.data;
     })

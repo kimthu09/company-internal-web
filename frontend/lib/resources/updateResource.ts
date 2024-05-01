@@ -11,7 +11,7 @@ export default async function updateResource({
   const url = `${endpoint}/resource/${id}`;
 
   const data = {
-    name: name,
+    name: name.trim(),
   };
 
   // const token = await getApiKey();

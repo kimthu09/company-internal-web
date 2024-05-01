@@ -2,7 +2,13 @@ import { apiKey, endpoint } from "@/constants";
 import axios from "axios";
 import useSWR from "swr";
 
-const fetcher = async (url: string) => {
+export type BookingProps = {
+  createdBy?: string;
+  meetingRoom?: string;
+  from?: string;
+  to?: string;
+};
+export const fetcher = (url: string) => {
   // const token = await getApiKey();
   return axios
     .get(url, {
@@ -16,7 +22,6 @@ const fetcher = async (url: string) => {
     })
     .then((json) => {
       return {
-        paging: json.page,
         data: json.data,
       };
     })
@@ -26,25 +31,22 @@ const fetcher = async (url: string) => {
     });
 };
 
-export default function getAllRoom({
-  name,
-  page,
-  limit,
+export default function getAllRoomBooking({
+  encodedString,
 }: {
-  name: string;
-  page?: string;
-  limit?: string;
+  encodedString?: string;
 }) {
-  const encodedString = name ? `&name=${encodeURIComponent(name)}` : "";
+  let encodeString = "";
+  if (encodedString) {
+    encodeString = encodeString.concat("&").concat(encodedString);
+  }
   const { data, error, isLoading, mutate } = useSWR(
-    `${endpoint}/meeting_room?page=${page ?? "1"}&limit=${
-      limit ?? "10"
-    }${encodedString}`,
+    `${endpoint}/meeting_room/books?${encodeString}`,
     fetcher
   );
 
   return {
-    rooms: data,
+    bookings: data,
     isLoading,
     isError: error,
     mutate,

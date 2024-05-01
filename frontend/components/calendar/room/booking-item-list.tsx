@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { toast } from "@/components/ui/use-toast";
 import { useLoading } from "@/hooks/loading-context";
-import deleteBookedResource from "@/lib/resources/deleteBookedResource";
+import deleteBookedRoom from "@/lib/room/deleteBookedRoom";
 import { shiftTypeToString, stringToDate } from "@/lib/utils";
 import { ShiftType } from "@/types";
 import { FaTrash } from "react-icons/fa";
@@ -11,9 +11,10 @@ import { PiSun, PiSunHorizon } from "react-icons/pi";
 
 export type BookingProps = {
   id: number;
-  resource: {
+  meetingRoom: {
     id: number;
     name: string;
+    location: string;
   };
   createdBy: {
     id: number;
@@ -98,7 +99,7 @@ const BookingItem = ({
 }) => {
   const { showLoading, hideLoading } = useLoading();
   const onDelete = async ({ id }: { id: number }) => {
-    const response: Promise<any> = deleteBookedResource({
+    const response: Promise<any> = deleteBookedRoom({
       id: id.toString(),
     });
     showLoading();
@@ -128,7 +129,7 @@ const BookingItem = ({
       toast({
         variant: "success",
         title: "Thành công",
-        description: "Huỷ đặt dùng tài nguyên thành công",
+        description: "Huỷ đặt dùng phòng họp thành công",
       });
       if (onDeleted) {
         onDeleted();
@@ -137,7 +138,7 @@ const BookingItem = ({
   };
   return (
     <div className="flex">
-      <span className="text-primary mr-auto">{booking.resource.name}</span>
+      <span className="text-primary mr-auto">{booking.meetingRoom.name}</span>
 
       <div className="flex gap-4 items-start w-2/5">
         <Avatar className="h-8 w-8">
@@ -156,7 +157,7 @@ const BookingItem = ({
       {isPersonal ? (
         <ConfirmDialog
           title={"Xác nhận"}
-          description="Bạn xác nhận muốn huỷ việc đặt dùng tài nguyên ?"
+          description="Bạn xác nhận muốn huỷ việc đặt dùng phòng họp ?"
           handleYes={() => {
             onDelete({ id: booking.id });
           }}

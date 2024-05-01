@@ -16,7 +16,7 @@ export default async function createRoom({
     Authorization: `Bearer ${apiKey}`,
     // Add other headers as needed
   };
-  const data = { name: name, ...(location && { location: location }) };
+  const data = { name: name.trim(), ...(location && { location: location }) };
   // Make a POST request with headers
   const res = axios
     .post(url, data, { headers: headers })

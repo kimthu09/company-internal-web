@@ -49,7 +49,7 @@ const AddUnit = () => {
     console.log(data);
     const response: Promise<any> = createUnit({
       unit: {
-        name: data.name,
+        name: data.name.trim(),
         features: data.features.map((item) => item.featureId),
       },
     });

@@ -8,6 +8,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
+import { vi } from "date-fns/locale";
 
 type DaypickerProps = {
   date: Date | undefined;
@@ -31,13 +32,15 @@ const DaypickerPopup = ({
         <Button
           variant={"outline"}
           className={cn(
-            `w-[280px] justify-start text-left font-normal ${triggerClassname}`,
+            `w-[280px] justify-start h-10 text-left font-normal rounded-xl ${triggerClassname}`,
             !date && "text-muted-foreground"
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {date ? (
-            format(date, "dd/MM/yyyy")
+            format(date, "dd/MM/yyyy", {
+              locale: vi,
+            })
           ) : (
             <span>{placeholder ?? "Pick a date"}</span>
           )}
@@ -53,9 +56,6 @@ const DaypickerPopup = ({
               "h-10 w-10 p-0 font-normal aria-selected:opacity-100"
             ),
           }}
-          disabled={(day) =>
-            fromDate ? day < fromDate : true && toDate ? day > toDate : true
-          }
           mode="single"
           selected={date}
           onSelect={setDate}

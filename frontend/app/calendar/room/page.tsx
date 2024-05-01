@@ -1,15 +1,15 @@
-import BookedResourceView from "@/components/calendar/resources/booked-resource-view";
 import BookingItemSkeleton from "@/components/calendar/resources/booking-item-skeleton";
+import BookedRoomView from "@/components/calendar/room/booked-room-view";
 import { Suspense } from "react";
 
-const BookResourceManage = () => {
+const BookRoomManage = () => {
   return (
     <div className="card___style">
       <Suspense fallback={<BookingItemSkeleton />}>
-        <BookedResourceView selectedPage={0} />
+        <BookedRoomView selectedPage={0} />
       </Suspense>
     </div>
   );
 };
 
-export default BookResourceManage;
+export default BookRoomManage;

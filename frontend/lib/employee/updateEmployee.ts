@@ -26,7 +26,7 @@ export default async function updateEmployee({
   const data = {
     ...(address && { address: address }),
     ...(image && { image: image }),
-    ...(name && { name: name }),
+    ...(name && { name: name.trim() }),
     ...(phone && { phone: phone }),
     ...(dob && { dob: dob }),
     ...(male && { male: male }),

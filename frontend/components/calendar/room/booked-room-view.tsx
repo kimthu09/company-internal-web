@@ -1,7 +1,4 @@
 "use client";
-import getAllResourceBooking from "@/lib/resources/getAllResourceBooking";
-import BookingItemSkeleton from "./booking-item-skeleton";
-import CalendarLink from "./links-item";
 import { useState } from "react";
 import { format } from "date-fns";
 import DaypickerPopup from "@/components/ui/daypicker-popup";
@@ -30,9 +27,12 @@ import {
 } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { AiOutlineClose } from "react-icons/ai";
-import ResourceList from "@/components/manage/resource/resource-list";
-import BookingItemList, { BookingProps } from "./booking-item";
 import { stringToDate } from "@/lib/utils";
+import BookingItemSkeleton from "../resources/booking-item-skeleton";
+import CalendarLink from "./links-item";
+import getAllRoomBooking from "@/lib/room/getAllRoomBooking";
+import RoomList from "@/components/manage/room/room-list";
+import BookingItemList, { BookingProps } from "./booking-item-list";
 import StaffList from "@/components/manage/employee/staff-filter-list";
 type FormValues = {
   filters: {
@@ -40,7 +40,7 @@ type FormValues = {
     value: string;
   }[];
 };
-const BookedResourceView = ({
+const BookedRoomView = ({
   isPersonal,
   selectedPage,
 }: {
@@ -54,7 +54,7 @@ const BookedResourceView = ({
   const filterValues = [
     { type: "from", name: "Từ ngày" },
     { type: "to", name: "Đến ngày" },
-    { type: "resource", name: "Tài nguyên" },
+    { type: "meetingRoom", name: "Phòng họp" },
   ];
   if (!isPersonal) {
     filterValues.push({ type: "createdBy", name: "Người tạo" });
@@ -88,10 +88,10 @@ const BookedResourceView = ({
     });
     setOpenFilter(false);
     router.push(
-      `/calendar/resources${isPersonal ? "/personal" : ""}?${stringToFilter}`
+      `/calendar/room${isPersonal ? "/personal" : ""}?${stringToFilter}`
     );
   };
-  const { bookings, mutate, isLoading, isError } = getAllResourceBooking({
+  const { bookings, mutate, isLoading, isError } = getAllRoomBooking({
     encodedString: isPersonal
       ? filterString.concat("&createdBy=3")
       : filterString,
@@ -161,15 +161,15 @@ const BookedResourceView = ({
                                 );
                               }}
                             />
-                          ) : item.type === "resource" ? (
+                          ) : item.type === "meetingRoom" ? (
                             <Controller
                               control={control}
                               name={`filters.${index}.value`}
                               render={({ field }) => (
-                                <ResourceList
+                                <RoomList
                                   isId
-                                  resource={field.value}
-                                  setResource={(unit: string | number) =>
+                                  room={field.value}
+                                  setRoom={(unit: string | number) =>
                                     field.onChange(unit)
                                   }
                                 />
@@ -189,7 +189,13 @@ const BookedResourceView = ({
                                 />
                               )}
                             />
-                          ) : null}
+                          ) : (
+                            <Input
+                              {...register(`filters.${index}.value`)}
+                              className="flex-1 rounded-full"
+                              type="text"
+                            ></Input>
+                          )}
 
                           <Button
                             variant={"ghost"}
@@ -301,4 +307,4 @@ const BookedResourceView = ({
   }
 };
 
-export default BookedResourceView;
+export default BookedRoomView;

@@ -12,3 +12,15 @@ export const shiftTypeToString = (value: ShiftType | string) => {
     return "Chiều";
   }
 };
+
+export const stringToDate = (value: string) => {
+  try {
+    var dateParts = value.split("/");
+    var dateObject = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]);
+    return dateObject;
+  } catch (error) {
+    // Handle the error here
+    console.error("Error converting string to date:", error);
+    return null; // Or any default value you prefer
+  }
+};

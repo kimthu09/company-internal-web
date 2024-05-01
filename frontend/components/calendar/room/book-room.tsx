@@ -1,33 +1,34 @@
 "use client";
 import { Calendar } from "@/components/ui/calendar";
-import getUnbookResources from "@/lib/resources/getUnBookResourceByDate";
-import { Resource, ShiftType } from "@/types";
+import { Room, ShiftType } from "@/types";
 import { addDays, format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { DateRange } from "react-day-picker";
-import SelectShift from "./select-shift";
 import { Button } from "@/components/ui/button";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { toast } from "@/components/ui/use-toast";
 import { shiftTypeToString } from "@/lib/utils";
-import bookResource from "@/lib/resources/bookResource";
 import { useLoading } from "@/hooks/loading-context";
 import { useRouter } from "next/navigation";
-import ItemListSkeleton from "./item-list-skeleton";
+
 import { Input } from "@/components/ui/input";
-const BookResource = () => {
+import SelectShift from "../resources/select-shift";
+import ItemListSkeleton from "../resources/item-list-skeleton";
+import getUnbookRooms from "@/lib/room/getUnBookRoomByDate";
+import bookRoom from "@/lib/room/bookRoom";
+const BookRoom = () => {
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(),
     to: addDays(new Date(), 1),
   });
   const router = useRouter();
-  const [resources, setResources] = useState<Resource[]>();
-  const [filteredList, setFilteredList] = useState<Resource[]>();
+  const [rooms, setRooms] = useState<Room[]>();
+  const [filteredList, setFilteredList] = useState<Room[]>();
   const [fromShift, setFromShift] = useState(ShiftType.DAY.toString());
   const [toShift, setToShift] = useState(ShiftType.NIGHT.toString());
   const { showLoading, hideLoading } = useLoading();
-  const onSubmit = async ({ resourceId }: { resourceId: string }) => {
+  const onSubmit = async ({ roomId }: { roomId: string }) => {
     if (!date || (date && !date.from)) {
       toast({
         variant: "destructive",
@@ -36,8 +37,8 @@ const BookResource = () => {
       });
       return;
     } else if (date && date.from) {
-      const response: Promise<any> = bookResource({
-        id: resourceId,
+      const response: Promise<any> = bookRoom({
+        id: roomId,
         data: {
           from: {
             date: format(date?.from, "dd/MM/yyyy", {
@@ -84,7 +85,7 @@ const BookResource = () => {
         toast({
           variant: "success",
           title: "Thành công",
-          description: "Đặt lịch sử dụng tài nguyên thành công",
+          description: "Đặt lịch sử dụng phòng họp thành công",
         });
         fetchResources();
       }
@@ -92,7 +93,7 @@ const BookResource = () => {
   };
   async function fetchResources() {
     if (!date || !date.from) {
-      setResources([]);
+      setRooms([]);
       return;
     }
     try {
@@ -103,16 +104,16 @@ const BookResource = () => {
         locale: vi,
       });
 
-      const response = await getUnbookResources({
+      const response = await getUnbookRooms({
         data: {
           from: { date: fromDate, shiftType: fromShift },
           to: { date: toDate, shiftType: date.to ? toShift : fromShift },
         },
       });
 
-      setResources(response.data);
+      setRooms(response.data);
     } catch (error) {
-      console.error("Error fetching resources:", error);
+      console.error("Error fetching rooms:", error);
     }
   }
   useEffect(() => {
@@ -121,11 +122,11 @@ const BookResource = () => {
 
   const [inputValue, setInputValue] = useState<string>("");
   const searchHandler = useCallback(() => {
-    const filteredData = resources?.filter((item) =>
+    const filteredData = rooms?.filter((item) =>
       item.name.toLowerCase().includes(inputValue.toLowerCase())
     );
     setFilteredList(filteredData);
-  }, [inputValue, resources]);
+  }, [inputValue, rooms]);
 
   // EFFECT: Search Handler
   useEffect(() => {
@@ -143,7 +144,7 @@ const BookResource = () => {
   return (
     <div className="flex gap-7 md:flex-row flex-col">
       <div className="flex flex-col gap-7">
-        <h1 className="table___title">Đặt lịch tài nguyên</h1>
+        <h1 className="table___title">Đặt lịch phòng họp</h1>
         <div className="card-shadow bg-white rounded-xl flex flex-col md:self-start self-center md:sticky right-0 top-0">
           <div className="p-7 pb-0 flex text-gray-text items-center gap-7">
             <div className="flex gap-1 items-start flex-1">
@@ -182,7 +183,7 @@ const BookResource = () => {
             variant={"outline"}
             onClick={() => fetchResources()}
           >
-            Xem tài nguyên
+            Xem phòng họp
           </Button>
           <Calendar
             defaultMonth={date?.from}
@@ -240,11 +241,14 @@ const BookResource = () => {
                   className="card-shadow bg-white rounded-xl p-4 py-7 flex flex-col items-center justify-center relative overflow-clip cursor-pointer group hover:shadow-md"
                 >
                   <span>{item.name}</span>
+                  {item.location === item.name ? null : (
+                    <span className="text-sm">({item.location})</span>
+                  )}
                   <ConfirmDialog
-                    title={`Xác nhận đặt dùng ${item.name} ?`}
-                    description={`Đặt dùng ${item.name} ${dateString}`}
+                    title={`Xác nhận đặt dùng phòng ${item.name} ?`}
+                    description={`Đặt dùng phòng ${item.name} ${dateString}`}
                     handleYes={() => {
-                      onSubmit({ resourceId: item.id.toString() });
+                      onSubmit({ roomId: item.id.toString() });
                     }}
                   >
                     <Button className="absolute right-0 top-[-100%] shadow-none rounded-none rounded-bl-xl transition-all group-hover:top-0 hover:bg-hover-accent">
@@ -261,4 +265,4 @@ const BookResource = () => {
   );
 };
 
-export default BookResource;
+export default BookRoom;

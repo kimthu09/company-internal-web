@@ -1,13 +1,13 @@
-import BookResource from "@/components/calendar/resources/book-resource";
 import BookSkeleton from "@/components/calendar/resources/book-skeleton";
+import BookRoom from "@/components/calendar/room/book-room";
 import { Suspense } from "react";
 
-const BookResourcePage = () => {
+const BookRoomPage = () => {
   return (
     <Suspense fallback={<BookSkeleton />}>
-      <BookResource />
+      <BookRoom />
     </Suspense>
   );
 };
 
-export default BookResourcePage;
+export default BookRoomPage;

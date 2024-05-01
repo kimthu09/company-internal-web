@@ -3,10 +3,10 @@ import axios from "axios";
 import useSWR from "swr";
 
 export type BookingProps = {
-  createdBy: string;
-  resource: string;
-  from: string;
-  to: string;
+  createdBy?: string;
+  resource?: string;
+  from?: string;
+  to?: string;
 };
 export const fetcher = (url: string) => {
   // const token = await getApiKey();
@@ -32,15 +32,13 @@ export const fetcher = (url: string) => {
 };
 
 export default function getAllResourceBooking({
-  filter,
+  encodedString,
 }: {
-  filter?: BookingProps;
+  encodedString?: string;
 }) {
   let encodeString = "";
-  if (filter) {
-    encodeString = Object.entries(filter)
-      .map(([key, value]) => `${key}=${encodeURIComponent(value.toString())}`)
-      .join("&");
+  if (encodedString) {
+    encodeString = encodeString.concat("&").concat(encodedString);
   }
   const { data, error, isLoading, mutate } = useSWR(
     `${endpoint}/resource/books?${encodeString}`,
