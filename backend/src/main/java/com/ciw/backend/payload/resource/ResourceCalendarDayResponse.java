@@ -9,6 +9,9 @@ import java.util.List;
 @Data
 @Builder
 public class ResourceCalendarDayResponse {
+	@Schema(name = "date")
+	private String date;
+
 	@Schema(name = "day")
 	private List<ResourceCalendarResponse> day;
 

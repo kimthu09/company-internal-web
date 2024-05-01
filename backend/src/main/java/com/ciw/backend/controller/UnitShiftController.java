@@ -1,6 +1,6 @@
 package com.ciw.backend.controller;
 
-import com.ciw.backend.payload.MapResponseWithoutPage;
+import com.ciw.backend.payload.ListResponseWithoutPage;
 import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.unitshift.*;
 import com.ciw.backend.service.UnitShiftService;
@@ -44,19 +44,19 @@ public class UnitShiftController {
 			summary = "Fetch unit shift by day",
 			description = "Fetch unit shift by day from database.\n" +
 						  "Note:\n" +
-						  "-From and to are required.\n" +
-						  "-Only admin and user can see their unit's calendar.\n" +
-						  "-Only admin can see all unit's calendar.\n" +
-						  "-If don't have unit in request body:\n" +
-						  "+if user is admin, it will get all unit's calendar.\n" +
-						  "+if user is not admin, it will get user's unit's calendar."
+						  "- From and to are required.\n" +
+						  "- Only admin and user can see their unit's calendar.\n" +
+						  "- Only admin can see all unit's calendar.\n" +
+						  "- If don't have unit in request body:\n" +
+						  "+ If user is admin, it will get all unit's calendar.\n" +
+						  "+ If user is not admin, it will get user's unit's calendar."
 	)
 	@ApiResponse(
 			responseCode = "200",
 			description = "Http Status is 200 OK"
 	)
 	//Set feature in function already
-	public ResponseEntity<MapResponseWithoutPage<UnitShiftDayResponse, UnitShiftDayFilter>> getUnitShiftByDay(@Valid UnitShiftDayFilter filter) {
+	public ResponseEntity<ListResponseWithoutPage<UnitShiftDayResponse, UnitShiftDayFilter>> getUnitShiftByDay(@Valid UnitShiftDayFilter filter) {
 		return new ResponseEntity<>(unitShiftService.fetchShiftByDay(filter), HttpStatus.OK);
 	}
 

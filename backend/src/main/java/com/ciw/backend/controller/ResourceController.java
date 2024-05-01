@@ -1,7 +1,7 @@
 package com.ciw.backend.controller;
 
 import com.ciw.backend.payload.ListResponse;
-import com.ciw.backend.payload.MapResponseWithoutPage;
+import com.ciw.backend.payload.ListResponseWithoutPage;
 import com.ciw.backend.payload.SimpleListResponse;
 import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.page.AppPageRequest;
@@ -114,7 +114,7 @@ public class ResourceController {
 			responseCode = "200",
 			description = "Http Status is 200 OK"
 	)
-	public ResponseEntity<MapResponseWithoutPage<ResourceCalendarDayResponse, ResourceCalendarFilter>> getResourceBooks(
+	public ResponseEntity<ListResponseWithoutPage<ResourceCalendarDayResponse, ResourceCalendarFilter>> getResourceBooks(
 			@Valid ResourceCalendarFilter filter) {
 		return new ResponseEntity<>(resourceService.getResourceCalendar(filter), HttpStatus.OK);
 	}

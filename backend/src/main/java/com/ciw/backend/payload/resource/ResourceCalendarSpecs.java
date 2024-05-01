@@ -15,8 +15,8 @@ public class ResourceCalendarSpecs {
 		return (root, query, cb) -> cb.equal(root.get("createdBy").get("id"), createdById);
 	}
 
-	public static Specification<ResourceCalendar> hasMeetingRoom(String meetingRoom) {
-		return (root, query, cb) -> cb.equal(root.get("meetingRoom").get("id"), meetingRoom);
+	public static Specification<ResourceCalendar> hasResource(String resource) {
+		return (root, query, cb) -> cb.equal(root.get("resource").get("id"), resource);
 	}
 
 	public static Specification<ResourceCalendar> isDateBookedAtAfter(String from) {
