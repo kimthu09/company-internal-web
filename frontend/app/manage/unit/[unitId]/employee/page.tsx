@@ -5,7 +5,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FaPhoneAlt } from "react-icons/fa";
 import { TbMailFilled } from "react-icons/tb";
 import UnitEmployeeSkeleton from "@/components/manage/unit/unit-employee-skeleton";
-import { unitLinks } from "@/constants";
 import UnitTitleLinks from "@/components/manage/unit/unit-title-links";
 const UnitEmployee = ({ params }: { params: { unitId: string } }) => {
   const { data, isLoading, isError, mutate } = getUnit(params.unitId);

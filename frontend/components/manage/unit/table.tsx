@@ -431,7 +431,7 @@ const UnitTable = () => {
               )
             }
             onNavigateFirst={() =>
-              router.push(`/manage/employee?page=${1}${filterString}`)
+              router.push(`/manage/unit?page=${1}${filterString}`)
             }
           />
         </div>

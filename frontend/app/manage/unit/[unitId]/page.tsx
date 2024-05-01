@@ -52,7 +52,7 @@ const UnitDetail = ({ params }: { params: { unitId: string } }) => {
     }
   };
   const resetForm = () => {
-    if (data) {
+    if (data && !data.hasOwnProperty("message")) {
       const hasFeature: { featureId: number }[] = [];
       data.features.forEach((item) => {
         if (item.has) {
@@ -105,7 +105,8 @@ const UnitDetail = ({ params }: { params: { unitId: string } }) => {
     }
   };
   if (isLoading) return <UnitDetailSkeleton />;
-  else if (isError) return <div>Failed to load</div>;
+  else if (isError || data.hasOwnProperty("message"))
+    return <div>Failed to load</div>;
   else
     return (
       <div className="card___style flex flex-col whitespace-nowrap">

@@ -7,7 +7,7 @@ import { CgWorkAlt } from "react-icons/cg";
 import { z } from "zod";
 
 export const apiKey =
-  "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE3MTQxOTk4MzYsImV4cCI6MTcxNDQxNTgzNn0.lYU959dQ5cipkQrUL1x6NI-FWS4OT2ONgdPzNZh_J5dC6nuYLH3PWHLv1T48nW_o";
+  "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyMTUyMTQ5NUBnbS51aXQuZWR1LnZuIiwiaWF0IjoxNzE0NDg3NDY3LCJleHAiOjE3MTQ3MDM0Njd9.GGkUxaNpvLL9kUi2tvvMv2nnuVXYKlFJAZ9KQiJJ5F3ufTWM6VlEojfKezrFYygX";
 export const endpoint = "http://localhost:8080/api/v1";
 export const required = z.string().min(1, "Không để trống trường này");
 export const phoneRegex = new RegExp(/(0[3|5|7|8|9])+([0-9]{8})\b/g);
@@ -69,5 +69,18 @@ export const unitLinks: UnitLink[] = [
     value: "calendar",
     label: "Lịch",
     href: "/calendar",
+  },
+];
+
+export const calendarLinks: UnitLink[] = [
+  {
+    value: "general",
+    label: "Lịch chung",
+    href: "",
+  },
+  {
+    value: "personal",
+    label: "Lịch bạn đã đăng ký",
+    href: "/personal",
   },
 ];
