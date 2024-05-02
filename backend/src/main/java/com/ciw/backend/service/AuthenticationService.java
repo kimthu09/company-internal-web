@@ -13,7 +13,6 @@ import com.ciw.backend.payload.auth.EmailRequest;
 import com.ciw.backend.payload.auth.ResetPasswordRequest;
 import com.ciw.backend.repository.PasswordResetTokenRepository;
 import com.ciw.backend.repository.UserRepository;
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,7 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.UUID;
 
 @Service
@@ -53,9 +51,21 @@ public class AuthenticationService {
 		User user = Common.findUserByEmail(request.getEmail(), userRepository);
 
 		String token = UUID.randomUUID().toString();
-		passwordResetEmailLink(user, token);
+
 		passwordResetTokenRepository.save(new PasswordResetToken(token, user));
+
+		passwordResetEmailLink(user, token);
 		return new SimpleResponse();
+	}
+
+	private void passwordResetEmailLink(User user, String token) {
+		String url = generateResetPasswordUrl(token);
+
+		mailSender.sendResetPasswordEmail(url, user);
+	}
+
+	private String generateResetPasswordUrl(String token) {
+		return ApplicationConst.FE_URL + ApplicationConst.RESET_PASSWORD_FE_PATH + token;
 	}
 
 	@Transactional
@@ -72,20 +82,5 @@ public class AuthenticationService {
 
 		userRepository.save(user);
 		return new SimpleResponse();
-	}
-
-
-	private void passwordResetEmailLink(User user, String token) {
-		String url = generateResetPasswordUrl(token);
-		try {
-			mailSender.sendResetPasswordEmail(url, user);
-		} catch (MessagingException | IOException e) {
-			e.printStackTrace(System.out);
-			throw new RuntimeException(Message.CAN_NOT_SEND_EMAIL);
-		}
-	}
-
-	private String generateResetPasswordUrl(String token) {
-		return ApplicationConst.FE_URL + ApplicationConst.RESET_PASSWORD_FE_PATH + token;
 	}
 }

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
@@ -17,18 +16,20 @@ import java.util.Properties;
 @RequiredArgsConstructor
 @Component
 public class MailSender {
-	@Value("${gmail.username}")
-	private String MAIL_USERNAME;
-	@Value("${gmail.password}")
-	private String MAIL_PASSWORD;
+	@Value("${gmail.username}") private String MAIL_USERNAME;
+	@Value("${gmail.password}") private String MAIL_PASSWORD;
 
-	public void sendResetPasswordEmail(String url, User user) throws MessagingException, IOException {
+	@Async
+	public void sendResetPasswordEmail(String url, User user) {
 		Session session = setUpSession();
 
-		Message message = setUpMessageForResetPassword(session, user.getEmail(), user.getName(), url);
-
-		Transport t = session.getTransport();
-		t.sendMessage(message, new Address[]{new InternetAddress(user.getEmail())});
+		try {
+			Message message = setUpMessageForResetPassword(session, user.getEmail(), user.getName(), url);
+			Transport.send(message);
+		} catch (Exception e) {
+			System.err.println("Error sending email: " + e.getMessage());
+			e.printStackTrace(System.out);
+		}
 	}
 
 	private Message setUpMessageForResetPassword(Session session, String emailTo, String nameTo, String url) throws
@@ -38,11 +39,12 @@ public class MailSender {
 		message.setFrom(new InternetAddress("from@gmail.com"));
 		message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailTo));
 		message.setSubject("Reset password");
-		String mailContent = "<p> Hi, " + nameTo + ", </p>" + "<p>Thank you for using our service," +
-							 "Please, follow the link below to reset your password.</p>" +
+		String mailContent = "<p>Xin chào, " + nameTo + ", </p>" +
+							 "<p>Cảm ơn đã sử dụng dịch vụ của chúng tôi.</p>" +
+							 "<p>Hãy theo link này để có thể reset mật khẩu.</p>" +
 							 "<a href=\"" + url + "\">Reset Password</a>" +
-							 "<p> Notice: This link will be expired after 5 minutes.</p>" +
-							 "<p> Thank you <br> Reset User's Password Portal Service";
+							 "<p>Chú ý: Link này chỉ có hiệu lực trong vòng 5 phút.</p>" +
+							 "<p>Cảm ơn</p>";
 		message.setText(mailContent);
 		message.setContent(mailContent, "text/html;charset=utf-8");
 		return message;
