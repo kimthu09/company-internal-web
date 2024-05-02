@@ -3,6 +3,8 @@
 import NewAct from "@/components/news/new";
 import UploadNews, { Post } from "@/components/news/upload";
 import react, { useState } from "react";
+import NotePicker from '@/components/news/notePicker'
+import Note from '@/components/news/note'
 
 export const samplePosts: Post[] = [
   {
@@ -60,58 +62,10 @@ const UnitManage = () => {
     <div className="flex xl:flex-row flex-col-reverse">
       <div className="flex basis-2/3 flex-col gap-8 xl:mr-8">
         <h1 className="table___title border-b p-2">Bảng tin</h1>
-        <UploadNews onAddPost={handleAddPost} />
+        <NotePicker />
+        
         <h2 className="text-xl font-semibold mb-4">Các thông tin đã đăng</h2>
-        {posts.map((post) => (
-          <div key={post.id} className="bg-white rounded-lg shadow-lg p-4 mb-4">
-            <div className="font-bold">{post.author}</div>
-            <div className="text-sm italic mb-2">{post.postedDate.toDateString()}</div>
-            <p className="mb-2">{post.content}</p>
-            {post.file && (
-              <div className="mb-2">
-                <a
-                  href={URL.createObjectURL(post.file)}
-                  download={post.file.name}
-                  className="text-blue-500"
-                >
-                  Tải xuống tệp
-                </a>
-              </div>
-            )}
-            <div className="flex items-center mb-2">
-              <button onClick={() => handleLikePost(post.id)} className="mr-2">
-                <span role="img" aria-label="Like">
-                  Thích
-                </span>{" "}
-                {post.likes}
-              </button>
-              <button>
-                <span role="img" aria-label="Comment">
-                  Bình luận
-                </span>{" "}
-                {post.comments.length}
-              </button>
-            </div>
-            <div>
-              {post.comments.map((comment, index) => (
-                <p key={index} className="text-gray-600 mb-1">
-                  {comment}
-                </p>
-              ))}
-              <input
-                type="text"
-                placeholder="Thêm bình luận..."
-                className="w-full p-2 border rounded"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleAddComment(post.id, e.currentTarget.value);
-                    e.currentTarget.value = "";
-                  }
-                }}
-              />
-            </div>
-          </div>
-        ))}
+        <Note/>
       </div>
       <div className="flex flex-col flex-1 justify-start gap-8 mb-8">
         <div className="flex xl:flex-col-reverse sm:flex-row flex-col gap-8">
