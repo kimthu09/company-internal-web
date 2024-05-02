@@ -1,7 +1,7 @@
 package com.ciw.backend.constants;
 
 public class ApplicationConst {
-	public final static String FE_URL = "haha";
+	public final static String FE_URL = "http://localhost:80";
 	public final static String RESET_PASSWORD_FE_PATH = "/reset_password/";
 	public final static String BUCKET_NAME = "company-internal-web.appspot.com";
 

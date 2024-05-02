@@ -81,6 +81,9 @@ const config = {
       transitionProperty: {
         "max-height": "max-height",
       },
+      backgroundImage: {
+        'auth-background': "url('/auth-background.png')",
+      }
     },
   },
   plugins: [require("tailwindcss-animate")],

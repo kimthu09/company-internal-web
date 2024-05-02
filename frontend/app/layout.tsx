@@ -6,6 +6,7 @@ import Header from "@/components/header";
 import HeaderMobile from "@/components/header-mobile";
 import { LoadingProvider } from "@/hooks/loading-context";
 import { Toaster } from "@/components/ui/toaster";
+import { auth } from "@/lib/auth/auth";
 
 const roboto = Roboto({
   weight: ["300", "400", "500", "700"],
@@ -24,12 +25,12 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const isAuthented = true;
+  const isAuthented = await auth().then((res: any) => res?.user);
   return (
     <html lang="en" className="h-full">
       <body className={`${roboto.className} flex overflow-y-hidden h-full`}>
