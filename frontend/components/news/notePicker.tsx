@@ -27,7 +27,7 @@ const Todo = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-3xl w-full grid place-items-center mx-auto p-8 mb-10 rounded-md bg-white"
+      className="max-w-3xl w-full grid place-items-center mx-auto py-8 px-3 mb-10 rounded-md bg-white"
     >
       <Tiptap
         content={content}
