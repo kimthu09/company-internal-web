@@ -40,7 +40,6 @@ export default function getUnseenNumber() {
   const { data, error, isLoading, mutate } = useSWR(
     `${endpoint}/notification/number_unseen`,
     fetcher,
-    { refreshInterval: 30000 }
   );
 
   return {

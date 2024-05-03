@@ -74,9 +74,9 @@ const LoginForm = () => {
               <span className="error___message">{errors.password.message}</span>
             )}
           </div>
-          <Link className="self-end" href={"reset-password"}>
+          {/* <Link className="self-end" href={"reset-password"}>
             <p className="text-primary">Quên mật khẩu?</p>
-          </Link>
+          </Link> */}
           <Button type="submit" disabled={isLoading}>
             {isLoading ? (
               <LoadingSpinner className={"h-4 w-4 text-white"} />

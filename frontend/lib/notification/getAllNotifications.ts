@@ -53,7 +53,6 @@ export default function getAllNotifications({
   const { data, error, isLoading, mutate } = useSWR(
     `${endpoint}/notification?${encodeString}`,
     fetcher,
-    { refreshInterval: 30000 }
   );
 
   return {
