@@ -34,18 +34,19 @@ const LoginForm = () => {
     password: string;
   }) => {
     setIsLoading(true);
-    const responseData = await login({
-      email: email,
-      password: password,
-    });
-    console.log(responseData)
-    if (responseData?.error) {
+    try {
+      await login({
+        email: email,
+        password: password,
+      });
+    } catch (e) {
       toast({
         variant: "destructive",
         title: "Đăng nhập thất bại",
         description: "Vui lòng kiểm tra lại email và mật khẩu của bạn",
       });
     }
+
     setIsLoading(false);
   };
 
