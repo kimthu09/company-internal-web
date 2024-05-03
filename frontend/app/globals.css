@@ -137,6 +137,7 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
+
 .one-line {
   overflow: hidden;
   width: 100%;
@@ -144,6 +145,7 @@
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
 }
+
 .table___title {
   @apply xl:text-3xl text-2xl font-bold tracking-wide;
 }
@@ -224,4 +226,16 @@ input[type="date"]::-webkit-input-placeholder {
 
 .codex-editor__redactor {
   padding-bottom: 150px !important;
+}
+
+h2 {
+  @apply text-2xl font-bold tracking-tight lg:text-3xl;
+}
+
+h3 {
+  @apply text-xl font-bold tracking-tight lg:text-2xl;
+}
+
+h4 {
+  @apply text-lg font-bold tracking-tight lg:text-xl;
 }

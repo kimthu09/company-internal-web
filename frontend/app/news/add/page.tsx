@@ -2,14 +2,11 @@
 
 import { useLoading } from "@/hooks/loading-context";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { required } from "@/constants";
 import * as z from "zod";
 import { SubmitErrorHandler, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import createNewNews from "@/lib/post/createNewNews";
 import { toast } from "@/components/ui/use-toast";
-import getAllTags from "@/lib/tag/getAllTags";
 import { Button } from "@/components/ui/button";
-import { FiTrash2 } from "react-icons/fi";
 import { LuCheck } from "react-icons/lu";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,6 +16,7 @@ import { OutputData } from "@editorjs/editorjs";
 import { useState } from "react";
 import React from "react";
 import { imageUpload } from "@/lib/employee/uploadImage";
+import { useRouter } from 'next/navigation';
 
 const Schema = z.object({
     title: z.string().min(1, "Không được để trống").max(100, "Tối đa 100 ký tự"),
@@ -32,6 +30,10 @@ const EditorBlock = dynamic(() => import("../../../components/news/editor"), {
 });
 
 const AddNewsPage = () => {
+    const router = useRouter();
+    function redirectToNews() {
+        router.push('/news');
+    }
     const [image, setImage] = useState<any>();
     const [imagePreviews, setImagePreviews] = useState<any>();
     const handleMultipleImage = (event: any) => {
@@ -164,6 +166,8 @@ const AddNewsPage = () => {
                 description: "Thêm bài báo mới thành công",
             });
             setImage(null);
+
+            redirectToNews()
         }
     };
 
@@ -258,10 +262,10 @@ const AddNewsPage = () => {
                         </div>
                     </div>
                     <div className="card___style flex flex-col gap-4">
-                        <EditorBlock data={content} onChange={setContent} holder="editorjs-container" />
+                        <EditorBlock data={content} onChange={setContent} holder="editorjs-container" readonly={false} />
                     </div>
                     <div className="flex md:justify-end justify-stretch gap-2">
-                        <Button
+                        {/* <Button
                             className="px-4 bg-white md:flex-none flex-1"
                             variant={"outline"}
                             type="button"
@@ -281,7 +285,7 @@ const AddNewsPage = () => {
                                 <FiTrash2 className="text-muted-foreground" />
                                 Hủy
                             </div>
-                        </Button>
+                        </Button> */}
                         <Button className="px-4 pl-2 md:flex-none  flex-1" type="button" onClick={() => handleSubmit(onSubmit, onErrors)()
                         }>
                             <div className="flex flex-wrap gap-2 items-center">

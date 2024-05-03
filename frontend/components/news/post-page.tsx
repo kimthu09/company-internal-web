@@ -28,9 +28,6 @@ import { stringToDate } from "@/lib/utils";
 import DaypickerPopup from "../ui/daypicker-popup";
 import { AiOutlineClose } from "react-icons/ai";
 import ViewMoreLink from "../home/view-more-link";
-import { toast } from "../ui/use-toast";
-import markAllSeen from "@/lib/notification/markAllSeen";
-import { useLoading } from "@/hooks/loading-context";
 import Link from "next/link";
 import { Input } from "../ui/input";
 import getAllPosts from "@/lib/post/getAllPost";
@@ -61,6 +58,9 @@ const PostPage = () => {
     { type: "tags", name: "Tag" },
   ];
   const [latestFilter, setLatestFilter] = useState("");
+  const onDelete = () => {
+    mutate();
+  };
   Array.from(searchParams.keys()).forEach((key: string) => {
     if (searchParams.get(key) && key !== "limit") {
       const existingFilterIndex = filters.findIndex(
@@ -112,7 +112,6 @@ const PostPage = () => {
     mutate: mutateTag,
   } = getAllTags();
 
-  const { hideLoading, showLoading } = useLoading();
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     let stringToFilter = "";
     data.filters.forEach((item) => {
@@ -175,7 +174,7 @@ const PostPage = () => {
                         </label>
                         <div className=" flex gap-1 items-center">
                           {item.type === "updatedAtFrom" ||
-                          item.type === "updatedAtTo" ? (
+                            item.type === "updatedAtTo" ? (
                             <Controller
                               control={control}
                               name={`filters.${index}.value`}
@@ -337,7 +336,7 @@ const PostPage = () => {
 
         {posts.data.length > 0 ? (
           posts.data.map((item: News) => (
-            <NewsListItem key={item.id} item={item} />
+            <NewsListItem key={item.id} item={item} canDelete={true} onDeleted={onDelete} />
           ))
         ) : (
           <div className="flex justify-center py-20">

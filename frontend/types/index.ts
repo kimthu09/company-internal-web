@@ -1,3 +1,4 @@
+import { OutputData } from "@editorjs/editorjs";
 import { IconType } from "react-icons";
 
 export type SidebarItem = {
@@ -96,6 +97,7 @@ export type News = {
   description: string;
   image: string;
   updatedAt: string;
+  content: OutputData;
   createdBy: {
     id: number;
     email: string;

@@ -28,7 +28,7 @@ const NewCard = (item: News) => {
                     <IoPersonOutline className="h-4 w-4" />
                     <p className="text-sm ml-3">{item.createdBy.name} (item.</p>
                     <p className="ml-auto">
-                        {item.updatedAt.toLocaleDateString("vi-VN")}
+                        {item.updatedAt}
                     </p>
                 </div>
             </div>

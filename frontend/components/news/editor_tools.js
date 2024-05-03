@@ -11,9 +11,9 @@ import Marker from '@editorjs/marker';
 import ImageTool from '@editorjs/image';
 import fileUpload from "@/lib/fileUpload";
 import AttachesTool from '@editorjs/attaches';
+import Table from '@editorjs/table'
 import { types } from "util";
 
-const Table = require('editorjs-table');
 const AlignmentTuneTool = require('editorjs-text-alignment-blocktune');
 
 export const EDITOR_TOOLS = {
