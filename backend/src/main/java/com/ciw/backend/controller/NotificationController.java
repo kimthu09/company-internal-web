@@ -77,7 +77,7 @@ public class NotificationController {
 			description = "Http Status is 201 CREATED"
 	)
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'NOTI')")
-	public ResponseEntity<SimpleResponse> sendNotification(@Valid CreateNotificationRequest request) {
+	public ResponseEntity<SimpleResponse> sendNotification(@Valid @RequestBody CreateNotificationRequest request) {
 		return new ResponseEntity<>(notificationService.sendNotification(request), HttpStatus.OK);
 	}
 
