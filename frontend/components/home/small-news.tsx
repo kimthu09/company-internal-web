@@ -1,15 +1,29 @@
+"use client";
+import getAllPosts from "@/lib/post/getAllPost";
 import Image from "next/image";
-import { newsList } from "./news-container";
 import { IoPersonOutline } from "react-icons/io5";
+import NewsListItemSkeleton from "../news/news-list-item-skeleton";
+import { News } from "@/types";
+import { dateTimeStringFormat } from "@/lib/utils";
 const SmallNews = () => {
-  const item = newsList[0];
-  return (
-    <div className="rounded-xl card-shadow overflow-clip bg-white">
+  const filter = {
+    page: "1",
+    limit: "2",
+    tags: "2",
+  };
+  const { posts, mutate, isLoading, isError } = getAllPosts({
+    filter: filter,
+  });
+  if (isLoading) {
+    return <NewsListItemSkeleton number={3} />;
+  } else if (isError || posts.hasOwnProperty("message")) {
+    return <div>Failed to load</div>;
+  }
+  return posts.data.map((item: News) => (
+    <div className="rounded-xl card-shadow overflow-clip bg-white flex-1">
       <Image
         className="object-contain w-full"
-        src={
-          "https://img.freepik.com/free-vector/world-environment-day-paper-style-background_23-2149394152.jpg?t=st=1713194631~exp=1713198231~hmac=7874e4fdef830b3ad4893aa422ca7f67aa137574204dd06f2183d5605c21cc1a&w=1380"
-        }
+        src={item.image}
         alt="image"
         width={400}
         height={400}
@@ -18,24 +32,22 @@ const SmallNews = () => {
         <div className="flex flex-row">
           {item.tags.map((tag) => (
             <h2
-              key={tag}
+              key={tag.id}
               className="uppercase text-xs mr-4 hover:text-primary transition-colors"
             >
-              {tag}
+              {tag.name}
             </h2>
           ))}
         </div>
         <h2 className="text-xl font-bold">{item.title}</h2>
         <div className="flex flex-row text-xs text-muted-foreground items-start">
           <IoPersonOutline className="h-4 w-4" />
-          <p className="text-sm ml-3">{item.createdBy}</p>
-          <p className="ml-auto">
-            {item.createdDate.toLocaleDateString("vi-VN")}
-          </p>
+          <p className="text-sm ml-3">{item.createdBy.name}</p>
+          <p className="ml-auto">{dateTimeStringFormat(item.updatedAt)} </p>
         </div>
       </div>
     </div>
-  );
+  ));
 };
 
 export default SmallNews;
