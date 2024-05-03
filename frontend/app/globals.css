@@ -78,13 +78,16 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
 }
+
 * {
   @apply p-0 m-0 box-border;
 }
+
 .sidebar__logo {
   @apply w-12 h-12 object-contain rounded-md;
 }
@@ -96,6 +99,7 @@
 .sidebar__icon {
   @apply w-6 h-6 inline-block;
 }
+
 /* width */
 ::-webkit-scrollbar {
   width: 10px;
@@ -117,12 +121,15 @@
 .card-shadow {
   @apply shadow-[0_3px_20px_#1d26260d];
 }
+
 .card___style {
   @apply card-shadow bg-white rounded-xl p-8;
 }
+
 .active-date {
   @apply underline decoration-primary underline-offset-8 decoration-2;
 }
+
 .two-line {
   overflow: hidden;
   width: 100%;
@@ -134,19 +141,23 @@
 .table___title {
   @apply xl:text-3xl text-2xl font-bold tracking-wide;
 }
+
 .DropdownMenuContent {
   width: var(--radix-dropdown-menu-trigger-width);
   max-height: var(--radix-dropdown-menu-content-available-height);
 }
+
 .PopoverContent {
   width: var(--radix-popover-trigger-width);
   max-height: var(--radix-popover-content-available-height);
 }
+
 .loader {
   width: 50px;
   aspect-ratio: 1;
   display: grid;
 }
+
 .loader::before,
 .loader::after {
   content: "";
@@ -157,6 +168,7 @@
   background-size: 12px 12px;
   animation: l12 1s infinite;
 }
+
 .loader::before {
   margin: 4px;
   filter: hue-rotate(45deg);
@@ -177,9 +189,11 @@ input::-webkit-calendar-picker-indicator {
 input[type="date"]::-webkit-input-placeholder {
   visibility: hidden !important;
 }
+
 .error___message {
   @apply text-sm text-red-700;
 }
+
 .link___primary {
   @apply text-primary hover:text-hover-accent;
 }
@@ -191,7 +205,17 @@ input[type="date"]::-webkit-input-placeholder {
   line-height: 0.1em;
   margin: 10px 0 8px;
 }
+
 .text_line span {
   background: #fff;
   padding: 0 10px 0 0;
+}
+
+.ce-block__content,
+.ce-toolbar__content {
+  max-width: 95%;
+}
+
+.codex-editor__redactor {
+  padding-bottom: 150px !important;
 }
