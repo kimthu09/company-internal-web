@@ -6,16 +6,6 @@ import SmallNews from "./small-news";
 // import "react-day-picker/dist/style.css";
 import CalendarDayNight from "../calendar/personal/calendar-day-night";
 const HomePage = () => {
-  const [date, setDate] = useState<Date | undefined>(new Date());
-  const activeDays = [
-    new Date(2024, 3, 15),
-    new Date(2024, 3, 14),
-    new Date(2024, 3, 11),
-    new Date(2024, 3, 12),
-    new Date(2024, 3, 10),
-  ];
-  const activeStyle = { border: "solid black" };
-
   return (
     <div className="flex xl:flex-row flex-col-reverse">
       <div className="flex basis-2/3 flex-col gap-8 xl:mr-8">

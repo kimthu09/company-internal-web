@@ -26,7 +26,6 @@ const login = async (credentials) => {
         console.error("Error:", error);
         return error.response.data;
       });
-    console.log(user);
     user.token = token;
     return user;
   } catch (e) {
