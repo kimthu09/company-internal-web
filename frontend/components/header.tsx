@@ -3,12 +3,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { GoBell } from "react-icons/go";
-import { logOut } from "@/lib/auth/action";
-// import { Button } from "./ui/button";
-import { LuLogOut } from "react-icons/lu";
-import { Button } from "./ui/button";
 import getUnseenNumber from "@/lib/notification/getUnseenNumber";
-// import Profile from "./profile";
+import Profile from "./home/profile";
 
 const Header = () => {
   const { data, mutate, isLoading, isError } = getUnseenNumber();
@@ -30,7 +26,7 @@ const Header = () => {
             ></Image>
           </Link>
         </div>
-        <div className="self-center flex items-center">
+        <div className="self-center flex items-center gap-4">
           <Link
             href={"/notifications"}
             className="hover:text-primary transition-colors"
@@ -45,18 +41,7 @@ const Header = () => {
             </div>
           </Link>
 
-          {/* <Profile /> */}
-          <form action={logOut} className="w-full">
-            <Button
-              variant={"ghost"}
-              className="rounded-none w-full justify-start"
-            >
-              <div className="flex gap-2 text-primary">
-                <LuLogOut className="h-5 w-5 " />
-                Đăng xuất
-              </div>
-            </Button>
-          </form>
+          <Profile />
         </div>
       </div>
     </div>

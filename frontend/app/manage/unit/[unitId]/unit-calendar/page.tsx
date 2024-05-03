@@ -1,5 +1,6 @@
 "use client";
 
+import CalendarSkeleton from "@/components/manage/unit/calendar-skeleton";
 import UnitEmployeeSkeleton from "@/components/manage/unit/unit-employee-skeleton";
 import UnitTitleLinks from "@/components/manage/unit/unit-title-links";
 import { Button } from "@/components/ui/button";
@@ -230,7 +231,7 @@ const UnitCalendarPage = ({ params }: { params: { unitId: string } }) => {
               ))}
             </div>
             <div className="grid grid-cols-8 w-full sm:gap-x-2 gap-x-1 gap-y-4">
-              <div className="uppercase font-light w-20 flex gap-1 self-start items-center">
+              <div className="uppercase font-light w-20 flex gap-1 items-center">
                 <PiSun className="w-6 h-6 text-amber-500 " />
                 <span className="md:block hidden">
                   {shiftTypeToString(ShiftType.DAY)}
@@ -254,7 +255,7 @@ const UnitCalendarPage = ({ params }: { params: { unitId: string } }) => {
                   }`}
                 >
                   <div
-                    className={`w-full md:h-16 h-10 transition-colors ${
+                    className={`w-full md:h-16 h-10 transition-colors rounded ${
                       item.hasDayShift === true
                         ? "bg-primary hover:bg-hover-accent"
                         : "bg-slate-300 hover:bg-slate-400/90"
@@ -264,7 +265,7 @@ const UnitCalendarPage = ({ params }: { params: { unitId: string } }) => {
               ))}
             </div>
             <div className="grid grid-cols-8 w-full sm:gap-x-2 gap-x-1">
-              <div className="uppercase font-light w-20 flex gap-1 self-start items-center">
+              <div className="uppercase font-light w-20 flex gap-1 items-center">
                 <PiSunHorizon className="w-6 h-6 text-orange-500" />
                 <span className="md:block hidden">
                   {shiftTypeToString(ShiftType.NIGHT)}
@@ -289,7 +290,7 @@ const UnitCalendarPage = ({ params }: { params: { unitId: string } }) => {
                   }`}
                 >
                   <div
-                    className={`w-full md:h-16 h-10 transition-colors  ${
+                    className={`w-full md:h-16 h-10 transition-colors rounded ${
                       item.hasNightShift === true
                         ? "bg-primary hover:bg-hover-accent"
                         : "bg-slate-300 hover:bg-slate-400/90"
@@ -300,7 +301,7 @@ const UnitCalendarPage = ({ params }: { params: { unitId: string } }) => {
             </div>
           </div>
         ) : (
-          <div>Hi</div>
+          <CalendarSkeleton />
         )}
       </div>
     );
