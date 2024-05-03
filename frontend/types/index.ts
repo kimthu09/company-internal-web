@@ -89,3 +89,29 @@ export type Notification = {
   createdAt: string;
   seen: boolean;
 };
+
+export type News = {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  updatedAt: Date;
+  createdBy: {
+    id: number;
+    email: string;
+    phone: string;
+    name: string;
+    image: string;
+  };
+  tags: {
+    id: number,
+    name: string,
+    numberPost: number
+  }[]
+};
+
+export type Tag = {
+  id: number;
+  name: string;
+  numberPost: number;
+}
