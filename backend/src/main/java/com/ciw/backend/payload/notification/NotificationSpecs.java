@@ -11,6 +11,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class NotificationSpecs {
+	public static Specification<Notification> hasSeen(Boolean seen) {
+		return (root, query, cb) -> cb.equal(root.get("seen"), seen);
+	}
+
 	public static Specification<Notification> hasReceiver(String receiverId) {
 		return (root, query, cb) -> cb.equal(root.get("toUser").get("id"), receiverId);
 	}

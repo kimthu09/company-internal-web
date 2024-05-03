@@ -76,6 +76,9 @@ public class NotificationService {
 		if (filter.getToDate() != null) {
 			spec = spec.and(NotificationSpecs.isDateCreatedBefore(filter.getToDate()));
 		}
+		if(filter.getSeen() != null){
+			spec = spec.and(NotificationSpecs.hasSeen(filter.getSeen()));
+		}
 		return spec;
 	}
 
