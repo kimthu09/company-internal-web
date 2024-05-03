@@ -51,6 +51,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { AiOutlineClose } from "react-icons/ai";
 import Paging from "@/components/paging";
+import { useLoading } from "@/hooks/loading-context";
+import { toast } from "@/components/ui/use-toast";
+import deleteUnit from "@/lib/unit/deleteUnit";
+import ConfirmDialog from "@/components/ui/confirm-dialog";
+import { FaTrash } from "react-icons/fa";
 type FormValues = {
   filters: {
     type: string;
@@ -58,86 +63,6 @@ type FormValues = {
   }[];
 };
 
-const columns: ColumnDef<Unit>[] = [
-  {
-    accessorKey: "id",
-    header: () => {
-      return (
-        <div className="flex justify-end">
-          <span>ID</span>
-        </div>
-      );
-    },
-    cell: ({ row }) => <div className="text-right">{row.getValue("id")}</div>,
-  },
-  {
-    accessorKey: "name",
-    header: ({ column }) => {
-      return <span>Tên phòng</span>;
-    },
-    cell: ({ row }) => (
-      <Link
-        className="capitalize leading-6 text-base link___primary"
-        href={`/manage/unit/${row.original.id}`}
-      >
-        {row.original.name}
-      </Link>
-    ),
-  },
-  {
-    accessorKey: "image",
-    header: () => {},
-    cell: ({ row }) => (
-      <div className="flex justify-end">
-        {row.original.manager ? (
-          <Avatar>
-            <AvatarImage src={row.original.manager.image} alt="avatar" />
-            <AvatarFallback>
-              {row.original.manager.name.substring(0, 2)}
-            </AvatarFallback>
-          </Avatar>
-        ) : null}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "manager",
-    header: ({ column }) => {
-      return <span>Trưởng phòng</span>;
-    },
-    cell: ({ row }) => (
-      <div className="leading-6 flex flex-col">
-        {row.original.manager ? (
-          <>
-            <span className="capitalize leading-6 text-base">
-              {row.original.manager.name}
-            </span>
-            <span className="text-sm leading-6 font-light">
-              {row.original.manager.email} | {row.original.manager.phone}
-            </span>
-          </>
-        ) : (
-          <span>Không có trưởng phòng</span>
-        )}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "staffs",
-    header: ({ column }) => {
-      return (
-        <div className="flex justify-end">
-          <span>Số nhân viên</span>
-        </div>
-      );
-    },
-    cell: ({ row }) => (
-      <div className="leading-6 flex flex-col text-right">
-        <span>{row.original.numberStaffs.toLocaleString()}</span>
-      </div>
-    ),
-  },
-];
 const UnitTable = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -180,7 +105,110 @@ const UnitTable = () => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-
+  const columns: ColumnDef<Unit>[] = [
+    {
+      accessorKey: "id",
+      header: () => {
+        return (
+          <div className="flex justify-end">
+            <span>ID</span>
+          </div>
+        );
+      },
+      cell: ({ row }) => <div className="text-right">{row.getValue("id")}</div>,
+    },
+    {
+      accessorKey: "name",
+      header: ({ column }) => {
+        return <span>Tên phòng</span>;
+      },
+      cell: ({ row }) => (
+        <Link
+          className="capitalize leading-6 text-base link___primary"
+          href={`/manage/unit/${row.original.id}`}
+        >
+          {row.original.name}
+        </Link>
+      ),
+    },
+    {
+      accessorKey: "image",
+      header: () => {},
+      cell: ({ row }) => (
+        <div className="flex justify-end">
+          {row.original.manager ? (
+            <Avatar>
+              <AvatarImage src={row.original.manager.image} alt="avatar" />
+              <AvatarFallback>
+                {row.original.manager.name.substring(0, 2)}
+              </AvatarFallback>
+            </Avatar>
+          ) : null}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "manager",
+      header: ({ column }) => {
+        return <span>Trưởng phòng</span>;
+      },
+      cell: ({ row }) => (
+        <div className="leading-6 flex flex-col">
+          {row.original.manager ? (
+            <>
+              <span className="capitalize leading-6 text-base">
+                {row.original.manager.name}
+              </span>
+              <span className="text-sm leading-6 font-light">
+                {row.original.manager.email} | {row.original.manager.phone}
+              </span>
+            </>
+          ) : (
+            <span>Không có trưởng phòng</span>
+          )}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "staffs",
+      header: ({ column }) => {
+        return (
+          <div className="flex justify-end">
+            <span>Số nhân viên</span>
+          </div>
+        );
+      },
+      cell: ({ row }) => (
+        <div className="leading-6 flex flex-col text-right">
+          <span>{row.original.numberStaffs.toLocaleString()}</span>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "edit",
+      header: ({ column }) => {
+        return <div className="flex justify-end">Thao tác</div>;
+      },
+      cell: ({ row }) => (
+        <div className="flex justify-end gap-2">
+          <ConfirmDialog
+            title={"Xác nhận"}
+            description="Bạn xác nhận muốn xoá phòng ban này ?"
+            handleYes={() => onDelete({ id: row.original.id })}
+          >
+            <Button
+              title="Xoá phòng ban"
+              size={"icon"}
+              variant={"ghost"}
+              className="rounded-full text-rose-500 hover:text-rose-600"
+            >
+              <FaTrash />
+            </Button>
+          </ConfirmDialog>
+        </div>
+      ),
+    },
+  ];
   const table = useReactTable({
     data,
     columns,
@@ -208,7 +236,43 @@ const UnitTable = () => {
     setOpenFilter(false);
     router.push(`/manage/unit?page=1${stringToFilter}`);
   };
-
+  const { showLoading, hideLoading } = useLoading();
+  const onDelete = async ({ id }: { id: number }) => {
+    const response: Promise<any> = deleteUnit({
+      id: id.toString(),
+    });
+    showLoading();
+    const responseData = await response;
+    hideLoading();
+    if (
+      responseData.hasOwnProperty("response") &&
+      responseData.response.hasOwnProperty("data") &&
+      responseData.response.data.hasOwnProperty("message") &&
+      responseData.response.data.hasOwnProperty("status")
+    ) {
+      toast({
+        variant: "destructive",
+        title: "Có lỗi",
+        description: responseData.response.data.message,
+      });
+    } else if (
+      responseData.hasOwnProperty("code") &&
+      responseData.code.includes("ERR")
+    ) {
+      toast({
+        variant: "destructive",
+        title: "Có lỗi",
+        description: responseData.message,
+      });
+    } else {
+      toast({
+        variant: "success",
+        title: "Thành công",
+        description: "Xoá phòng ban thành công",
+      });
+      mutate();
+    }
+  };
   if (isLoading) {
     return (
       <TableSkeleton

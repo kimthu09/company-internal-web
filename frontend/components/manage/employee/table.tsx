@@ -51,6 +51,11 @@ import {
 import { Employee } from "@/types";
 import UnitList from "../unit/unit-list";
 import Link from "next/link";
+import deleteEmployee from "@/lib/employee/deleteEmployee";
+import { useLoading } from "@/hooks/loading-context";
+import { toast } from "@/components/ui/use-toast";
+import ConfirmDialog from "@/components/ui/confirm-dialog";
+import { FaTrash } from "react-icons/fa";
 
 type FormValues = {
   filters: {
@@ -58,115 +63,6 @@ type FormValues = {
     value: string;
   }[];
 };
-const columns: ColumnDef<Employee>[] = [
-  {
-    accessorKey: "id",
-    header: () => {
-      return (
-        <div className="flex justify-end">
-          <span>ID</span>
-        </div>
-      );
-    },
-    cell: ({ row }) => <div className="text-right">{row.getValue("id")}</div>,
-  },
-  {
-    accessorKey: "image",
-    header: () => {},
-    cell: ({ row }) => (
-      <div className="flex justify-end">
-        <Avatar>
-          <AvatarImage src={row.getValue("image")} alt="avatar" />
-          <AvatarFallback>{row.original.name.substring(0, 2)}</AvatarFallback>
-        </Avatar>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "name",
-    header: ({ column }) => {
-      return <span>Tên nhân viên</span>;
-    },
-    cell: ({ row }) => (
-      <div className="leading-6 flex flex-col">
-        <Link
-          href={`/manage/employee/${row.original.id}`}
-          className="capitalize leading-6 text-base link___primary"
-        >
-          {row.getValue("name")}
-        </Link>
-        <span className="text-sm leading-6 font-light">
-          {row.original.address}
-        </span>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "email",
-    header: ({ column }) => {
-      return <span>Liên hệ</span>;
-    },
-    cell: ({ row }) => (
-      <div className="leading-6 flex flex-col">
-        <span>{row.original.email}</span>
-        <span className="text-sm leading-6 font-light">
-          {row.original.phone}
-        </span>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "male",
-    header: ({ column }) => {
-      return (
-        <div className="flex justify-center">
-          <span>Giới tính</span>
-        </div>
-      );
-    },
-    cell: ({ row }) => (
-      <div className="leading-6 flex justify-center font-medium tracking-wider">
-        <div
-          className={`${row.original.male ? "text-cyan-600" : "text-rose-400"}`}
-        >
-          {row.original.male ? "Nam" : "Nữ"}
-        </div>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "dob",
-    header: ({ column }) => {
-      return (
-        <div className="flex justify-end">
-          <span>Ngày sinh</span>
-        </div>
-      );
-    },
-    cell: ({ row }) => (
-      <div className="leading-6 flex flex-col text-right">
-        <span>{row.original.dob}</span>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "unit",
-    header: ({ column }) => {
-      return (
-        <div className="flex justify-center">
-          <span>Phòng</span>
-        </div>
-      );
-    },
-    cell: ({ row }) => (
-      <div className="leading-6 flex justify-center">
-        <div className=" px-3 py-1 bg-primary rounded-full text-sm text-white">
-          {row.original.unit.name}
-        </div>
-      </div>
-    ),
-  },
-];
 
 const EmployeeTable = () => {
   const router = useRouter();
@@ -213,6 +109,141 @@ const EmployeeTable = () => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+  const columns: ColumnDef<Employee>[] = [
+    {
+      accessorKey: "id",
+      header: () => {
+        return (
+          <div className="flex justify-end">
+            <span>ID</span>
+          </div>
+        );
+      },
+      cell: ({ row }) => <div className="text-right">{row.getValue("id")}</div>,
+    },
+    {
+      accessorKey: "image",
+      header: () => {},
+      cell: ({ row }) => (
+        <div className="flex justify-end">
+          <Avatar>
+            <AvatarImage src={row.getValue("image")} alt="avatar" />
+            <AvatarFallback>{row.original.name.substring(0, 2)}</AvatarFallback>
+          </Avatar>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "name",
+      header: ({ column }) => {
+        return <span>Tên nhân viên</span>;
+      },
+      cell: ({ row }) => (
+        <div className="leading-6 flex flex-col">
+          <Link
+            href={`/manage/employee/${row.original.id}`}
+            className="capitalize leading-6 text-base link___primary"
+          >
+            {row.getValue("name")}
+          </Link>
+          <span className="text-sm leading-6 font-light">
+            {row.original.address}
+          </span>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "email",
+      header: ({ column }) => {
+        return <span>Liên hệ</span>;
+      },
+      cell: ({ row }) => (
+        <div className="leading-6 flex flex-col">
+          <span>{row.original.email}</span>
+          <span className="text-sm leading-6 font-light">
+            {row.original.phone}
+          </span>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "male",
+      header: ({ column }) => {
+        return (
+          <div className="flex justify-center">
+            <span>Giới tính</span>
+          </div>
+        );
+      },
+      cell: ({ row }) => (
+        <div className="leading-6 flex justify-center font-medium tracking-wider">
+          <div
+            className={`${
+              row.original.male ? "text-cyan-600" : "text-rose-400"
+            }`}
+          >
+            {row.original.male ? "Nam" : "Nữ"}
+          </div>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "dob",
+      header: ({ column }) => {
+        return (
+          <div className="flex justify-end">
+            <span>Ngày sinh</span>
+          </div>
+        );
+      },
+      cell: ({ row }) => (
+        <div className="leading-6 flex flex-col text-right">
+          <span>{row.original.dob}</span>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "unit",
+      header: ({ column }) => {
+        return (
+          <div className="flex justify-center">
+            <span>Phòng</span>
+          </div>
+        );
+      },
+      cell: ({ row }) => (
+        <div className="leading-6 flex justify-center">
+          <div className=" px-3 py-1 bg-primary rounded-full text-sm text-white">
+            {row.original.unit.name}
+          </div>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "edit",
+      header: ({ column }) => {
+        return <div className="flex justify-end">Thao tác</div>;
+      },
+      cell: ({ row }) => (
+        <div className="flex justify-end gap-2">
+          <ConfirmDialog
+            title={"Xác nhận"}
+            description="Bạn xác nhận muốn xoá nhân viên này ?"
+            handleYes={() => onDelete({ id: row.original.id })}
+          >
+            <Button
+              title="Xoá nhân viên"
+              size={"icon"}
+              variant={"ghost"}
+              className="rounded-full text-rose-500 hover:text-rose-600"
+            >
+              <FaTrash />
+            </Button>
+          </ConfirmDialog>
+        </div>
+      ),
+    },
+  ];
   const table = useReactTable({
     data,
     columns,
@@ -231,6 +262,8 @@ const EmployeeTable = () => {
       rowSelection,
     },
   });
+  const { showLoading, hideLoading } = useLoading();
+
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     let stringToFilter = "";
     data.filters.forEach((item) => {
@@ -238,6 +271,42 @@ const EmployeeTable = () => {
     });
     setOpenFilter(false);
     router.push(`/manage/employee?page=1${stringToFilter}`);
+  };
+  const onDelete = async ({ id }: { id: number }) => {
+    const response: Promise<any> = deleteEmployee({
+      id: id.toString(),
+    });
+    showLoading();
+    const responseData = await response;
+    hideLoading();
+    if (
+      responseData.hasOwnProperty("response") &&
+      responseData.response.hasOwnProperty("data") &&
+      responseData.response.data.hasOwnProperty("message") &&
+      responseData.response.data.hasOwnProperty("status")
+    ) {
+      toast({
+        variant: "destructive",
+        title: "Có lỗi",
+        description: responseData.response.data.message,
+      });
+    } else if (
+      responseData.hasOwnProperty("code") &&
+      responseData.code.includes("ERR")
+    ) {
+      toast({
+        variant: "destructive",
+        title: "Có lỗi",
+        description: responseData.message,
+      });
+    } else {
+      toast({
+        variant: "success",
+        title: "Thành công",
+        description: "Xoá nhân viên thành công",
+      });
+      mutate();
+    }
   };
   const months = [
     { value: "1", label: "Tháng 1" },
