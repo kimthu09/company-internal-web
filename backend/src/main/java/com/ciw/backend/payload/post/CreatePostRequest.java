@@ -116,14 +116,6 @@ public class CreatePostRequest {
 	private String image;
 
 	@Schema(
-			name = "attachments",
-			description = "Nếu không có tệp đính kèm, cần truyền []"
-	)
-	@NotEmpty(message = Message.Post.POST_CONTENT_EMPTY)
-	@NotNull(message = Message.Post.POST_CONTENT_EMPTY)
-	private List<PostAttachment> attachments;
-
-	@Schema(
 			name = "tags",
 			example = "[1, 2, 3]",
 			description = "Nếu không có tag, cần truyền []"

@@ -301,6 +301,7 @@ public class MeetingRoomService {
 										  .id(calendar.getId())
 										  .createdBy(mapToSimpleDTO(calendar.getCreatedBy()))
 										  .meetingRoom(mapToDTO(calendar.getMeetingRoom()))
+										  .note(calendar.getNote())
 										  .build();
 	}
 

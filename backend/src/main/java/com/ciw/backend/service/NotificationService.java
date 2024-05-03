@@ -76,6 +76,9 @@ public class NotificationService {
 		if (filter.getToDate() != null) {
 			spec = spec.and(NotificationSpecs.isDateCreatedBefore(filter.getToDate()));
 		}
+		if(filter.getSeen() != null){
+			spec = spec.and(NotificationSpecs.hasSeen(filter.getSeen()));
+		}
 		return spec;
 	}
 
@@ -136,7 +139,9 @@ public class NotificationService {
 	@Transactional
 	public SimpleResponse seeAllNotification() {
 		User user = Common.findCurrUser(userRepository);
-		List<Notification> notifications = notificationRepository.findAllByFromUserId(user.getId());
+		List<Notification> notifications = notificationRepository.findAllByFromUserId(user.getId(),
+																					  Sort.by(Sort.Direction.DESC,
+																							  "createdAt"));
 
 		notificationRepository.saveAll(notifications.stream()
 													.peek(notification -> notification.setSeen(true))
@@ -153,6 +158,7 @@ public class NotificationService {
 								   .from(mapToDTO(notification.getFromUser()))
 								   .to(mapToDTO(notification.getToUser()))
 								   .seen(notification.isSeen())
+								   .createdAt(notification.getCreatedAt())
 								   .build();
 	}
 

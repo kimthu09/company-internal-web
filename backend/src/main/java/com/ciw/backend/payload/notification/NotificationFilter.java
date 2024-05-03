@@ -32,4 +32,10 @@ public class NotificationFilter {
 	)
 	@ValidDDMMYYYYFormat(message = Message.Calendar.DATE_VALIDATE)
 	private String toDate;
+
+	@Schema(
+			name = "seen",
+			example = "true"
+	)
+	private Boolean seen;
 }

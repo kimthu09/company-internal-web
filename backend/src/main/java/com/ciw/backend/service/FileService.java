@@ -70,6 +70,7 @@ public class FileService {
 			case ".docx" -> "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 			case ".csv" -> "text/csv";
 			case ".xls" -> "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+			case ".xlsx" -> "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 			case ".png" -> "image/png";
 			case ".svg" -> "image/svg+xml";
 			case ".jpeg", ".jpg" -> "image/jpeg";
