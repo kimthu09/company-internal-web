@@ -59,6 +59,7 @@ public class UserService {
 							  .id(user.getId())
 							  .name(user.getName())
 							  .email(user.getEmail())
+							  .image(user.getImage())
 							  .unit(mapToSimpleUnitWithFeature(user.getUnit()))
 							  .build();
 	}
