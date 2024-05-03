@@ -62,24 +62,7 @@ public class NotificationController {
 		return new ResponseEntity<>(notificationService.getNotifications(page, filter, true), HttpStatus.OK);
 	}
 
-	@PostMapping
-	@SecurityRequirement(
-			name = "Bearer Authentication"
-	)
-	@Operation(
-			summary = "Create notifications for all",
-			description = "Create new notification for all active staff"
-	)
-	@ApiResponse(
-			responseCode = "201",
-			description = "Http Status is 201 CREATED"
-	)
-	@PreAuthorize("hasAnyAuthority('ADMIN', 'NOTI')")
-	public ResponseEntity<SimpleResponse> sendNotificationForAll(@Valid CreateNotificationForAllRequest request) {
-		return new ResponseEntity<>(notificationService.sendNotificationForAllStaff(request), HttpStatus.OK);
-	}
-
-	@PostMapping("/users")
+	@PostMapping()
 	@SecurityRequirement(
 			name = "Bearer Authentication"
 	)
@@ -94,8 +77,8 @@ public class NotificationController {
 			description = "Http Status is 201 CREATED"
 	)
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'NOTI')")
-	public ResponseEntity<SimpleResponse> sendNotificationForListStaffs(@Valid CreateNotificationForListStaffRequest request) {
-		return new ResponseEntity<>(notificationService.sendNotificationForListStaff(request), HttpStatus.OK);
+	public ResponseEntity<SimpleResponse> sendNotification(@Valid CreateNotificationRequest request) {
+		return new ResponseEntity<>(notificationService.sendNotification(request), HttpStatus.OK);
 	}
 
 	@PostMapping("/{id}/seen")

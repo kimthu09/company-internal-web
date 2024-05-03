@@ -6,8 +6,10 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.List;
+
 @Data
-public class CreateNotificationForAllRequest {
+public class CreateNotificationRequest {
 	@Schema(
 			name = "title",
 			example = "Tiêu đề bài viết"
@@ -29,4 +31,10 @@ public class CreateNotificationForAllRequest {
 			message = Message.Notification.DESCRIPTION_VALIDATE
 	)
 	private String description = "";
+
+	@Schema(
+			name = "receivers",
+			example = "[1, 2]"
+	)
+	private List<Long> receivers;
 }

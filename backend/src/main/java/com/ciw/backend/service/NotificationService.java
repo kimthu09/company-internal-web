@@ -101,25 +101,16 @@ public class NotificationService {
 	}
 
 	@Transactional
-	public SimpleResponse sendNotificationForAllStaff(CreateNotificationForAllRequest request) {
+	public SimpleResponse sendNotification(CreateNotificationRequest request) {
 		User sender = Common.findCurrUser(userRepository);
 
-		List<User> receivers = userRepository.findAllNotDeleted();
-
-		return Common.sendNotification(notificationRepository,
-									   mailSender,
-									   receivers,
-									   sender,
-									   request.getTitle(),
-									   request.getDescription());
-	}
-
-	@Transactional
-	public SimpleResponse sendNotificationForListStaff(CreateNotificationForListStaffRequest request) {
-		User sender = Common.findCurrUser(userRepository);
-
-		List<User> receivers = userRepository.findByIdInAndNotDeletedAndIdNotEqual(request.getReceivers(),
-																				   sender.getId());
+		List<User> receivers;
+		if (request.getReceivers() == null || request.getReceivers().isEmpty()) {
+			receivers = userRepository.findByIdInAndNotDeletedAndIdNotEqual(request.getReceivers(),
+																					   sender.getId());
+		} else{
+			receivers = userRepository.findAllNotDeleted();
+		}
 
 		return Common.sendNotification(notificationRepository,
 									   mailSender,
