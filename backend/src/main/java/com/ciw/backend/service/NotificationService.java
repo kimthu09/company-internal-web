@@ -87,7 +87,7 @@ public class NotificationService {
 		User currUser = Common.findCurrUser(userRepository);
 
 		return NumberNotificationNotSeenResponse.builder()
-												.number(notificationRepository.countUnseenNotificationsByFromUserId(
+												.number(notificationRepository.countUnseenNotificationsByToUserId(
 														currUser.getId()))
 												.build();
 	}
@@ -95,7 +95,7 @@ public class NotificationService {
 	@Transactional
 	public SimpleListResponse<NotificationResponse> getUnseenNotifications() {
 		User currUser = Common.findCurrUser(userRepository);
-		List<Notification> notifications = notificationRepository.findAllUnseenByFromUserId(currUser.getId());
+		List<Notification> notifications = notificationRepository.findAllUnseenByToUserId(currUser.getId());
 
 		return new SimpleListResponse<>(notifications.stream().map(this::mapToDTO).toList());
 	}
