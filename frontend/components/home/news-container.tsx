@@ -1,7 +1,6 @@
 import Image from "next/image";
-import Link from "next/link";
-import { GoArrowRight } from "react-icons/go";
 import { IoPersonOutline } from "react-icons/io5";
+import ViewMoreLink from "./view-more-link";
 type News = {
   id: string;
   title: string;
@@ -75,13 +74,7 @@ const NewsContainer = () => {
           </div>
         </div>
       ))}
-      <Link
-        href="#"
-        className="uppercase text-xs font-bold hover:text-primary transition-colors tracking-wider mt-5 flex flex-row items-center gap-2"
-      >
-        Xem thêm
-        <GoArrowRight className="h-4 w-4" />
-      </Link>
+      <ViewMoreLink href="#" />
     </div>
   );
 };

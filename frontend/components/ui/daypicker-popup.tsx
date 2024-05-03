@@ -9,6 +9,7 @@ import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
+import { DayModifiers } from "react-day-picker";
 
 type DaypickerProps = {
   date: Date | undefined;
@@ -26,6 +27,11 @@ const DaypickerPopup = ({
   toDate,
   triggerClassname,
 }: DaypickerProps) => {
+  const handleDayClick = (day: Date, modifiers: DayModifiers) => {
+    if (day) {
+      setDate(day);
+    }
+  };
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -58,8 +64,8 @@ const DaypickerPopup = ({
           }}
           mode="single"
           selected={date}
-          onSelect={setDate}
           initialFocus
+          onDayClick={handleDayClick}
         />
       </PopoverContent>
     </Popover>
