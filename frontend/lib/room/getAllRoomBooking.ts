@@ -34,15 +34,19 @@ export const fetcher = async (url: string) => {
 
 export default function getAllRoomBooking({
   encodedString,
+  isPersonal,
 }: {
   encodedString?: string;
+  isPersonal?: boolean;
 }) {
   let encodeString = "";
   if (encodedString) {
     encodeString = encodeString.concat("&").concat(encodedString);
   }
   const { data, error, isLoading, mutate } = useSWR(
-    `${endpoint}/meeting_room/books?${encodeString}`,
+    `${endpoint}/meeting_room/books${
+      isPersonal ? "/personal" : ""
+    }?${encodeString}`,
     fetcher
   );
 
