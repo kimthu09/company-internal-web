@@ -1,5 +1,6 @@
 package com.ciw.backend.payload.user;
 
+import com.ciw.backend.constants.ApplicationConst;
 import com.ciw.backend.payload.unit.SimpleUnitWithFeatureResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,12 @@ public class ProfileResponse {
 			example = "Nguyễn Văn A"
 	)
 	private String name;
+
+	@Schema(
+			name = "image",
+			example = ApplicationConst.DEFAULT_AVATAR
+	)
+	private String image;
 
 	@Schema(name = "unit")
 	private SimpleUnitWithFeatureResponse unit;
