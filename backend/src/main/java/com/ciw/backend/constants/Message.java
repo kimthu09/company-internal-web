@@ -56,6 +56,7 @@ public class Message {
 		public static final String UNIT_NOT_EXIST = "Phòng ban không tồn tại";
 		public static final String UNIT_MANAGER_EXIST = "Nhân viên đã là trưởng phòng của phòng ban khác";
 		public static final String UNIT_MANAGER_NOTEXIST = "Trưởng phòng là nhân viên không tồn tại";
+		public static final String UNIT_STILL_HAVE_STAFFS_CAN_NOT_DELETE ="Phòng ban vẫn còn nhân viên. Xin hãy xóa hết nhân viên rồi thử lại";
 
 
 	}

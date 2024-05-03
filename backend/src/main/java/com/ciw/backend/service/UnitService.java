@@ -21,10 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -142,16 +139,18 @@ public class UnitService {
 	@Transactional
 	public SimpleResponse deleteUnit(Long unitId) {
 		Unit unit = Common.findUnitById(unitId, unitRepository);
+		if (unit.getNumberStaffs() > 0) {
+		    throw new AppException(HttpStatus.BAD_REQUEST, Message.Unit.UNIT_STILL_HAVE_STAFFS_CAN_NOT_DELETE);
+		}
+
 		List<UnitShift> unitShifts = unitShiftRepository.findByUnitId(unitId);
-		for (UnitShift unitShift :
-				unitShifts) {
-			unitShiftRepository.delete(unitShift);
-		}
+		unitShiftRepository.deleteAll(unitShifts);
+
 		List<UnitShiftAbsent> unitShiftAbsents = unitShiftAbsentRepository.findByUnitId(unitId);
-		for (UnitShiftAbsent unitShiftAbsent :
-				unitShiftAbsents) {
-			unitShiftAbsentRepository.delete(unitShiftAbsent);
-		}
+		unitShiftAbsentRepository.deleteAll(unitShiftAbsents);
+
+		unitRepository.delete(unit);
+
 		return new SimpleResponse();
 	}
 

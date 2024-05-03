@@ -7,7 +7,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class NotificationSpecs {
@@ -35,10 +38,11 @@ public class NotificationSpecs {
 	}
 
 	public static Specification<Notification> isDateCreatedBefore(String to) {
-		Date toDate;
+		Timestamp toDate;
 		try {
-			toDate = Date.valueOf(LocalDate.parse(to,
-												  DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+			LocalDate date = LocalDate.parse(to, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+			LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
+			toDate = Timestamp.valueOf(endOfDay);
 		} catch (Exception e) {
 			throw new AppException(HttpStatus.BAD_REQUEST, Message.TIME_INVALID_FORMAT_DD_MM_YYYY);
 		}

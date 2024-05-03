@@ -119,6 +119,23 @@ public class MeetingRoomController {
 		return new ResponseEntity<>(meetingRoomService.getMeetingRoomCalendar(filter), HttpStatus.OK);
 	}
 
+	@GetMapping("/books/personal")
+	@SecurityRequirement(
+			name = "Bearer Authentication"
+	)
+	@Operation(
+			summary = "Fetch personal meeting room books",
+			description = "Fetch personal meeting room books from database by filter"
+	)
+	@ApiResponse(
+			responseCode = "200",
+			description = "Http Status is 200 OK"
+	)
+	public ResponseEntity<ListResponseWithoutPage<MeetingRoomCalendarDayResponse, PersonalMeetingRoomCalendarFilter>> getPersonalMeetingRoomBooks(
+			@Valid PersonalMeetingRoomCalendarFilter filter) {
+		return new ResponseEntity<>(meetingRoomService.getPersonalMeetingRoomCalendar(filter), HttpStatus.OK);
+	}
+
 	@GetMapping("/books/day/unbook")
 	@SecurityRequirement(
 			name = "Bearer Authentication"

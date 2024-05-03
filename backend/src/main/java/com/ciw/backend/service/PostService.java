@@ -15,6 +15,7 @@ import com.ciw.backend.payload.tag.TagResponse;
 import com.ciw.backend.payload.user.SimpleUserResponse;
 import com.ciw.backend.repository.PostRepository;
 import com.ciw.backend.repository.TagRepository;
+import com.ciw.backend.utils.TimeHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -181,7 +182,7 @@ public class PostService {
 	}
 
 	private void handleImagePreCreatePostRequest(CreatePostRequest request) {
-		if (request.getImage().isEmpty()) {
+		if (request.getImage() == null || request.getImage().isEmpty()) {
 			request.setImage(ApplicationConst.DEFAULT_POST_IMAGE);
 		}
 	}
@@ -219,8 +220,8 @@ public class PostService {
 						   .content(post.getContent())
 						   .image(post.getImage())
 						   .createdBy(mapToSimpleUser(post.getCreatedBy()))
-						   .createdAt(post.getCreatedAt())
-						   .updatedAt(post.getUpdatedAt())
+						   .createdAt(TimeHelper.plus7Hours(post.getCreatedAt()))
+						   .updatedAt(TimeHelper.plus7Hours(post.getUpdatedAt()))
 						   .tags(post.getTags().stream().map(this::mapTagToTagResponse).collect(Collectors.toSet()))
 						   .build();
 	}
@@ -232,7 +233,7 @@ public class PostService {
 								 .description(post.getDescription())
 								 .image(post.getImage())
 								 .createdBy(mapToSimpleUser(post.getCreatedBy()))
-								 .updatedAt(post.getUpdatedAt())
+								 .updatedAt(TimeHelper.plus7Hours(post.getUpdatedAt()))
 								 .tags(post.getTags()
 										   .stream()
 										   .map(this::mapTagToTagResponse)

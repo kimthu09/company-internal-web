@@ -9,6 +9,7 @@ import com.ciw.backend.entity.User;
 import com.ciw.backend.exception.AppException;
 import com.ciw.backend.mail.MailSender;
 import com.ciw.backend.payload.ListResponseWithoutPage;
+import com.ciw.backend.payload.SimpleListResponse;
 import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.calendar.CalendarPart;
 import com.ciw.backend.payload.calendar.DayOfWeek;
@@ -89,6 +90,34 @@ public class UnitShiftService {
 									  .data(mapToDTO(filter.getFrom(), filter.getTo(), shifts, absents))
 									  .filter(filter)
 									  .build();
+	}
+
+	@Transactional
+	public SimpleListResponse<UnitShiftDayResponse> fetchShiftByDayForCurrentUser(
+			PersonalUnitShiftRequest request) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+		Date from;
+		Date to;
+		try {
+			from = dateFormat.parse(request.getFrom());
+			to   = dateFormat.parse(request.getTo());
+		} catch (Exception e) {
+			throw new AppException(HttpStatus.BAD_REQUEST, Message.Calendar.DATE_VALIDATE);
+		}
+
+		List<UnitShiftAbsent> absents;
+		List<UnitShift> shifts;
+
+		User curr = Common.findCurrUser(userRepository);
+
+		Unit unit = curr.getUnit();
+		absents = unitShiftAbsentRepository.findByDateBetweenAndUnitIdEqual(from, to, unit.getId());
+		shifts  = unitShiftRepository.findByUnitId(unit.getId());
+
+		return SimpleListResponse.<UnitShiftDayResponse>builder()
+								 .data(mapToDTO(request.getFrom(), request.getTo(), shifts, absents))
+								 .build();
 	}
 
 	private List<UnitShiftDayResponse> mapToDTO(String from,
