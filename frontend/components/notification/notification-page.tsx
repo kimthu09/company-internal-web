@@ -13,7 +13,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { LuFilter } from "react-icons/lu";
-import BookingItemSkeleton from "@/components/calendar/resources/booking-item-skeleton";
 import getAllNotifications from "@/lib/notification/getAllNotifications";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -37,6 +36,7 @@ import CreateNotification from "./create-notification";
 import { toast } from "../ui/use-toast";
 import markAllSeen from "@/lib/notification/markAllSeen";
 import { useLoading } from "@/hooks/loading-context";
+import NotiListSkeleton from "./noti-list-skeleton";
 type FormValues = {
   filters: {
     type: string;
@@ -121,7 +121,7 @@ const NotiPage = () => {
   };
   const [openFilter, setOpenFilter] = useState(false);
   if (isLoading) {
-    return <BookingItemSkeleton />;
+    return <NotiListSkeleton number={5} />;
   } else if (isError || notifications.hasOwnProperty("message")) {
     return <div>Failed to load</div>;
   }
