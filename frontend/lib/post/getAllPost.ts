@@ -9,7 +9,7 @@ export type PostProps = {
   title?: string;
   updatedAtFrom?: string;
   updatedAtTo?: string;
-  tag?: string[];
+  tags?: string;
 };
 export const fetcher = async (url: string) => {
   const token = await getApiKey();
