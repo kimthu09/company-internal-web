@@ -76,7 +76,7 @@ public class NotificationService {
 		if (filter.getToDate() != null) {
 			spec = spec.and(NotificationSpecs.isDateCreatedBefore(filter.getToDate()));
 		}
-		if(filter.getSeen() != null){
+		if (filter.getSeen() != null) {
 			spec = spec.and(NotificationSpecs.hasSeen(filter.getSeen()));
 		}
 		return spec;
@@ -106,10 +106,10 @@ public class NotificationService {
 
 		List<User> receivers;
 		if (request.getReceivers() == null || request.getReceivers().isEmpty()) {
-			receivers = userRepository.findByIdInAndNotDeletedAndIdNotEqual(request.getReceivers(),
-																					   sender.getId());
-		} else{
 			receivers = userRepository.findAllNotDeleted();
+		} else {
+			receivers = userRepository.findByIdInAndNotDeletedAndIdNotEqual(request.getReceivers(),
+																			sender.getId());
 		}
 
 		return Common.sendNotification(notificationRepository,

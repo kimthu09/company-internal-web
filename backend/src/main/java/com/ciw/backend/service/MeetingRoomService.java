@@ -242,6 +242,7 @@ public class MeetingRoomService {
 									  .meetingRoom(meetingRoom)
 									  .shiftType(cp.getShiftType())
 									  .date(date)
+									  .note(request.getNote())
 									  .build();
 		}).toList();
 
