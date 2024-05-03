@@ -27,6 +27,7 @@ export interface TagListProps {
   canAdd?: boolean;
   readonly?: boolean;
   isEdit?: boolean;
+  classNames?: string;
 }
 
 const TagList = ({
@@ -36,6 +37,7 @@ const TagList = ({
   isEdit,
   onCheckChanged,
   onRemove,
+  classNames,
 }: TagListProps) => {
   const [openTag, setOpenTag] = useState(false);
   const { tags, isLoading, isError, mutate } = getAllTags();
@@ -56,7 +58,7 @@ const TagList = ({
                 variant="outline"
                 role="combobox"
                 aria-expanded={openTag}
-                className="justify-between w-full bg-white"
+                className={`justify-between w-full bg-white ${classNames}`}
               >
                 Chọn tag
                 <LuChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -108,8 +110,9 @@ const TagList = ({
               >
                 {tags?.data.find((item: any) => item.id === tag)?.name}
                 <div
-                  className={`cursor-pointer w-4 ${isEdit ? "block" : "hidden"
-                    }`}
+                  className={`cursor-pointer w-4 ${
+                    isEdit ? "block" : "hidden"
+                  }`}
                 >
                   <AiOutlineClose className="group-hover:hidden" />
                   <AiOutlineClose
