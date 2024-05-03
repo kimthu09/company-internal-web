@@ -31,7 +31,7 @@ public class FileController {
 	)
 	@Operation(
 			summary = "Upload file",
-			description = "Upload file for application. Only allows: Image (.png, .jpg, .jpeg, .gif, .svg), Document (.png, .doc, .docx, .csv, .xls)"
+			description = "Upload file for application. Only allows: Image (.png, .jpg, .jpeg, .gif, .svg), Document (.pdf, .doc, .docx, .csv, .xls, .xlsx)"
 	)
 	@ApiResponse(
 			responseCode = "200",

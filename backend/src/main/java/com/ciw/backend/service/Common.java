@@ -9,7 +9,6 @@ import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.calendar.CalendarPart;
 import com.ciw.backend.payload.calendar.ShiftType;
 import com.ciw.backend.payload.feature.FeatureResponse;
-import com.ciw.backend.payload.post.PostAttachment;
 import com.ciw.backend.repository.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -50,12 +49,6 @@ public class Common {
 	}
 
 	public static void updateIfNotNull(Map<String, Object> newValue, Consumer<Map<String, Object>> setter) {
-		if (newValue != null) {
-			setter.accept(newValue);
-		}
-	}
-
-	public static void updateIfNotNull(List<PostAttachment> newValue, Consumer<List<PostAttachment>> setter) {
 		if (newValue != null) {
 			setter.accept(newValue);
 		}

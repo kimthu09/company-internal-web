@@ -50,6 +50,11 @@ public class ResourceCalendar {
 	)
 	private Resource resource;
 
+	@Column(
+			nullable = false
+	)
+	private String note;
+
 	@ManyToOne
 	@JoinColumn(
 			name = "created_by",

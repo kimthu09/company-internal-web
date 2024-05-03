@@ -1,9 +1,6 @@
 package com.ciw.backend.entity;
 
-import com.ciw.backend.payload.post.PostAttachment;
 import com.ciw.backend.utils.converter.HashMapConverter;
-import com.ciw.backend.utils.converter.ListConverter;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
@@ -13,7 +10,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -53,10 +49,6 @@ public class Post {
 	@Column(nullable = false)
 	private String image;
 
-	@Convert(converter = PostAttachmentConverter.class)
-	@Column(columnDefinition = "text")
-	private List<PostAttachment> attachments;
-
 	@ManyToOne
 	@JoinColumn(
 			name = "created_by",
@@ -85,10 +77,4 @@ public class Post {
 			inverseJoinColumns = @JoinColumn(name = "tag_id")
 	)
 	private Set<Tag> tags;
-}
-
-class PostAttachmentConverter extends ListConverter<PostAttachment> {
-	public PostAttachmentConverter(ObjectMapper objectMapper) {
-		super(objectMapper);
-	}
 }

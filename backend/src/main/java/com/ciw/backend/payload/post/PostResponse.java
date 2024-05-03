@@ -104,9 +104,6 @@ public class PostResponse {
 	)
 	private String image;
 
-	@Schema(name = "attachments")
-	private List<PostAttachment> attachments;
-
 	@Schema(name = "createdBy")
 	private SimpleUserResponse createdBy;
 

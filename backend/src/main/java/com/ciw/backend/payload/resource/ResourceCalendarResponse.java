@@ -19,4 +19,7 @@ public class ResourceCalendarResponse {
 
 	@Schema(name = "createdBy")
 	private SimpleUserResponse createdBy;
+
+	@Schema(name = "note", example = "Ghi chú")
+	private String note;
 }

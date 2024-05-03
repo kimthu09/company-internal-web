@@ -118,7 +118,6 @@ public class PostService {
 		Common.updateIfNotNull(request.getDescription(), post::setDescription);
 		Common.updateIfNotNull(request.getImage(), post::setImage);
 		Common.updateIfNotNull(request.getContent(), post::setContent);
-		Common.updateIfNotNull(request.getAttachments(), post::setAttachments);
 
 		Post savedPost = postRepository.save(post);
 
@@ -209,7 +208,6 @@ public class PostService {
 				   .description(request.getDescription())
 				   .content(request.getContent())
 				   .image(request.getImage())
-				   .attachments(request.getAttachments())
 				   .build();
 	}
 
@@ -220,7 +218,6 @@ public class PostService {
 						   .description(post.getDescription())
 						   .content(post.getContent())
 						   .image(post.getImage())
-						   .attachments(post.getAttachments())
 						   .createdBy(mapToSimpleUser(post.getCreatedBy()))
 						   .createdAt(post.getCreatedAt())
 						   .updatedAt(post.getUpdatedAt())
