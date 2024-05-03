@@ -87,7 +87,7 @@ public class NotificationService {
 		User currUser = Common.findCurrUser(userRepository);
 
 		return NumberNotificationNotSeenResponse.builder()
-												.number(notificationRepository.countUnseenNotificationsByFromUserId(
+												.number(notificationRepository.countUnseenNotificationsByToUserId(
 														currUser.getId()))
 												.build();
 	}
@@ -95,31 +95,22 @@ public class NotificationService {
 	@Transactional
 	public SimpleListResponse<NotificationResponse> getUnseenNotifications() {
 		User currUser = Common.findCurrUser(userRepository);
-		List<Notification> notifications = notificationRepository.findAllUnseenByFromUserId(currUser.getId());
+		List<Notification> notifications = notificationRepository.findAllUnseenByToUserId(currUser.getId());
 
 		return new SimpleListResponse<>(notifications.stream().map(this::mapToDTO).toList());
 	}
 
 	@Transactional
-	public SimpleResponse sendNotificationForAllStaff(CreateNotificationForAllRequest request) {
+	public SimpleResponse sendNotification(CreateNotificationRequest request) {
 		User sender = Common.findCurrUser(userRepository);
 
-		List<User> receivers = userRepository.findAllNotDeleted();
-
-		return Common.sendNotification(notificationRepository,
-									   mailSender,
-									   receivers,
-									   sender,
-									   request.getTitle(),
-									   request.getDescription());
-	}
-
-	@Transactional
-	public SimpleResponse sendNotificationForListStaff(CreateNotificationForListStaffRequest request) {
-		User sender = Common.findCurrUser(userRepository);
-
-		List<User> receivers = userRepository.findByIdInAndNotDeletedAndIdNotEqual(request.getReceivers(),
-																				   sender.getId());
+		List<User> receivers;
+		if (request.getReceivers() == null || request.getReceivers().isEmpty()) {
+			receivers = userRepository.findByIdInAndNotDeletedAndIdNotEqual(request.getReceivers(),
+																					   sender.getId());
+		} else{
+			receivers = userRepository.findAllNotDeleted();
+		}
 
 		return Common.sendNotification(notificationRepository,
 									   mailSender,
