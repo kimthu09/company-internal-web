@@ -1,50 +1,21 @@
+"use client";
+import getUnseeNotifications from "@/lib/notification/getUnseenNotification";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import ViewMoreLink from "./view-more-link";
+import BookingItemSkeleton from "../calendar/resources/booking-item-skeleton";
+import { Notification } from "@/types";
 
-type Notification = {
-  title: string;
-  description: string;
-  from: {
-    id: string;
-    name: string;
-    image?: string;
-    email: string;
-  };
-  createdAt: Date;
-  seen: boolean;
-};
-
-const notifications: Notification[] = [
-  {
-    title: "Thông báo về việc nghỉ lễ",
-    description:
-      "Kì nghỉ quốc khánh sẽ bắt đầu từ ngày 29/04/2024 đến hết ngày 01/05/2024",
-    from: {
-      id: "1",
-      name: "Nguyễn Thị Huệ",
-      email: "hue@gmail.com",
-    },
-    createdAt: new Date(),
-    seen: false,
-  },
-  {
-    title: "Thông báo về việc nghỉ lễ",
-    description:
-      "Kì nghỉ quốc khánh sẽ bắt đầu từ ngày 29/04/2024 đến hết ngày 01/05/2024",
-    from: {
-      id: "1",
-      name: "Nguyễn Thị Huệ",
-      email: "hue@gmail.com",
-    },
-    createdAt: new Date(),
-    seen: false,
-  },
-];
 const Noti = () => {
+  const { notifications, mutate, isLoading, isError } = getUnseeNotifications();
+  if (isLoading) {
+    return <BookingItemSkeleton />;
+  } else if (isError || notifications.hasOwnProperty("message")) {
+    return <div>Failed to load</div>;
+  }
   return (
     <div className="p-7 rounded-2xl bg-white card-shadow xl:min-w-[24rem]">
       <h1 className="pb-5 border-b text-xl font-bold">Thông báo</h1>
-      {notifications.map((item, idx) => (
+      {notifications.data.slice(0, 2).map((item: Notification, idx: number) => (
         <div key={idx} className="py-8 border-b flex flex-row gap-3">
           <Avatar>
             <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
@@ -59,7 +30,7 @@ const Noti = () => {
           </div>
         </div>
       ))}
-      <ViewMoreLink href="#" />
+      <ViewMoreLink href="/notifications" />
     </div>
   );
 };

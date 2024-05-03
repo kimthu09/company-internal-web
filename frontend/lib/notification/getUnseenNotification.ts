@@ -3,16 +3,6 @@ import axios from "axios";
 import useSWR from "swr";
 import { getApiKey } from "../auth/action";
 
-export type EmployeeProps = {
-  limit?: string;
-  page?: string;
-  name?: string;
-  email?: string;
-  phone?: string;
-  unit?: string;
-  monthDOB?: number;
-  yearDOB?: number;
-};
 export const fetcher = async (url: string) => {
   const token = await getApiKey();
   return axios
@@ -27,7 +17,8 @@ export const fetcher = async (url: string) => {
     })
     .then((json) => {
       return {
-        number: json.number,
+        paging: json.page,
+        data: json.data,
       };
     })
     .catch((error) => {
@@ -36,15 +27,15 @@ export const fetcher = async (url: string) => {
     });
 };
 
-export default function getUnseenNumber() {
+export default function getUnseeNotifications() {
   const { data, error, isLoading, mutate } = useSWR(
-    `${endpoint}/notification/number_unseen`,
+    `${endpoint}/notification/unseen`,
     fetcher,
     { refreshInterval: 10000 }
   );
 
   return {
-    data,
+    notifications: data,
     isLoading,
     isError: error,
     mutate,
