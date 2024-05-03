@@ -9,7 +9,7 @@ import com.ciw.backend.entity.User;
 import com.ciw.backend.exception.AppException;
 import com.ciw.backend.mail.MailSender;
 import com.ciw.backend.payload.ListResponseWithoutPage;
-import com.ciw.backend.payload.SimpleListResponse;
+import com.ciw.backend.payload.SimpleMapResponse;
 import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.calendar.CalendarPart;
 import com.ciw.backend.payload.calendar.DayOfWeek;
@@ -87,13 +87,13 @@ public class UnitShiftService {
 		}
 
 		return ListResponseWithoutPage.<UnitShiftDayResponse, UnitShiftDayFilter>builder()
-									  .data(mapToDTO(filter.getFrom(), filter.getTo(), shifts, absents))
+									  .data(mapToDTOList(filter.getFrom(), filter.getTo(), shifts, absents))
 									  .filter(filter)
 									  .build();
 	}
 
 	@Transactional
-	public SimpleListResponse<UnitShiftDayResponse> fetchShiftByDayForCurrentUser(
+	public SimpleMapResponse<PersonalUnitShiftResponse> fetchShiftByDayForCurrentUser(
 			PersonalUnitShiftRequest request) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -115,12 +115,12 @@ public class UnitShiftService {
 		absents = unitShiftAbsentRepository.findByDateBetweenAndUnitIdEqual(from, to, unit.getId());
 		shifts  = unitShiftRepository.findByUnitId(unit.getId());
 
-		return SimpleListResponse.<UnitShiftDayResponse>builder()
-								 .data(mapToDTO(request.getFrom(), request.getTo(), shifts, absents))
-								 .build();
+		return SimpleMapResponse.<PersonalUnitShiftResponse>builder()
+								.data(mapToDTOMap(request.getFrom(), request.getTo(), shifts, absents))
+								.build();
 	}
 
-	private List<UnitShiftDayResponse> mapToDTO(String from,
+	private List<UnitShiftDayResponse> mapToDTOList(String from,
 												String to,
 												List<UnitShift> shifts,
 												List<UnitShiftAbsent> absents) {
@@ -141,6 +141,34 @@ public class UnitShiftService {
 					 .sorted(Map.Entry.comparingByKey(Common.dateComparator))
 					 .map(Map.Entry::getValue)
 					 .toList();
+	}
+
+	private Map<String, PersonalUnitShiftResponse> mapToDTOMap(String from,
+															String to,
+															List<UnitShift> shifts,
+															List<UnitShiftAbsent> absents) {
+		Map<String, List<UnitShift>> shiftMap = mapUnitShiftByDay(from, to, shifts);
+		Map<String, List<UnitShiftAbsent>> absentMap = mapUnitShiftAbsentByDay(absents);
+
+		Map<String, UnitShiftDayResponse> mapRes = new HashMap<>();
+		for (String s : shiftMap.keySet()) {
+			mapRes.put(s,
+					   getUnitShiftDayDetailResponse(
+							   s,
+							   shiftMap.get(s).stream().toList(),
+							   absentMap.getOrDefault(s, new ArrayList<>()).stream().toList()));
+		}
+
+		Map<String, PersonalUnitShiftResponse> res = new HashMap<>();
+		for (Map.Entry<String, UnitShiftDayResponse> entry : mapRes.entrySet()) {
+			res.put(entry.getKey(), PersonalUnitShiftResponse.builder()
+															 .day(!entry.getValue().getDay().isEmpty() &&
+																  entry.getValue().getDay().get(0).getAbsent() != null)
+															 .night(!entry.getValue().getNight().isEmpty() &&
+																  entry.getValue().getNight().get(0).getAbsent() != null)
+															 .build());
+		}
+		return res;
 	}
 
 	private Map<String, List<UnitShift>> mapUnitShiftByDay(String from, String to, List<UnitShift> shifts) {
@@ -292,11 +320,11 @@ public class UnitShiftService {
 		UnitShiftResponse response = mapToDTO(unitShiftRepository.saveAll(unitShifts), unit);
 
 		List<User> staffs = userRepository.findByUnitIdAndNotDeleted(unitId);
-		User manager = Common.findUserById(unit.getManagerId(), userRepository);
+		User sender = Common.findCurrUser(userRepository);
 		Common.sendNotification(notificationRepository,
 								mailSender,
 								staffs,
-								manager,
+								sender,
 								"Lịch phòng ban đã có sự thay đổi",
 								String.format(
 										"Lịch phòng ban %s hàng tuần đã bị thay đổi. Nếu có sự nhầm lẫn, xin hãy liên hệ lại với chúng tôi.",

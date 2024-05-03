@@ -244,9 +244,15 @@ public class Common {
 
 	public static void checkAdminOrManager(UserRepository userRepository, Long managerId) {
 		User curr = Common.findCurrUser(userRepository);
-		if (!curr.getUnit().getName().contains(ApplicationConst.ADMIN_UNIT_NAME) &&
-			!curr.getId().equals(managerId)) {
-			throw new AppException(HttpStatus.BAD_REQUEST, Message.USER_NOT_HAVE_FEATURE);
+		if (managerId == null) {
+			if (!curr.getUnit().getName().contains(ApplicationConst.ADMIN_UNIT_NAME)) {
+				throw new AppException(HttpStatus.BAD_REQUEST, Message.USER_NOT_HAVE_FEATURE);
+			}
+		} else {
+			if (!curr.getUnit().getName().contains(ApplicationConst.ADMIN_UNIT_NAME) &&
+				!curr.getId().equals(managerId)) {
+				throw new AppException(HttpStatus.BAD_REQUEST, Message.USER_NOT_HAVE_FEATURE);
+			}
 		}
 	}
 
