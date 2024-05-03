@@ -95,6 +95,7 @@ const BookedResourceView = ({
     encodedString: isPersonal
       ? filterString.concat("&createdBy=3")
       : filterString,
+    isPersonal: isPersonal,
   });
   const onDelete = () => {
     mutate();

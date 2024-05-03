@@ -3,12 +3,6 @@ import axios from "axios";
 import useSWR from "swr";
 import { getApiKey } from "../auth/action";
 
-export type BookingProps = {
-  createdBy?: string;
-  meetingRoom?: string;
-  from?: string;
-  to?: string;
-};
 export const fetcher = async (url: string) => {
   const token = await getApiKey();
   return axios
@@ -23,6 +17,7 @@ export const fetcher = async (url: string) => {
     })
     .then((json) => {
       return {
+        paging: json.page,
         data: json.data,
       };
     })
@@ -32,26 +27,15 @@ export const fetcher = async (url: string) => {
     });
 };
 
-export default function getAllRoomBooking({
-  encodedString,
-  isPersonal,
-}: {
-  encodedString?: string;
-  isPersonal?: boolean;
-}) {
-  let encodeString = "";
-  if (encodedString) {
-    encodeString = encodeString.concat("&").concat(encodedString);
-  }
+export default function getUnseeNotifications() {
   const { data, error, isLoading, mutate } = useSWR(
-    `${endpoint}/meeting_room/books${
-      isPersonal ? "/personal" : ""
-    }?${encodeString}`,
-    fetcher
+    `${endpoint}/notification/unseen`,
+    fetcher,
+    { refreshInterval: 10000 }
   );
 
   return {
-    bookings: data,
+    notifications: data,
     isLoading,
     isError: error,
     mutate,

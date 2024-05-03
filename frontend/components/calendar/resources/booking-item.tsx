@@ -164,7 +164,8 @@ const BookingItem = ({
           <Button
             title="Xoá lịch đã đặt"
             size={"icon"}
-            className={`rounded-full bg-rose-600 hover:bg-rose-600/85 text ${
+            variant={"ghost"}
+            className={`rounded-full  text-rose-500 hover:text-rose-600 ${
               canDelete ? "visible" : "collapse"
             }`}
           >

@@ -34,6 +34,7 @@ import getAllRoomBooking from "@/lib/room/getAllRoomBooking";
 import RoomList from "@/components/manage/room/room-list";
 import BookingItemList, { BookingProps } from "./booking-item-list";
 import StaffList from "@/components/manage/employee/staff-filter-list";
+
 type FormValues = {
   filters: {
     type: string;
@@ -92,10 +93,10 @@ const BookedRoomView = ({
     );
   };
   const { bookings, mutate, isLoading, isError } = getAllRoomBooking({
-    encodedString: isPersonal
-      ? filterString.concat("&createdBy=3")
-      : filterString,
+    encodedString: filterString,
+    isPersonal: isPersonal,
   });
+
   const onDelete = () => {
     mutate();
   };

@@ -39,7 +39,8 @@ export const fetcher = async (url: string) => {
 export default function getUnseenNumber() {
   const { data, error, isLoading, mutate } = useSWR(
     `${endpoint}/notification/number_unseen`,
-    fetcher
+    fetcher,
+    { refreshInterval: 10000 }
   );
 
   return {
