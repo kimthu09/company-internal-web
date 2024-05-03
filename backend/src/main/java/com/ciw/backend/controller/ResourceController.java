@@ -119,6 +119,23 @@ public class ResourceController {
 		return new ResponseEntity<>(resourceService.getResourceCalendar(filter), HttpStatus.OK);
 	}
 
+	@GetMapping("/books/personal")
+	@SecurityRequirement(
+			name = "Bearer Authentication"
+	)
+	@Operation(
+			summary = "Fetch personal resource books",
+			description = "Fetch personal resource books from database by filter"
+	)
+	@ApiResponse(
+			responseCode = "200",
+			description = "Http Status is 200 OK"
+	)
+	public ResponseEntity<ListResponseWithoutPage<ResourceCalendarDayResponse, PersonalResourceCalendarFilter>> getPersonalResourceBooks(
+			@Valid PersonalResourceCalendarFilter filter) {
+		return new ResponseEntity<>(resourceService.getPersonalResourceCalendar(filter), HttpStatus.OK);
+	}
+
 	@GetMapping("/books/day/unbook")
 	@SecurityRequirement(
 			name = "Bearer Authentication"

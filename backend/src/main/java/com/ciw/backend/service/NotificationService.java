@@ -12,6 +12,7 @@ import com.ciw.backend.payload.page.AppPageResponse;
 import com.ciw.backend.payload.user.SimpleUserResponse;
 import com.ciw.backend.repository.NotificationRepository;
 import com.ciw.backend.repository.UserRepository;
+import com.ciw.backend.utils.TimeHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -149,7 +150,7 @@ public class NotificationService {
 								   .from(mapToDTO(notification.getFromUser()))
 								   .to(mapToDTO(notification.getToUser()))
 								   .seen(notification.isSeen())
-								   .createdAt(notification.getCreatedAt())
+								   .createdAt(TimeHelper.plus7Hours(notification.getCreatedAt()))
 								   .build();
 	}
 

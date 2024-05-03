@@ -1,6 +1,7 @@
 package com.ciw.backend.controller;
 
 import com.ciw.backend.payload.ListResponseWithoutPage;
+import com.ciw.backend.payload.SimpleListResponse;
 import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.unitshift.*;
 import com.ciw.backend.service.UnitShiftService;
@@ -42,12 +43,9 @@ public class UnitShiftController {
 	@SecurityRequirement(name = "Bearer Authentication")
 	@Operation(
 			summary = "Fetch unit shift by day",
-			description = "Fetch unit shift by day from database.\n" +
-						  "Note:\n" +
-						  "- From and to are required.\n" +
+			description = "Fetch unit shift by day from database.\n" + "Note:\n" + "- From and to are required.\n" +
 						  "- Only admin and user can see their unit's calendar.\n" +
-						  "- Only admin can see all unit's calendar.\n" +
-						  "- If don't have unit in request body:\n" +
+						  "- Only admin can see all unit's calendar.\n" + "- If don't have unit in request body:\n" +
 						  "+ If user is admin, it will get all unit's calendar.\n" +
 						  "+ If user is not admin, it will get user's unit's calendar."
 	)
@@ -90,5 +88,19 @@ public class UnitShiftController {
 	public ResponseEntity<SimpleResponse> absentUnitShift(@PathVariable Long id,
 														  @Valid @RequestBody AbsentUnitShiftRequest request) {
 		return new ResponseEntity<>(unitShiftService.absentUnitShift(id, request), HttpStatus.CREATED);
+	}
+
+	@GetMapping("/shift/day/personal")
+	@SecurityRequirement(name = "Bearer Authentication")
+	@Operation(
+			summary = "Fetch personal unit shift",
+			description = "Get personal unit shift"
+	)
+	@ApiResponse(
+			responseCode = "200",
+			description = "Http Status is 200 OK"
+	)
+	public ResponseEntity<SimpleListResponse<UnitShiftDayResponse>> getUnitShiftByDayByUser(@Valid PersonalUnitShiftRequest request) {
+		return new ResponseEntity<>(unitShiftService.fetchShiftByDayForCurrentUser(request), HttpStatus.OK);
 	}
 }

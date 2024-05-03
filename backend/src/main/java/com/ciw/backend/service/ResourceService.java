@@ -219,6 +219,34 @@ public class ResourceService {
 	}
 
 	@Transactional
+	public ListResponseWithoutPage<ResourceCalendarDayResponse, PersonalResourceCalendarFilter> getPersonalResourceCalendar(
+			PersonalResourceCalendarFilter filter) {
+		User user = Common.findCurrUser(userRepository);
+		Specification<ResourceCalendar> spec = filterResourceCalendar(user.getId(), filter);
+
+		List<ResourceCalendar> calendars = resourceCalendarRepository.findAll(spec);
+
+		return ListResponseWithoutPage.<ResourceCalendarDayResponse, PersonalResourceCalendarFilter>builder()
+									  .data(mapToDTO(calendars))
+									  .filter(filter)
+									  .build();
+	}
+
+	private Specification<ResourceCalendar> filterResourceCalendar(Long createdById, PersonalResourceCalendarFilter filter) {
+		Specification<ResourceCalendar> spec = ResourceCalendarSpecs.isCreatedBy(createdById.toString());
+		if (filter.getResource() != null) {
+			spec = spec.and(ResourceCalendarSpecs.hasResource(filter.getResource()));
+		}
+		if (filter.getFrom() != null) {
+			spec = spec.and(ResourceCalendarSpecs.isDateBookedAtAfter(filter.getFrom()));
+		}
+		if (filter.getTo() != null) {
+			spec = spec.and(ResourceCalendarSpecs.isDateBookedAtBefore(filter.getTo()));
+		}
+		return spec;
+	}
+
+	@Transactional
 	public SimpleResponse bookResource(Long id, BookResourceRequest request) {
 		Resource resource = Common.findResourceById(id, resourceRepository);
 

@@ -228,6 +228,35 @@ public class MeetingRoomService {
 	}
 
 	@Transactional
+	public ListResponseWithoutPage<MeetingRoomCalendarDayResponse, PersonalMeetingRoomCalendarFilter> getPersonalMeetingRoomCalendar(
+			PersonalMeetingRoomCalendarFilter filter) {
+		User curr = Common.findCurrUser(userRepository);
+
+		Specification<MeetingRoomCalendar> spec = filterMeetingRoomCalendar(curr.getId(), filter);
+
+		List<MeetingRoomCalendar> calendars = meetingRoomCalendarRepository.findAll(spec);
+
+		return ListResponseWithoutPage.<MeetingRoomCalendarDayResponse, PersonalMeetingRoomCalendarFilter>builder()
+									  .data(mapToDTO(calendars))
+									  .filter(filter)
+									  .build();
+	}
+
+	private Specification<MeetingRoomCalendar> filterMeetingRoomCalendar( Long createdById, PersonalMeetingRoomCalendarFilter filter) {
+		Specification<MeetingRoomCalendar> spec = MeetingRoomCalendarSpecs.isCreatedBy(createdById.toString());
+		if (filter.getMeetingRoom() != null) {
+			spec = spec.and(MeetingRoomCalendarSpecs.hasMeetingRoom(filter.getMeetingRoom()));
+		}
+		if (filter.getFrom() != null) {
+			spec = spec.and(MeetingRoomCalendarSpecs.isDateBookedAtAfter(filter.getFrom()));
+		}
+		if (filter.getTo() != null) {
+			spec = spec.and(MeetingRoomCalendarSpecs.isDateBookedAtBefore(filter.getTo()));
+		}
+		return spec;
+	}
+
+	@Transactional
 	public SimpleResponse bookMeetingRoom(Long id, BookMeetingRoomRequest request) {
 		MeetingRoom meetingRoom = Common.findMeetingRoomById(id, meetingRoomRepository);
 

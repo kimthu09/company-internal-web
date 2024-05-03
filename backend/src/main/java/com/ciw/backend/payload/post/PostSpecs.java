@@ -23,9 +23,9 @@ public class PostSpecs {
 		LocalDateTime updatedAtFrom;
 		try {
 			updatedAtFrom = LocalDateTime.parse(updatedAtFromDate,
-												DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+												DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		} catch (Exception e) {
-			throw new AppException(HttpStatus.BAD_REQUEST, Message.TIME_INVALID_FORMAT_YYYY_MM_DD_HH_mm_ss);
+			throw new AppException(HttpStatus.BAD_REQUEST, Message.TIME_INVALID_FORMAT_DD_MM_YYYY);
 		}
 		return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("updatedAt"), updatedAtFrom);
 	}
@@ -34,9 +34,9 @@ public class PostSpecs {
 		LocalDateTime updatedAtTo;
 		try {
 			updatedAtTo = LocalDateTime.parse(updatedAtToDate,
-											  DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+											  DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		} catch (Exception e) {
-			throw new AppException(HttpStatus.BAD_REQUEST, Message.TIME_INVALID_FORMAT_YYYY_MM_DD_HH_mm_ss);
+			throw new AppException(HttpStatus.BAD_REQUEST, Message.TIME_INVALID_FORMAT_DD_MM_YYYY);
 		}
 
 		return (root, query, cb) -> cb.lessThanOrEqualTo(root.get("updatedAt"), updatedAtTo);

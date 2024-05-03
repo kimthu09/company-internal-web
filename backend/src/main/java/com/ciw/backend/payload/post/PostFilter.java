@@ -28,13 +28,13 @@ public class PostFilter {
 
 	@Schema(
 			name = "updatedAtFrom",
-			example = "2024-04-16 05:20:42"
+			example = "2024-04-16"
 	)
 	private String updatedAtFrom;
 
 	@Schema(
 			name = "updatedAtTo",
-			example = "2024-04-16 05:20:42"
+			example = "2024-04-16"
 	)
 	private String updatedAtTo;
 
