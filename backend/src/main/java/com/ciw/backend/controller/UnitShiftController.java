@@ -1,7 +1,7 @@
 package com.ciw.backend.controller;
 
 import com.ciw.backend.payload.ListResponseWithoutPage;
-import com.ciw.backend.payload.SimpleListResponse;
+import com.ciw.backend.payload.SimpleMapResponse;
 import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.unitshift.*;
 import com.ciw.backend.service.UnitShiftService;
@@ -100,7 +100,7 @@ public class UnitShiftController {
 			responseCode = "200",
 			description = "Http Status is 200 OK"
 	)
-	public ResponseEntity<SimpleListResponse<UnitShiftDayResponse>> getUnitShiftByDayByUser(@Valid PersonalUnitShiftRequest request) {
+	public ResponseEntity<SimpleMapResponse<PersonalUnitShiftResponse>> getUnitShiftByDayByUser(@Valid PersonalUnitShiftRequest request) {
 		return new ResponseEntity<>(unitShiftService.fetchShiftByDayForCurrentUser(request), HttpStatus.OK);
 	}
 }
