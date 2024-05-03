@@ -22,7 +22,7 @@ const SmallNews = () => {
   return posts.data.map((item: News) => (
     <div className="rounded-xl card-shadow overflow-clip bg-white flex-1">
       <Image
-        className="object-contain w-full"
+        className="object-cover w-full aspect-[3/2]"
         src={item.image}
         alt="image"
         width={400}

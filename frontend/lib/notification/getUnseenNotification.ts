@@ -31,7 +31,7 @@ export default function getUnseeNotifications() {
   const { data, error, isLoading, mutate } = useSWR(
     `${endpoint}/notification/unseen`,
     fetcher,
-    { refreshInterval: 10000 }
+    { refreshInterval: 30000 }
   );
 
   return {
