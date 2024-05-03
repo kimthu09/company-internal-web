@@ -2,14 +2,17 @@ import { endpoint } from "@/constants";
 import axios from "axios";
 import { getApiKey } from "../auth/action";
 
-export default async function createRoom({
-  name,
-  location,
-}: {
-  name: string;
-  location: string;
-}) {
-  const url = `${endpoint}/meeting_room`;
+export type Props = {
+  id: string;
+  shifts: {};
+};
+export default async function changeUnitShift({ id, shifts }: Props) {
+  const url = `${endpoint}/unit/${id}/shift`;
+
+  const data = {
+    shifts: shifts,
+  };
+
   const token = await getApiKey();
   const headers = {
     accept: "*/*",
@@ -17,7 +20,7 @@ export default async function createRoom({
     Authorization: `Bearer ${token}`,
     // Add other headers as needed
   };
-  const data = { name: name.trim(), ...(location && { location: location }) };
+
   // Make a POST request with headers
   const res = axios
     .post(url, data, { headers: headers })
@@ -26,7 +29,6 @@ export default async function createRoom({
     })
     .catch((error) => {
       console.error("Error:", error);
-
       return error;
     });
   return res;

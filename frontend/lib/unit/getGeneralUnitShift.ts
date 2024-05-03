@@ -3,18 +3,12 @@ import axios from "axios";
 import useSWR from "swr";
 import { getApiKey } from "../auth/action";
 
-export type UnitProps = {
-  limit?: string;
-  page?: string;
-  name?: string;
-  manager?: string;
-};
 const fetcher = async (url: string) => {
   const token = await getApiKey();
   return axios
     .get(url, {
       headers: {
-        accept: "*/*",
+        accept: "application/json",
         Authorization: `Bearer ${token}`,
       },
     })
@@ -23,8 +17,7 @@ const fetcher = async (url: string) => {
     })
     .then((json) => {
       return {
-        paging: json.page,
-        data: json.data,
+        shifts: json.shifts,
       };
     })
     .catch((error) => {
@@ -33,29 +26,14 @@ const fetcher = async (url: string) => {
     });
 };
 
-export default function getAllUnits({
-  filter,
-  encodedString,
-}: {
-  filter?: UnitProps;
-  encodedString?: string;
-}) {
-  let encodeString = "";
-  if (filter) {
-    encodeString = Object.entries(filter)
-      .map(([key, value]) => `${key}=${encodeURIComponent(value.toString())}`)
-      .join("&");
-  }
-  if (encodedString) {
-    encodeString = encodeString.concat("&").concat(encodedString);
-  }
+export default function getGeneralUnitShift({ id }: { id: string }) {
   const { data, error, isLoading, mutate } = useSWR(
-    `${endpoint}/unit?${encodeString}`,
+    `${endpoint}/unit/${id}/shift`,
     fetcher
   );
 
   return {
-    units: data,
+    data,
     isLoading,
     isError: error,
     mutate,

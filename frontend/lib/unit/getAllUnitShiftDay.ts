@@ -4,10 +4,9 @@ import useSWR from "swr";
 import { getApiKey } from "../auth/action";
 
 export type UnitProps = {
-  limit?: string;
-  page?: string;
-  name?: string;
-  manager?: string;
+  from: string;
+  to: string;
+  unitIds: number[];
 };
 const fetcher = async (url: string) => {
   const token = await getApiKey();
@@ -23,39 +22,29 @@ const fetcher = async (url: string) => {
     })
     .then((json) => {
       return {
-        paging: json.page,
         data: json.data,
       };
     })
     .catch((error) => {
       console.error("Error:", error);
-      return error.response.data;
+      return error;
     });
 };
 
-export default function getAllUnits({
-  filter,
-  encodedString,
-}: {
-  filter?: UnitProps;
-  encodedString?: string;
-}) {
+export default function getAllUnitShiftDay({ filter }: { filter?: UnitProps }) {
   let encodeString = "";
   if (filter) {
     encodeString = Object.entries(filter)
       .map(([key, value]) => `${key}=${encodeURIComponent(value.toString())}`)
       .join("&");
   }
-  if (encodedString) {
-    encodeString = encodeString.concat("&").concat(encodedString);
-  }
   const { data, error, isLoading, mutate } = useSWR(
-    `${endpoint}/unit?${encodeString}`,
+    `${endpoint}/unit/shift/day?${encodeString}`,
     fetcher
   );
 
   return {
-    units: data,
+    data: data,
     isLoading,
     isError: error,
     mutate,

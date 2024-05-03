@@ -1,14 +1,15 @@
-import { apiKey, endpoint } from "@/constants";
+import { endpoint } from "@/constants";
 import axios from "axios";
+import { getApiKey } from "../auth/action";
 
 export default async function deleteBookedResource({ id }: { id: string }) {
   const url = `${endpoint}/resource/books/${id}`;
 
-  // const token = await getApiKey();
+  const token = await getApiKey();
   const headers = {
     accept: "*/*",
     "Content-Type": "application/json",
-    Authorization: `Bearer ${apiKey}`,
+    Authorization: `Bearer ${token}`,
     // Add other headers as needed
   };
 

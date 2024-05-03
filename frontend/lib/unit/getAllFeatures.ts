@@ -1,13 +1,14 @@
-import { apiKey, endpoint } from "@/constants";
+import { endpoint } from "@/constants";
 import { Feature } from "@/types";
 import useSWR from "swr";
+import { getApiKey } from "../auth/action";
 
 const fetcher = async (url: string) => {
-  // const token = await getApiKey();
+  const token = await getApiKey();
   return fetch(url, {
     headers: {
       accept: "application/json",
-      Authorization: `Bearer ${apiKey}`,
+      Authorization: `Bearer ${token}`,
     },
   })
     .then((res) => {

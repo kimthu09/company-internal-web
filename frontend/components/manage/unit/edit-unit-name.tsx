@@ -78,7 +78,7 @@ const EditUnitName = ({
       toast({
         variant: "success",
         title: "Thành công",
-        description: "Thay đổi trưởng phòng thành công",
+        description: "Thay đổi tên phòng thành công",
       });
       mutate(`${endpoint}/unit/${unit.id}`);
     }

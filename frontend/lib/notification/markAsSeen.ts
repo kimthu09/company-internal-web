@@ -2,31 +2,24 @@ import { endpoint } from "@/constants";
 import axios from "axios";
 import { getApiKey } from "../auth/action";
 
-export default async function createRoom({
-  name,
-  location,
-}: {
-  name: string;
-  location: string;
-}) {
-  const url = `${endpoint}/meeting_room`;
+export default async function markAsSeen({ id }: { id: string }) {
+  const url = `${endpoint}/notification/${id}/seen`;
+
   const token = await getApiKey();
   const headers = {
     accept: "*/*",
-    "Content-Type": "application/json",
     Authorization: `Bearer ${token}`,
     // Add other headers as needed
   };
-  const data = { name: name.trim(), ...(location && { location: location }) };
+
   // Make a POST request with headers
   const res = axios
-    .post(url, data, { headers: headers })
+    .post(url, {}, { headers: headers })
     .then((response) => {
       if (response) return response.data;
     })
     .catch((error) => {
       console.error("Error:", error);
-
       return error;
     });
   return res;

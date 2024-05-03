@@ -3,13 +3,17 @@ import axios from "axios";
 import useSWR from "swr";
 import { getApiKey } from "../auth/action";
 
-export type UnitProps = {
+export type EmployeeProps = {
   limit?: string;
   page?: string;
   name?: string;
-  manager?: string;
+  email?: string;
+  phone?: string;
+  unit?: string;
+  monthDOB?: number;
+  yearDOB?: number;
 };
-const fetcher = async (url: string) => {
+export const fetcher = async (url: string) => {
   const token = await getApiKey();
   return axios
     .get(url, {
@@ -23,8 +27,7 @@ const fetcher = async (url: string) => {
     })
     .then((json) => {
       return {
-        paging: json.page,
-        data: json.data,
+        number: json.number,
       };
     })
     .catch((error) => {
@@ -33,29 +36,14 @@ const fetcher = async (url: string) => {
     });
 };
 
-export default function getAllUnits({
-  filter,
-  encodedString,
-}: {
-  filter?: UnitProps;
-  encodedString?: string;
-}) {
-  let encodeString = "";
-  if (filter) {
-    encodeString = Object.entries(filter)
-      .map(([key, value]) => `${key}=${encodeURIComponent(value.toString())}`)
-      .join("&");
-  }
-  if (encodedString) {
-    encodeString = encodeString.concat("&").concat(encodedString);
-  }
+export default function getUnseenNumber() {
   const { data, error, isLoading, mutate } = useSWR(
-    `${endpoint}/unit?${encodeString}`,
+    `${endpoint}/notification/number_unseen`,
     fetcher
   );
 
   return {
-    units: data,
+    data,
     isLoading,
     isError: error,
     mutate,

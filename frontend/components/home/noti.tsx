@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import ViewMoreLink from "./view-more-link";
 
 type Notification = {
   title: string;
@@ -58,6 +59,7 @@ const Noti = () => {
           </div>
         </div>
       ))}
+      <ViewMoreLink href="#" />
     </div>
   );
 };

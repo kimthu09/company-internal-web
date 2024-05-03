@@ -3,7 +3,9 @@ import DropdownSkeleton from "@/components/skeleton/dropdown-skeleton";
 import { Button } from "@/components/ui/button";
 import {
   Command,
+  CommandEmpty,
   CommandGroup,
+  CommandInput,
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
@@ -20,7 +22,7 @@ import { LuCheck, LuChevronsUpDown } from "react-icons/lu";
 
 export interface StaffListProps {
   staff: string | number;
-  setStaff: (staff: string | number) => void;
+  setStaff: (staff: string | number, name?: string) => void;
   isId: boolean;
   readonly?: boolean;
 }
@@ -58,12 +60,16 @@ const StaffList = ({ isId, staff, setStaff, readonly }: StaffListProps) => {
                     (isId && item.id.toString() === staff.toString()) ||
                     (!isId && item.name === staff)
                 )?.name
-              : "Chọn tài nguyên"}
+              : "Chọn nhân viên"}
             <LuChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="PopoverContent rounded-xl w-full">
           <Command className="w-full">
+            <CommandInput placeholder="Tìm tên nhân viên" />
+            <CommandEmpty className="py-2 px-6">
+              <div className="text-sm">Không tìm thấy kết quả</div>
+            </CommandEmpty>
             <CommandList>
               <CommandGroup>
                 {resourceList.map((item) => (
@@ -72,10 +78,11 @@ const StaffList = ({ isId, staff, setStaff, readonly }: StaffListProps) => {
                     key={item.id}
                     onSelect={() => {
                       if (isId) {
-                        setStaff(item.id);
+                        setStaff(item.id, item.name);
                       } else {
-                        setStaff(item.name);
+                        setStaff(item.name, item.name);
                       }
+
                       setOpen(false);
                     }}
                   >

@@ -1,5 +1,7 @@
 import { ShiftType } from "@/types";
 import { type ClassValue, clsx } from "clsx";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -23,4 +25,9 @@ export const stringToDate = (value: string) => {
     console.error("Error converting string to date:", error);
     return null; // Or any default value you prefer
   }
+};
+export const dateTimeStringFormat = (value: string) => {
+  const dateObject = new Date(value);
+  const formattedDate = format(dateObject, "HH:mm, dd/MM/yyyy", { locale: vi });
+  return formattedDate;
 };

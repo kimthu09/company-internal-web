@@ -62,7 +62,7 @@ const ResourceList = ({
                     (isId && item.id.toString() === resource.toString()) ||
                     (!isId && item.name === resource)
                 )?.name
-              : "Chọn nhân viên"}
+              : "Chọn tài nguyên"}
             <LuChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>

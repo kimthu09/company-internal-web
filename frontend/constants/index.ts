@@ -5,9 +5,6 @@ import { IoCalendarOutline } from "react-icons/io5";
 import { SlDocs } from "react-icons/sl";
 import { CgWorkAlt } from "react-icons/cg";
 import { z } from "zod";
-
-export const apiKey =
-  "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyMTUyMTQ5NUBnbS51aXQuZWR1LnZuIiwiaWF0IjoxNzE0NDg3NDY3LCJleHAiOjE3MTQ3MDM0Njd9.GGkUxaNpvLL9kUi2tvvMv2nnuVXYKlFJAZ9KQiJJ5F3ufTWM6VlEojfKezrFYygX";
 export const endpoint = "http://localhost:8080/api/v1";
 export const required = z.string().min(1, "Không để trống trường này");
 export const phoneRegex = new RegExp(/(0[3|5|7|8|9])+([0-9]{8})\b/g);
@@ -68,7 +65,7 @@ export const unitLinks: UnitLink[] = [
   {
     value: "calendar",
     label: "Lịch",
-    href: "/calendar",
+    href: "/unit-calendar",
   },
 ];
 

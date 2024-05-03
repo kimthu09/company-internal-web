@@ -1,6 +1,6 @@
-import { apiKey, endpoint } from "@/constants";
-import { ShiftType } from "@/types";
+import { endpoint } from "@/constants";
 import axios from "axios";
+import { getApiKey } from "../auth/action";
 
 type UnbookProps = {
   from: {
@@ -18,11 +18,11 @@ export default async function getUnbookResources({
   data: UnbookProps;
 }) {
   const url = `${endpoint}/resource/books/day_range/unbook`;
-  // const token = await getApiKey();
+  const token = await getApiKey();
   const headers = {
     accept: "*/*",
     "Content-Type": "application/json",
-    Authorization: `Bearer ${apiKey}`,
+    Authorization: `Bearer ${token}`,
     // Add other headers as needed
   };
 

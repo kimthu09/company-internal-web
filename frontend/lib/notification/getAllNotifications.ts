@@ -3,13 +3,14 @@ import axios from "axios";
 import useSWR from "swr";
 import { getApiKey } from "../auth/action";
 
-export type UnitProps = {
+export type NotiProps = {
   limit?: string;
   page?: string;
-  name?: string;
-  manager?: string;
+  sender?: string;
+  toDate?: string;
+  fromDate?: string;
 };
-const fetcher = async (url: string) => {
+export const fetcher = async (url: string) => {
   const token = await getApiKey();
   return axios
     .get(url, {
@@ -33,11 +34,11 @@ const fetcher = async (url: string) => {
     });
 };
 
-export default function getAllUnits({
+export default function getAllNotifications({
   filter,
   encodedString,
 }: {
-  filter?: UnitProps;
+  filter?: NotiProps;
   encodedString?: string;
 }) {
   let encodeString = "";
@@ -50,12 +51,12 @@ export default function getAllUnits({
     encodeString = encodeString.concat("&").concat(encodedString);
   }
   const { data, error, isLoading, mutate } = useSWR(
-    `${endpoint}/unit?${encodeString}`,
+    `${endpoint}/notification?${encodeString}`,
     fetcher
   );
 
   return {
-    units: data,
+    notifications: data,
     isLoading,
     isError: error,
     mutate,
