@@ -20,6 +20,9 @@ public class MeetingRoomCalendarResponse {
 	@Schema(name = "createdBy")
 	private SimpleUserResponse createdBy;
 
-	@Schema(name = "note", example = "Ghi chú")
+	@Schema(
+			name = "note",
+			example = "Ghi chú"
+	)
 	private String note;
 }

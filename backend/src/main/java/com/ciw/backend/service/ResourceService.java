@@ -229,7 +229,12 @@ public class ResourceService {
 			LocalDate localDate = LocalDate.parse(cp.getDate(), formatter);
 			Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-			return ResourceCalendar.builder().resource(resource).shiftType(cp.getShiftType()).date(date).build();
+			return ResourceCalendar.builder()
+								   .resource(resource)
+								   .shiftType(cp.getShiftType())
+								   .date(date)
+								   .note(request.getNote())
+								   .build();
 		}).toList();
 
 		resourceCalendarRepository.saveAll(calendars);
