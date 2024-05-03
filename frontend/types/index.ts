@@ -67,3 +67,25 @@ export enum ShiftType {
   DAY = "DAY",
   NIGHT = "NIGHT",
 }
+
+export type Notification = {
+  id: number;
+  title: string;
+  description: string;
+  from: {
+    id: number;
+    email: string;
+    phone: string;
+    name: string;
+    image: string;
+  };
+  to: {
+    id: number;
+    email: string;
+    phone: string;
+    name: string;
+    image: string;
+  };
+  createdAt: string;
+  seen: boolean;
+};

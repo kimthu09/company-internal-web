@@ -1,5 +1,6 @@
-import { apiKey, endpoint } from "@/constants";
+import { endpoint } from "@/constants";
 import axios from "axios";
+import { getApiKey } from "../auth/action";
 
 export default async function createRoom({
   name,
@@ -9,11 +10,11 @@ export default async function createRoom({
   location: string;
 }) {
   const url = `${endpoint}/meeting_room`;
-  // const token = await getApiKey();
+  const token = await getApiKey();
   const headers = {
     accept: "*/*",
     "Content-Type": "application/json",
-    Authorization: `Bearer ${apiKey}`,
+    Authorization: `Bearer ${token}`,
     // Add other headers as needed
   };
   const data = { name: name.trim(), ...(location && { location: location }) };

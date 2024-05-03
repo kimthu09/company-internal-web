@@ -1,6 +1,7 @@
-import { apiKey, endpoint } from "@/constants";
+import { endpoint } from "@/constants";
 import axios from "axios";
 import useSWR from "swr";
+import { getApiKey } from "../auth/action";
 
 export type EmployeeProps = {
   limit?: string;
@@ -12,13 +13,13 @@ export type EmployeeProps = {
   monthDOB?: number;
   yearDOB?: number;
 };
-export const fetcher = (url: string) => {
-  // const token = await getApiKey();
+export const fetcher = async (url: string) => {
+  const token = await getApiKey();
   return axios
     .get(url, {
       headers: {
         accept: "*/*",
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${token}`,
       },
     })
     .then((res) => {

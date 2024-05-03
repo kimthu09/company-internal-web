@@ -1,6 +1,7 @@
-import { apiKey, endpoint } from "@/constants";
+import { endpoint } from "@/constants";
 import axios from "axios";
 import useSWR from "swr";
+import { getApiKey } from "../auth/action";
 
 export type UnitProps = {
   limit?: string;
@@ -8,13 +9,13 @@ export type UnitProps = {
   name?: string;
   manager?: string;
 };
-const fetcher = (url: string) => {
-  // const token = await getApiKey();
+const fetcher = async (url: string) => {
+  const token = await getApiKey();
   return axios
     .get(url, {
       headers: {
         accept: "*/*",
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${token}`,
       },
     })
     .then((res) => {

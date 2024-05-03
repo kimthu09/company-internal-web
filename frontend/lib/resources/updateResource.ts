@@ -1,5 +1,6 @@
-import { apiKey, endpoint } from "@/constants";
+import { endpoint } from "@/constants";
 import axios from "axios";
+import { getApiKey } from "../auth/action";
 
 export default async function updateResource({
   id,
@@ -14,11 +15,11 @@ export default async function updateResource({
     name: name.trim(),
   };
 
-  // const token = await getApiKey();
+  const token = await getApiKey();
   const headers = {
     accept: "*/*",
     "Content-Type": "application/json",
-    Authorization: `Bearer ${apiKey}`,
+    Authorization: `Bearer ${token}`,
     // Add other headers as needed
   };
 
