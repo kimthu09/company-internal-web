@@ -41,7 +41,6 @@ const Profile = () => {
   const [name, setName] = useState({ name: "", id: "" });
   useEffect(() => {
     if (currentUser) {
-      console.log(currentUser);
       const json = JSON.stringify(currentUser);
       const user = JSON.parse(json);
       const image = currentUser.image;

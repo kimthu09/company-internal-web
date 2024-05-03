@@ -68,7 +68,6 @@ function CalendarDayNight() {
   if (isError || (data && data.hasOwnProperty("message"))) {
     return <div>Failed to load</div>;
   } else {
-    console.log(data);
     return (
       <div>
         <Calendar

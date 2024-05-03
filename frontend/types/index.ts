@@ -95,7 +95,7 @@ export type News = {
   title: string;
   description: string;
   image: string;
-  updatedAt: Date;
+  updatedAt: string;
   createdBy: {
     id: number;
     email: string;
@@ -104,14 +104,14 @@ export type News = {
     image: string;
   };
   tags: {
-    id: number,
-    name: string,
-    numberPost: number
-  }[]
+    id: number;
+    name: string;
+    numberPost: number;
+  }[];
 };
 
 export type Tag = {
   id: number;
   name: string;
   numberPost: number;
-}
+};
