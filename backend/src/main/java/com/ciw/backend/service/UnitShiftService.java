@@ -163,9 +163,9 @@ public class UnitShiftService {
 		for (Map.Entry<String, UnitShiftDayResponse> entry : mapRes.entrySet()) {
 			res.put(entry.getKey(), PersonalUnitShiftResponse.builder()
 															 .day(!entry.getValue().getDay().isEmpty() &&
-																  entry.getValue().getDay().get(0).getAbsent() != null)
+																  entry.getValue().getDay().get(0).getAbsent() == null)
 															 .night(!entry.getValue().getNight().isEmpty() &&
-																  entry.getValue().getNight().get(0).getAbsent() != null)
+																  entry.getValue().getNight().get(0).getAbsent() == null)
 															 .build());
 		}
 		return res;
