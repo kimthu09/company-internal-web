@@ -37,7 +37,6 @@ const AddUnit = () => {
     const selectedIndex = fields.findIndex(
       (feature) => feature.featureId === featureId
     );
-    console.log(selectedIndex);
     if (selectedIndex > -1) {
       remove(selectedIndex);
     } else {
