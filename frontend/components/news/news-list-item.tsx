@@ -12,9 +12,14 @@ import Link from "next/link";
 import { endpoint } from "@/constants";
 
 const NewsListItem = ({
-  item, canDelete, onDeleted }: {
-    item: News, canDelete?: boolean, onDeleted?: () => void;
-  }) => {
+  item,
+  canDelete,
+  onDeleted,
+}: {
+  item: News;
+  canDelete?: boolean;
+  onDeleted?: () => void;
+}) => {
   const { showLoading, hideLoading } = useLoading();
   const onDelete = async ({ id }: { id: number }) => {
     const response: Promise<any> = deletePost({
@@ -74,7 +79,12 @@ const NewsListItem = ({
             </h2>
           ))}
         </div>
-        <Link className="text-lg font-bold group-hover:text-primary transition-colors" href={"/news/" + item.id}>{item.title}</Link>
+        <Link
+          className="text-lg font-bold group-hover:text-primary transition-colors one-line"
+          href={"/news/" + item.id}
+        >
+          {item.title}
+        </Link>
         <span className="text-sm text-gray-text one-line">
           {item.description}
         </span>
@@ -96,8 +106,9 @@ const NewsListItem = ({
           title="Xoá bài viết"
           size={"icon"}
           variant={"ghost"}
-          className={`rounded-full  text-rose-500 hover:text-rose-600 ${canDelete ? "visible" : "collapse"
-            }`}
+          className={`rounded-full  text-rose-500 hover:text-rose-600 ${
+            canDelete ? "visible" : "collapse"
+          }`}
         >
           <FaTrash />
         </Button>

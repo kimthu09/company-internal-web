@@ -40,7 +40,12 @@ const SmallNews = () => {
             </h2>
           ))}
         </div>
-        <Link className="text-lg font-bold group-hover:text-primary transition-colors" href={"/news/" + item.id}>{item.title}</Link>
+        <Link
+          className="text-lg font-bold group-hover:text-primary transition-colors one-line"
+          href={"/news/" + item.id}
+        >
+          {item.title}
+        </Link>
         <div className="flex flex-row text-xs text-muted-foreground items-start">
           <IoPersonOutline className="h-4 w-4" />
           <p className="text-sm ml-3">{item.createdBy.name}</p>
