@@ -34,18 +34,19 @@ const LoginForm = () => {
     password: string;
   }) => {
     setIsLoading(true);
-    const responseData = await login({
-      email: email,
-      password: password,
-    });
-    console.log(responseData)
-    if (responseData?.error) {
+    try {
+      await login({
+        email: email,
+        password: password,
+      });
+    } catch (e) {
       toast({
         variant: "destructive",
         title: "Đăng nhập thất bại",
         description: "Vui lòng kiểm tra lại email và mật khẩu của bạn",
       });
     }
+
     setIsLoading(false);
   };
 
@@ -73,9 +74,9 @@ const LoginForm = () => {
               <span className="error___message">{errors.password.message}</span>
             )}
           </div>
-          <Link className="self-end" href={"reset-password"}>
+          {/* <Link className="self-end" href={"reset-password"}>
             <p className="text-primary">Quên mật khẩu?</p>
-          </Link>
+          </Link> */}
           <Button type="submit" disabled={isLoading}>
             {isLoading ? (
               <LoadingSpinner className={"h-4 w-4 text-white"} />

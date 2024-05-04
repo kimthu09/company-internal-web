@@ -10,10 +10,12 @@ type Props = {
     data?: OutputData;
     onChange(val: OutputData): void;
     holder: string;
+    readonly: boolean;
+    className?: string;
 };
 
 
-const EditorBlock = ({ data, onChange, holder }: Props) => {
+const EditorBlock = ({ data, onChange, holder, readonly, className }: Props) => {
     const ref = useRef<EditorJS>();
 
     useEffect(() => {
@@ -23,12 +25,15 @@ const EditorBlock = ({ data, onChange, holder }: Props) => {
                 tools: EDITOR_TOOLS,
                 data: data,
                 async onChange(api, event) {
-                    const data = await api.saver.save();
-                    onChange(data);
+                    if (!readonly) {
+                        const data = await api.saver.save();
+                        onChange(data);
+                    }
                 },
                 onReady: () => {
                     new Undo({ editor });
                 },
+                readOnly: readonly,
             });
             ref.current = editor;
         }
@@ -41,7 +46,7 @@ const EditorBlock = ({ data, onChange, holder }: Props) => {
     }, []);
 
 
-    return <div id={holder} />;
+    return <div className={className} id={holder} />;
 };
 
 export default memo(EditorBlock);

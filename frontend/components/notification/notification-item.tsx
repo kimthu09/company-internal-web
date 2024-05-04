@@ -49,9 +49,8 @@ const NotificationItem = ({
 
   return (
     <div
-      className={`py-4 my-2 border-b border-b-border flex flex-row gap-3 pl-2 border-l-4 ${
-        item.seen ? "border-white" : "border-primary"
-      }`}
+      className={`py-4 my-2 border-b border-b-border flex flex-row gap-3 pl-2 border-l-4 ${item.seen ? "border-white" : "border-primary"
+        }`}
     >
       <Avatar>
         <AvatarImage src={item.from.image} alt="@shadcn" />
@@ -59,8 +58,8 @@ const NotificationItem = ({
       </Avatar>
       <div className="flex flex-col gap-2 flex-1">
         <div className="flex text-sm items-center">
-          <h2 className="font-medium">{item.from.name}</h2>
-          <h2 className="font-medium text-gray-text ml-auto">
+          <h2 className="font-medium text-lg">{item.from.name}</h2>
+          <h2 className="font-medium text-gray-text ml-auto text-sm">
             {dateTimeStringFormat(item.createdAt)}
           </h2>
           {item.seen ? null : (

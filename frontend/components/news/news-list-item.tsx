@@ -2,16 +2,66 @@ import { dateTimeStringFormat } from "@/lib/utils";
 import { News } from "@/types";
 import Image from "next/image";
 import { IoPersonOutline } from "react-icons/io5";
+import ConfirmDialog from "../ui/confirm-dialog";
+import { Button } from "../ui/button";
+import { FaTrash } from "react-icons/fa";
+import { useLoading } from "@/hooks/loading-context";
+import deletePost from "@/lib/post/deletePost";
+import { toast } from "../ui/use-toast";
+import Link from "next/link";
+import { endpoint } from "@/constants";
 
-const NewsListItem = ({ item }: { item: News }) => {
+const NewsListItem = ({
+  item, canDelete, onDeleted }: {
+    item: News, canDelete?: boolean, onDeleted?: () => void;
+  }) => {
+  const { showLoading, hideLoading } = useLoading();
+  const onDelete = async ({ id }: { id: number }) => {
+    const response: Promise<any> = deletePost({
+      id: id.toString(),
+    });
+    showLoading();
+    const responseData = await response;
+    hideLoading();
+    if (
+      responseData.hasOwnProperty("response") &&
+      responseData.response.hasOwnProperty("data") &&
+      responseData.response.data.hasOwnProperty("message") &&
+      responseData.response.data.hasOwnProperty("status")
+    ) {
+      toast({
+        variant: "destructive",
+        title: "Có lỗi",
+        description: responseData.response.data.message,
+      });
+    } else if (
+      responseData.hasOwnProperty("code") &&
+      responseData.code.includes("ERR")
+    ) {
+      toast({
+        variant: "destructive",
+        title: "Có lỗi",
+        description: responseData.message,
+      });
+    } else {
+      toast({
+        variant: "success",
+        title: "Thành công",
+        description: "Xóa bài viết thành công",
+      });
+      if (onDeleted) {
+        onDeleted();
+      }
+    }
+  };
   return (
-    <div className="py-8 border-b flex flex-row gap-8 ">
+    <div className="py-8 border-b flex flex-row gap-8 group">
       <Image
-        className="object-cover w-2/5 rounded-2xl"
+        className="object-cover w-2/5 rounded-2xl aspect-[3/2] h-[150px]"
         src={item.image}
         alt="image"
-        width={300}
-        height={300}
+        width={225}
+        height={150}
       />
       <div className="flex flex-col gap-3 self-center w-full ">
         <div className="flex flex-row flex-wrap gap-3">
@@ -24,7 +74,7 @@ const NewsListItem = ({ item }: { item: News }) => {
             </h2>
           ))}
         </div>
-        <h2 className="text-lg font-bold">{item.title}</h2>
+        <Link className="text-lg font-bold group-hover:text-primary transition-colors" href={"/news/" + item.id}>{item.title}</Link>
         <span className="text-sm text-gray-text one-line">
           {item.description}
         </span>
@@ -35,6 +85,23 @@ const NewsListItem = ({ item }: { item: News }) => {
           <p className="ml-auto">{dateTimeStringFormat(item.updatedAt)}</p>
         </div>
       </div>
+      <ConfirmDialog
+        title={"Xác nhận"}
+        description="Bạn xác nhận muốn xóa bài viết ?"
+        handleYes={() => {
+          onDelete({ id: item.id });
+        }}
+      >
+        <Button
+          title="Xoá bài viết"
+          size={"icon"}
+          variant={"ghost"}
+          className={`rounded-full  text-rose-500 hover:text-rose-600 ${canDelete ? "visible" : "collapse"
+            }`}
+        >
+          <FaTrash />
+        </Button>
+      </ConfirmDialog>
     </div>
   );
 };

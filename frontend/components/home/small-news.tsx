@@ -5,6 +5,7 @@ import { IoPersonOutline } from "react-icons/io5";
 import NewsListItemSkeleton from "../news/news-list-item-skeleton";
 import { News } from "@/types";
 import { dateTimeStringFormat } from "@/lib/utils";
+import Link from "next/link";
 const SmallNews = () => {
   const filter = {
     page: "1",
@@ -20,9 +21,9 @@ const SmallNews = () => {
     return <div>Failed to load</div>;
   }
   return posts.data.map((item: News) => (
-    <div className="rounded-xl card-shadow overflow-clip bg-white flex-1">
+    <div className="rounded-xl card-shadow overflow-clip bg-white flex-1 group">
       <Image
-        className="object-contain w-full"
+        className="object-cover w-full aspect-[3/2]"
         src={item.image}
         alt="image"
         width={400}
@@ -39,7 +40,7 @@ const SmallNews = () => {
             </h2>
           ))}
         </div>
-        <h2 className="text-xl font-bold">{item.title}</h2>
+        <Link className="text-lg font-bold group-hover:text-primary transition-colors" href={"/news/" + item.id}>{item.title}</Link>
         <div className="flex flex-row text-xs text-muted-foreground items-start">
           <IoPersonOutline className="h-4 w-4" />
           <p className="text-sm ml-3">{item.createdBy.name}</p>

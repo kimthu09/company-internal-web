@@ -26,7 +26,7 @@ const UnitEmployee = ({ params }: { params: { unitId: string } }) => {
                     <AvatarImage src={item.image} alt="avatar" />
                     <AvatarFallback>{item.name.substring(0, 2)}</AvatarFallback>
                   </Avatar>
-                  <h3 className="text-black">{item.name}</h3>
+                  <h3 className="text-black text-base">{item.name}</h3>
                 </div>
                 <div className="col-span-2 flex justify-between flex-wrap gap-2">
                   <div className="text-sm leading-6 flex gap-1 items-center">

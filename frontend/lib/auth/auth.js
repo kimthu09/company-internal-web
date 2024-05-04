@@ -4,13 +4,40 @@ import { authConfig } from "./auth.config";
 import axios from "axios";
 import { endpoint } from "@/constants";
 const login = async (credentials) => {
+  const headers = {
+    accept: "*/*",
+    "Content-Type": "application/json"
+  };
+  let responseData;
   try {
     const response = await axios.post(endpoint + "/auth/authenticate", {
       email: credentials.email,
       password: credentials.password,
-    });
+    }, { headers: headers });
 
-    const { token } = response.data;
+    if (response) {
+      responseData = response.data;
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    responseData = error;
+  }
+
+  if (
+    responseData.hasOwnProperty("response") &&
+    responseData.response.hasOwnProperty("data") &&
+    responseData.response.data.hasOwnProperty("message") &&
+    responseData.response.data.hasOwnProperty("status")
+  ) {
+    return null;
+  } else if (
+    responseData.hasOwnProperty("code") &&
+    responseData.code.includes("ERR")
+  ) {
+    return null;
+  } else {
+
+    const { token } = responseData;
 
     const user = await axios
       .get(endpoint + "/user", {
@@ -28,8 +55,6 @@ const login = async (credentials) => {
       });
     user.token = token;
     return user;
-  } catch (e) {
-    console.log(e.message);
   }
 };
 
