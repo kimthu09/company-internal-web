@@ -5,6 +5,8 @@ import { LuCheck } from "react-icons/lu";
 import markAsSeen from "@/lib/notification/markAsSeen";
 import { useLoading } from "@/hooks/loading-context";
 import { toast } from "../ui/use-toast";
+import { useSWRConfig } from "swr";
+import { endpoint } from "@/constants";
 
 const NotificationItem = ({
   item,
@@ -13,6 +15,7 @@ const NotificationItem = ({
   item: Notification;
   onUpdated: () => void;
 }) => {
+  const { mutate } = useSWRConfig();
   const { showLoading, hideLoading } = useLoading();
   const onSumit = async () => {
     const response: Promise<any> = markAsSeen({ id: item.id.toString() });
@@ -44,6 +47,7 @@ const NotificationItem = ({
       if (onUpdated) {
         onUpdated();
       }
+      mutate(`${endpoint}/notification/number_unseen`);
     }
   };
 

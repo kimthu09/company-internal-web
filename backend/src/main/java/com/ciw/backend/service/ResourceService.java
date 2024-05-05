@@ -279,8 +279,8 @@ public class ResourceService {
 										resource.getName(),
 										request.getFrom().getShiftType() == ShiftType.DAY ? "sáng" : "chiều",
 										request.getFrom().getDate(),
-										request.getFrom().getShiftType() == ShiftType.DAY ? "sáng" : "chiều",
-										request.getFrom().getDate()));
+										request.getTo().getShiftType() == ShiftType.DAY ? "sáng" : "chiều",
+										request.getTo().getDate()));
 
 		return new SimpleResponse();
 	}

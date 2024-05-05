@@ -131,8 +131,8 @@ public class NotificationService {
 	@Transactional
 	public SimpleResponse seeAllNotification() {
 		User user = Common.findCurrUser(userRepository);
-		List<Notification> notifications = notificationRepository.findAllByFromUserId(user.getId(),
-																					  Sort.by(Sort.Direction.DESC,
+		List<Notification> notifications = notificationRepository.findAllByToUserId(user.getId(),
+																					Sort.by(Sort.Direction.DESC,
 																							  "createdAt"));
 
 		notificationRepository.saveAll(notifications.stream()

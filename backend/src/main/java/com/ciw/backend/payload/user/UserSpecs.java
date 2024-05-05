@@ -16,8 +16,12 @@ public class UserSpecs {
 		return (root, query, cb) -> cb.like(root.get("phone"), "%" + phone + "%");
 	}
 
-	public static Specification<User> hasUnit(String unit) {
+	public static Specification<User> hasUnitName(String unit) {
 		return (root, query, cb) -> cb.like(root.get("unit").get("name"), "%" + unit + "%");
+	}
+
+	public static Specification<User> hasUnitId(Long unitId) {
+		return (root, query, cb) -> cb.equal(root.get("unit").get("id"), unitId);
 	}
 
 	public static Specification<User> isMale(Boolean male) {

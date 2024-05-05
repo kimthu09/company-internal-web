@@ -17,6 +17,8 @@ import SelectShift from "../resources/select-shift";
 import ItemListSkeleton from "../resources/item-list-skeleton";
 import getUnbookRooms from "@/lib/room/getUnBookRoomByDate";
 import bookRoom from "@/lib/room/bookRoom";
+import { useSWRConfig } from "swr";
+
 const BookRoom = () => {
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(),
@@ -49,11 +51,11 @@ const BookRoom = () => {
           to: {
             date: date.to
               ? format(date?.to, "dd/MM/yyyy", {
-                  locale: vi,
-                })
+                locale: vi,
+              })
               : format(date?.from, "dd/MM/yyyy", {
-                  locale: vi,
-                }),
+                locale: vi,
+              }),
             shiftType: date.to ? toShift : fromShift,
           },
         },
@@ -153,8 +155,8 @@ const BookRoom = () => {
                 <span className="border rounded-full py-1 px-3 text-gray-text">
                   {date && date.from
                     ? format(date?.from, "dd/MM/yyyy", {
-                        locale: vi,
-                      })
+                      locale: vi,
+                    })
                     : "Chọn ngày"}
                 </span>
                 <SelectShift value={fromShift} setValue={setFromShift} />
@@ -167,8 +169,8 @@ const BookRoom = () => {
                   <span className="border rounded-full py-1 px-3 text-gray-text">
                     {date && date.to
                       ? format(date?.to, "dd/MM/yyyy", {
-                          locale: vi,
-                        })
+                        locale: vi,
+                      })
                       : "Chọn ngày"}
                   </span>
                   <div className="self-end">
@@ -210,31 +212,30 @@ const BookRoom = () => {
             <ItemListSkeleton />
           ) : (
             filteredList?.map((item) => {
-              const dateString = `${
-                date && date.from && date.to
-                  ? `từ ${shiftTypeToString(fromShift)} ngày ${format(
-                      date.from,
-                      "dd/MM/yyyy",
-                      {
-                        locale: vi,
-                      }
-                    )} đến ${shiftTypeToString(toShift)} ngày ${format(
-                      date.to,
-                      "dd/MM/yyyy",
-                      {
-                        locale: vi,
-                      }
-                    )}`
-                  : date && date.from && !date.to
+              const dateString = `${date && date.from && date.to
+                ? `từ ${shiftTypeToString(fromShift)} ngày ${format(
+                  date.from,
+                  "dd/MM/yyyy",
+                  {
+                    locale: vi,
+                  }
+                )} đến ${shiftTypeToString(toShift)} ngày ${format(
+                  date.to,
+                  "dd/MM/yyyy",
+                  {
+                    locale: vi,
+                  }
+                )}`
+                : date && date.from && !date.to
                   ? `${shiftTypeToString(fromShift)} ngày ${format(
-                      date.from,
-                      "dd/MM/yyyy",
-                      {
-                        locale: vi,
-                      }
-                    )}`
+                    date.from,
+                    "dd/MM/yyyy",
+                    {
+                      locale: vi,
+                    }
+                  )}`
                   : ""
-              }`;
+                }`;
               return (
                 <div
                   key={item.id}

@@ -48,8 +48,8 @@ export const NewsDetail = ({ params }: { params: { newsId: number } }) => {
                     className="w-full object-cover aspect-[4/1]"
                     src={news.image}
                     alt="image"
-                    width={400}
-                    height={100}
+                    width={200}
+                    height={50}
                 />
             </div>
             <div className="py-7">
@@ -62,7 +62,7 @@ export const NewsDetail = ({ params }: { params: { newsId: number } }) => {
                 </div>
                 <h1 className="text-xl md:text-3xl font-bold text-black mt-4 mx-7">{news.title}</h1>
                 <p className="mt-2 text-gray-text mt-4 mb-4 mx-7">Cập nhật lần cuối: {dateTimeStringFormat(news.updatedAt)}</p>
-                <EditorBlock className="prose max-w-full" data={news.content} onChange={(content: OutputData) => { }} holder="editorjs-container" readonly={true} />
+                <EditorBlock className="w-full" data={news.content} onChange={(content: OutputData) => { }} holder="editorjs-container" readonly={true} />
                 <div className="bg-primary/10 rounded-xl p-4 flex flex-row gap-4 mx-7 -mt-32">
                     <Avatar>
                         <AvatarImage src={news.createdBy.image} alt="avatar" />

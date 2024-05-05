@@ -6,9 +6,10 @@ import { Employee } from "@/types";
 export type EmployeeListProps = {
   value?: Employee;
   onValueChange?: (value: Employee) => void;
+  unitId: string;
 };
 
-const EmployeeList = ({ value, onValueChange }: EmployeeListProps) => {
+const EmployeeListUnit = ({ value, onValueChange, unitId }: EmployeeListProps) => {
   const handleOnValueChange = (item: Employee) => { };
   const [inputValue, setInputValue] = useState<string>(value?.name || "");
   const [filterString, setFilterString] = useState("");
@@ -17,6 +18,7 @@ const EmployeeList = ({ value, onValueChange }: EmployeeListProps) => {
     filter: {
       page: "1",
       limit: "15",
+      unitId: unitId
     },
   });
   const searchHandler = useCallback(() => {
@@ -55,4 +57,4 @@ const EmployeeList = ({ value, onValueChange }: EmployeeListProps) => {
   );
 };
 
-export default EmployeeList;
+export default EmployeeListUnit;
