@@ -37,6 +37,8 @@ import { toast } from "../ui/use-toast";
 import markAllSeen from "@/lib/notification/markAllSeen";
 import { useLoading } from "@/hooks/loading-context";
 import NotiListSkeleton from "./noti-list-skeleton";
+import { endpoint } from "@/constants";
+import { useSWRConfig } from "swr";
 type FormValues = {
   filters: {
     type: string;
@@ -44,6 +46,7 @@ type FormValues = {
   }[];
 };
 const NotiPage = () => {
+  const { mutate: mutate2 } = useSWRConfig();
   const router = useRouter();
   const searchParams = useSearchParams();
   const limit = searchParams.get("limit") ?? "10";
@@ -117,6 +120,7 @@ const NotiPage = () => {
       });
     } else {
       mutate();
+      mutate2(`${endpoint}/notification/number_unseen`);
     }
   };
   const [openFilter, setOpenFilter] = useState(false);
@@ -166,7 +170,7 @@ const NotiPage = () => {
                         </label>
                         <div className=" flex gap-1 items-center">
                           {item.type === "toDate" ||
-                          item.type === "fromDate" ? (
+                            item.type === "fromDate" ? (
                             <Controller
                               control={control}
                               name={`filters.${index}.value`}

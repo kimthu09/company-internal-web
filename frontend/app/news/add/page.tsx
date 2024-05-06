@@ -193,7 +193,7 @@ const AddNewsPage = () => {
                             </div>
 
                             <label className="font-medium mt-7 text-black" htmlFor="description">
-                                Mô tả <span className="error___message">*</span>
+                                Mô tả
                             </label>
                             <div className="col-span-2">
                                 <Textarea

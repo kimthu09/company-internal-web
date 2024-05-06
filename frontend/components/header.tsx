@@ -33,7 +33,7 @@ const Header = () => {
           >
             <div className="relative">
               <GoBell className="w-6 h-6 " />
-              {data && (
+              {data && data.number != 0 && (
                 <div className="absolute top-[-5px] right-[-2px] rounded-full bg-primary h-4 w-4 flex leading-3 justify-center items-center text-xs font-bold text-accent">
                   {data.number}
                 </div>

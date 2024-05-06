@@ -15,6 +15,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useLoading } from "@/hooks/loading-context";
 import { useSWRConfig } from "swr";
 import { endpoint } from "@/constants";
+import EmployeeListUnit from "../employee/employee-list-unit";
 
 const ChangeManager = ({ unitId }: { unitId: string }) => {
   const { showLoading, hideLoading } = useLoading();
@@ -97,7 +98,7 @@ const ChangeManager = ({ unitId }: { unitId: string }) => {
               </div>
             </div>
           ) : null}
-          <EmployeeList value={value} onValueChange={onValueChange} />
+          <EmployeeListUnit value={value} onValueChange={onValueChange} unitId={unitId} />
         </div>
         <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
           <div className="flex gap-5 sm:justify-end justify-stretch">

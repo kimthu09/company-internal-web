@@ -10,6 +10,7 @@ export type EmployeeProps = {
   email?: string;
   phone?: string;
   unit?: string;
+  unitId?: string;
   monthDOB?: number;
   yearDOB?: number;
 };

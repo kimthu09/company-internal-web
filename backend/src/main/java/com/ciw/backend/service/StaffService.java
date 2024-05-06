@@ -22,6 +22,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,7 @@ import java.util.List;
 public class StaffService {
 	private final UserRepository userRepository;
 	private final UnitRepository unitRepository;
+	private final PasswordEncoder passwordEncoder;
 
 	@Transactional
 	public UserResponse createStaff(CreateUserRequest request) {
@@ -39,7 +41,7 @@ public class StaffService {
 		User user = mapToEntity(request);
 		user.setDeleted(false);
 
-		user.setPassword(ApplicationConst.DEFAULT_PASSWORD);
+		user.setPassword(passwordEncoder.encode(ApplicationConst.DEFAULT_PASSWORD));
 
 		Unit unit = Common.findUnitById(request.getUnit(), unitRepository);
 		user.setUnit(unit);
@@ -162,7 +164,10 @@ public class StaffService {
 			spec = spec.and(UserSpecs.hasPhone(filter.getPhone()));
 		}
 		if (filter.getUnit() != null) {
-			spec = spec.and(UserSpecs.hasUnit(filter.getUnit()));
+			spec = spec.and(UserSpecs.hasUnitName(filter.getUnit()));
+		}
+		if (filter.getUnitId() != null) {
+			spec = spec.and(UserSpecs.hasUnitId(filter.getUnitId()));
 		}
 		if (filter.getMale() != null) {
 			spec = spec.and(UserSpecs.isMale(filter.getMale()));

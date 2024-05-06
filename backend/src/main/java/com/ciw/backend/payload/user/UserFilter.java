@@ -52,6 +52,12 @@ public class UserFilter {
 	private String unit;
 
 	@Schema(
+			name = "unitId",
+			example = "1"
+	)
+	private Long unitId;
+
+	@Schema(
 			name = "male",
 			example = "true"
 	)

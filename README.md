@@ -1,3 +1,6 @@
+# Giới thiệu sản phẩm
+Truy cập link: https://is-208-team5-nine.vercel.app/project
+
 # Hướng dẫn cài đặt và chạy ứng dụng
 
 ## Backend
@@ -13,12 +16,12 @@
 ### Chạy Backend
 **Chú ý:** Cần thiết lập môi trường Java trước khi chạy
 
-### Cách 1: Sử dụng các IDE hỗ trợ (IntelliJ IDEA)
+#### Cách 1: Sử dụng các IDE hỗ trợ (IntelliJ IDEA)
 
 1. Mở project Backend bằng IntelliJ IDEA.
 2. Chạy ứng dụng từ IDE bằng cách nhấn nút "Run" hoặc "Debug".
 
-### Cách 2: Sử dụng command
+#### Cách 2: Sử dụng command
 
 1. Mở terminal hoặc command prompt.
 2. Di chuyển vào thư mục chứa mã nguồn của Backend.
@@ -26,8 +29,31 @@
 
    ```bash
    ./mvnw spring-boot:run
+   ```
 
-### Link Swagger (API doc)
+#### Link Swagger (API doc)
 Truy cập địa chỉ sau để xem API documentation:
 http://localhost:8080/swagger-ui/index.html
 
+## Frontend
+
+### Import các thư viện cần thiết
+
+   ```bash
+   npm install
+   ```
+
+### Build ứng dụng
+
+   ```bash
+   npm run build
+   ```
+
+### Chạy ứng dụng
+
+   ```bash
+   npm start
+   ```
+
+Truy cập địa chỉ sau để sử dụng frontend:
+http://localhost:80
