@@ -11,10 +11,11 @@ import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.page.AppPageRequest;
 import com.ciw.backend.payload.page.AppPageResponse;
 import com.ciw.backend.payload.post.*;
+import com.ciw.backend.payload.staff.SimpleStaffResponse;
 import com.ciw.backend.payload.tag.TagResponse;
-import com.ciw.backend.payload.user.SimpleUserResponse;
 import com.ciw.backend.repository.PostRepository;
 import com.ciw.backend.repository.TagRepository;
+import com.ciw.backend.repository.UserRepository;
 import com.ciw.backend.utils.TimeHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,7 @@ public class PostService {
 	private final ObjectMapper objectMapper;
 	private final PostRepository postRepository;
 	private final TagRepository tagRepository;
+	private final UserRepository userRepository;
 
 	@Transactional
 	public ListResponse<SimplePostResponse, PostFilter> getPosts(AppPageRequest page, PostFilter filter) {
@@ -98,6 +100,8 @@ public class PostService {
 		handleImagePreCreatePostRequest(request);
 
 		Post post = mapToEntity(request);
+		User curr = Common.findCurrUser(userRepository);
+		post.setCreatedBy(curr);
 		post.setTags(getTagsFromIds(request.getTags()));
 		increaseNumberPost(post.getTags());
 
@@ -241,14 +245,14 @@ public class PostService {
 								 .build();
 	}
 
-	private SimpleUserResponse mapToSimpleUser(User user) {
-		return SimpleUserResponse.builder()
-								 .id(user.getId())
-								 .name(user.getName())
-								 .email(user.getEmail())
-								 .phone(user.getPhone())
-								 .image(user.getImage())
-								 .build();
+	private SimpleStaffResponse mapToSimpleUser(User user) {
+		return SimpleStaffResponse.builder()
+								  .id(user.getId())
+								  .name(user.getName())
+								  .email(user.getEmail())
+								  .phone(user.getPhone())
+								  .image(user.getImage())
+								  .build();
 	}
 
 	private TagResponse mapTagToTagResponse(Tag tag) {

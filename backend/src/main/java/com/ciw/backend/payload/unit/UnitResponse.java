@@ -1,7 +1,7 @@
 package com.ciw.backend.payload.unit;
 
 import com.ciw.backend.payload.feature.FeatureResponse;
-import com.ciw.backend.payload.user.SimpleUserResponse;
+import com.ciw.backend.payload.staff.SimpleStaffResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,10 +28,10 @@ public class UnitResponse {
 	private String name;
 
 	@Schema(name = "manager")
-	private SimpleUserResponse manager;
+	private SimpleStaffResponse manager;
 
 	@Schema(name = "staffs")
-	private List<SimpleUserResponse> staffs;
+	private List<SimpleStaffResponse> staffs;
 
 	@Schema(name = "features")
 	private List<FeatureResponse> features;

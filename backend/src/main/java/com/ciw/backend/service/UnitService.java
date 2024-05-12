@@ -8,8 +8,8 @@ import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.feature.FeatureResponse;
 import com.ciw.backend.payload.page.AppPageRequest;
 import com.ciw.backend.payload.page.AppPageResponse;
+import com.ciw.backend.payload.staff.SimpleStaffResponse;
 import com.ciw.backend.payload.unit.*;
-import com.ciw.backend.payload.user.SimpleUserResponse;
 import com.ciw.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -143,7 +143,7 @@ public class UnitService {
 	public SimpleResponse deleteUnit(Long unitId) {
 		Unit unit = Common.findUnitById(unitId, unitRepository);
 		if (unit.getNumberStaffs() > 0) {
-		    throw new AppException(HttpStatus.BAD_REQUEST, Message.Unit.UNIT_STILL_HAVE_STAFFS_CAN_NOT_DELETE);
+			throw new AppException(HttpStatus.BAD_REQUEST, Message.Unit.UNIT_STILL_HAVE_STAFFS_CAN_NOT_DELETE);
 		}
 
 		List<UnitShift> unitShifts = unitShiftRepository.findByUnitId(unitId);
@@ -212,14 +212,14 @@ public class UnitService {
 						staffs);
 	}
 
-	private SimpleUserResponse mapToSimpleUser(User user) {
-		return SimpleUserResponse.builder()
-								 .id(user.getId())
-								 .name(user.getName())
-								 .email(user.getEmail())
-								 .phone(user.getPhone())
-								 .image(user.getImage())
-								 .build();
+	private SimpleStaffResponse mapToSimpleUser(User user) {
+		return SimpleStaffResponse.builder()
+								  .id(user.getId())
+								  .name(user.getName())
+								  .email(user.getEmail())
+								  .phone(user.getPhone())
+								  .image(user.getImage())
+								  .build();
 	}
 
 	private List<FeatureResponse> getFeatureResponses(List<Long> featureIds) {

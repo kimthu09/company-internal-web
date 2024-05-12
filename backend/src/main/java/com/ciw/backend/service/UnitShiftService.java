@@ -14,9 +14,9 @@ import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.calendar.CalendarPart;
 import com.ciw.backend.payload.calendar.DayOfWeek;
 import com.ciw.backend.payload.calendar.ShiftType;
+import com.ciw.backend.payload.staff.SimpleStaffResponse;
 import com.ciw.backend.payload.unit.UnitWithIdAndNameResponse;
 import com.ciw.backend.payload.unitshift.*;
-import com.ciw.backend.payload.user.SimpleUserResponse;
 import com.ciw.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -121,9 +121,9 @@ public class UnitShiftService {
 	}
 
 	private List<UnitShiftDayResponse> mapToDTOList(String from,
-												String to,
-												List<UnitShift> shifts,
-												List<UnitShiftAbsent> absents) {
+													String to,
+													List<UnitShift> shifts,
+													List<UnitShiftAbsent> absents) {
 		Map<String, List<UnitShift>> shiftMap = mapUnitShiftByDay(from, to, shifts);
 		Map<String, List<UnitShiftAbsent>> absentMap = mapUnitShiftAbsentByDay(absents);
 
@@ -144,9 +144,9 @@ public class UnitShiftService {
 	}
 
 	private Map<String, PersonalUnitShiftResponse> mapToDTOMap(String from,
-															String to,
-															List<UnitShift> shifts,
-															List<UnitShiftAbsent> absents) {
+															   String to,
+															   List<UnitShift> shifts,
+															   List<UnitShiftAbsent> absents) {
 		Map<String, List<UnitShift>> shiftMap = mapUnitShiftByDay(from, to, shifts);
 		Map<String, List<UnitShiftAbsent>> absentMap = mapUnitShiftAbsentByDay(absents);
 
@@ -165,7 +165,8 @@ public class UnitShiftService {
 															 .day(!entry.getValue().getDay().isEmpty() &&
 																  entry.getValue().getDay().get(0).getAbsent() == null)
 															 .night(!entry.getValue().getNight().isEmpty() &&
-																  entry.getValue().getNight().get(0).getAbsent() == null)
+																	entry.getValue().getNight().get(0).getAbsent() ==
+																	null)
 															 .build());
 		}
 		return res;
@@ -396,14 +397,14 @@ public class UnitShiftService {
 											   .build();
 	}
 
-	private SimpleUserResponse mapToDTO(User user) {
-		return SimpleUserResponse.builder()
-								 .id(user.getId())
-								 .name(user.getName())
-								 .image(user.getImage())
-								 .phone(user.getPhone())
-								 .email(user.getEmail())
-								 .build();
+	private SimpleStaffResponse mapToDTO(User user) {
+		return SimpleStaffResponse.builder()
+								  .id(user.getId())
+								  .name(user.getName())
+								  .image(user.getImage())
+								  .phone(user.getPhone())
+								  .email(user.getEmail())
+								  .build();
 	}
 }
 

@@ -1,8 +1,8 @@
 package com.ciw.backend.payload.post;
 
 import com.ciw.backend.constants.ApplicationConst;
+import com.ciw.backend.payload.staff.SimpleStaffResponse;
 import com.ciw.backend.payload.tag.TagResponse;
-import com.ciw.backend.payload.user.SimpleUserResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -104,7 +104,7 @@ public class PostResponse {
 	private String image;
 
 	@Schema(name = "createdBy")
-	private SimpleUserResponse createdBy;
+	private SimpleStaffResponse createdBy;
 
 	@Schema(
 			name = "createdAt",

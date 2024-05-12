@@ -16,7 +16,7 @@ import com.ciw.backend.payload.calendar.ShiftType;
 import com.ciw.backend.payload.page.AppPageRequest;
 import com.ciw.backend.payload.page.AppPageResponse;
 import com.ciw.backend.payload.resource.*;
-import com.ciw.backend.payload.user.SimpleUserResponse;
+import com.ciw.backend.payload.staff.SimpleStaffResponse;
 import com.ciw.backend.repository.NotificationRepository;
 import com.ciw.backend.repository.ResourceCalendarRepository;
 import com.ciw.backend.repository.ResourceRepository;
@@ -232,7 +232,8 @@ public class ResourceService {
 									  .build();
 	}
 
-	private Specification<ResourceCalendar> filterResourceCalendar(Long createdById, PersonalResourceCalendarFilter filter) {
+	private Specification<ResourceCalendar> filterResourceCalendar(Long createdById,
+																   PersonalResourceCalendarFilter filter) {
 		Specification<ResourceCalendar> spec = ResourceCalendarSpecs.isCreatedBy(createdById.toString());
 		if (filter.getResource() != null) {
 			spec = spec.and(ResourceCalendarSpecs.hasResource(filter.getResource()));
@@ -324,14 +325,14 @@ public class ResourceService {
 									   .build();
 	}
 
-	private SimpleUserResponse mapToSimpleDTO(User user) {
-		return SimpleUserResponse.builder()
-								 .id(user.getId())
-								 .name(user.getName())
-								 .email(user.getEmail())
-								 .phone(user.getPhone())
-								 .image(user.getImage())
-								 .build();
+	private SimpleStaffResponse mapToSimpleDTO(User user) {
+		return SimpleStaffResponse.builder()
+								  .id(user.getId())
+								  .name(user.getName())
+								  .email(user.getEmail())
+								  .phone(user.getPhone())
+								  .image(user.getImage())
+								  .build();
 	}
 
 	private List<ResourceCalendarDayResponse> mapToDTO(List<ResourceCalendar> calendars) {

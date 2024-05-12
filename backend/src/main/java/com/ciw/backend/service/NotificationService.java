@@ -9,7 +9,7 @@ import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.notification.*;
 import com.ciw.backend.payload.page.AppPageRequest;
 import com.ciw.backend.payload.page.AppPageResponse;
-import com.ciw.backend.payload.user.SimpleUserResponse;
+import com.ciw.backend.payload.staff.SimpleStaffResponse;
 import com.ciw.backend.repository.NotificationRepository;
 import com.ciw.backend.repository.UserRepository;
 import com.ciw.backend.utils.TimeHelper;
@@ -133,7 +133,7 @@ public class NotificationService {
 		User user = Common.findCurrUser(userRepository);
 		List<Notification> notifications = notificationRepository.findAllByToUserId(user.getId(),
 																					Sort.by(Sort.Direction.DESC,
-																							  "createdAt"));
+																							"createdAt"));
 
 		notificationRepository.saveAll(notifications.stream()
 													.peek(notification -> notification.setSeen(true))
@@ -154,13 +154,13 @@ public class NotificationService {
 								   .build();
 	}
 
-	private SimpleUserResponse mapToDTO(User user) {
-		return SimpleUserResponse.builder()
-								 .id(user.getId())
-								 .name(user.getName())
-								 .email(user.getEmail())
-								 .phone(user.getPhone())
-								 .image(user.getImage())
-								 .build();
+	private SimpleStaffResponse mapToDTO(User user) {
+		return SimpleStaffResponse.builder()
+								  .id(user.getId())
+								  .name(user.getName())
+								  .email(user.getEmail())
+								  .phone(user.getPhone())
+								  .image(user.getImage())
+								  .build();
 	}
 }

@@ -1,4 +1,4 @@
-package com.ciw.backend.payload.user;
+package com.ciw.backend.payload.staff;
 
 import com.ciw.backend.constants.Message;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,7 +14,7 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserFilter {
+public class StaffFilter {
 	@Schema(
 			name = "name",
 			example = "Tên người dùng"

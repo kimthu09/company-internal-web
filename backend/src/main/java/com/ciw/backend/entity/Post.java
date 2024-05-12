@@ -1,13 +1,12 @@
 package com.ciw.backend.entity;
 
+import com.ciw.backend.config.audit.SystemAuditorAwareImpl;
 import com.ciw.backend.utils.converter.HashMapConverter;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 import java.util.Map;
@@ -22,7 +21,7 @@ import java.util.Set;
 @Table(
 		name = "post"
 )
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners(SystemAuditorAwareImpl.class)
 public class Post {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,7 +54,6 @@ public class Post {
 			nullable = false,
 			updatable = false
 	)
-	@CreatedBy
 	private User createdBy;
 
 	@CreatedDate

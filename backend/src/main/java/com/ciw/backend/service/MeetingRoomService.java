@@ -16,7 +16,7 @@ import com.ciw.backend.payload.calendar.ShiftType;
 import com.ciw.backend.payload.meetingroom.*;
 import com.ciw.backend.payload.page.AppPageRequest;
 import com.ciw.backend.payload.page.AppPageResponse;
-import com.ciw.backend.payload.user.SimpleUserResponse;
+import com.ciw.backend.payload.staff.SimpleStaffResponse;
 import com.ciw.backend.repository.MeetingRoomCalendarRepository;
 import com.ciw.backend.repository.MeetingRoomRepository;
 import com.ciw.backend.repository.NotificationRepository;
@@ -242,7 +242,8 @@ public class MeetingRoomService {
 									  .build();
 	}
 
-	private Specification<MeetingRoomCalendar> filterMeetingRoomCalendar( Long createdById, PersonalMeetingRoomCalendarFilter filter) {
+	private Specification<MeetingRoomCalendar> filterMeetingRoomCalendar(Long createdById,
+																		 PersonalMeetingRoomCalendarFilter filter) {
 		Specification<MeetingRoomCalendar> spec = MeetingRoomCalendarSpecs.isCreatedBy(createdById.toString());
 		if (filter.getMeetingRoom() != null) {
 			spec = spec.and(MeetingRoomCalendarSpecs.hasMeetingRoom(filter.getMeetingRoom()));
@@ -335,14 +336,14 @@ public class MeetingRoomService {
 										  .build();
 	}
 
-	private SimpleUserResponse mapToSimpleDTO(User user) {
-		return SimpleUserResponse.builder()
-								 .id(user.getId())
-								 .name(user.getName())
-								 .email(user.getEmail())
-								 .phone(user.getPhone())
-								 .image(user.getImage())
-								 .build();
+	private SimpleStaffResponse mapToSimpleDTO(User user) {
+		return SimpleStaffResponse.builder()
+								  .id(user.getId())
+								  .name(user.getName())
+								  .email(user.getEmail())
+								  .phone(user.getPhone())
+								  .image(user.getImage())
+								  .build();
 	}
 
 	private List<MeetingRoomCalendarDayResponse> mapToDTO(List<MeetingRoomCalendar> calendars) {
