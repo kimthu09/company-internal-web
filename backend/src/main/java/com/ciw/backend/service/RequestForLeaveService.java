@@ -92,8 +92,8 @@ public class RequestForLeaveService {
 							  .getUnitFeatures()
 							  .stream()
 							  .anyMatch(unitFeature -> unitFeature.getFeature()
-																  .getId()
-																  .equals(ApplicationConst.STAFF_MANAGER_FEATURE_ID));
+																  .getCode()
+																  .equals(ApplicationConst.STAFF_MANAGER_FEATURE_CODE));
 	}
 
 	private Specification<RequestForLeave> filterRequestForLeaves(RequestForLeaveFilter filter) {
