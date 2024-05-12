@@ -1,9 +1,9 @@
-package com.ciw.backend.payload.user;
+package com.ciw.backend.payload.staff;
 
 import com.ciw.backend.entity.User;
 import org.springframework.data.jpa.domain.Specification;
 
-public class UserSpecs {
+public class StaffSpecs {
 	public static Specification<User> hasName(String name) {
 		return (root, query, cb) -> cb.like(root.get("name"), "%" + name + "%");
 	}

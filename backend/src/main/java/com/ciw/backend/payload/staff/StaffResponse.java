@@ -1,4 +1,4 @@
-package com.ciw.backend.payload.user;
+package com.ciw.backend.payload.staff;
 
 import com.ciw.backend.constants.ApplicationConst;
 import com.ciw.backend.payload.unit.SimpleUnitWithoutManagerResponse;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserResponse {
+public class StaffResponse {
 	@Schema(
 			name = "id",
 			example = "1"
@@ -30,6 +30,12 @@ public class UserResponse {
 			example = "Nguyễn Văn A"
 	)
 	private String name;
+
+	@Schema(
+			name = "userIdentity",
+			example = "012345678901"
+	)
+	private String userIdentity;
 
 	@Schema(
 			name = "phone",

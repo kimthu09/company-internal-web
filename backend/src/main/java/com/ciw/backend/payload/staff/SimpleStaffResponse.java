@@ -1,4 +1,4 @@
-package com.ciw.backend.payload.user;
+package com.ciw.backend.payload.staff;
 
 import com.ciw.backend.constants.ApplicationConst;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SimpleUserResponse {
+public class SimpleStaffResponse {
 	@Schema(
 			name = "id",
 			example = "1"

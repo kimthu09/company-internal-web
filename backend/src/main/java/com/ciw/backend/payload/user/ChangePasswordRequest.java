@@ -1,4 +1,4 @@
-package com.ciw.backend.payload.auth;
+package com.ciw.backend.payload.user;
 
 import com.ciw.backend.constants.Message;
 import io.swagger.v3.oas.annotations.media.Schema;

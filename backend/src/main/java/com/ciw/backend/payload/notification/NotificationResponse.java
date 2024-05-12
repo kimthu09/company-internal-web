@@ -1,6 +1,6 @@
 package com.ciw.backend.payload.notification;
 
-import com.ciw.backend.payload.user.SimpleUserResponse;
+import com.ciw.backend.payload.staff.SimpleStaffResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
@@ -29,10 +29,10 @@ public class NotificationResponse {
 	private String description;
 
 	@Schema(name = "from")
-	private SimpleUserResponse from;
+	private SimpleStaffResponse from;
 
 	@Schema(name = "to")
-	private SimpleUserResponse to;
+	private SimpleStaffResponse to;
 
 	@Schema(name = "createdAt")
 	private Date createdAt;

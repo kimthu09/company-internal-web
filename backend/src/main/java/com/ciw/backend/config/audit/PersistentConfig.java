@@ -1,4 +1,4 @@
-package com.ciw.backend.config;
+package com.ciw.backend.config.audit;
 
 import com.ciw.backend.entity.User;
 import org.springframework.context.annotation.Bean;
@@ -12,5 +12,10 @@ public class PersistentConfig {
 	@Bean
 	public AuditorAware<User> auditorProvider() {
 		return new AuditorAwareImpl();
+	}
+
+	@Bean(name = "systemAudit")
+	public SystemAuditorAwareImpl systemAuditorProvider() {
+		return new SystemAuditorAwareImpl();
 	}
 }

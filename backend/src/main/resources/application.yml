@@ -27,7 +27,7 @@ server:
       charset: UTF-8
 logging:
   level:
-    root: debug
+    root: info
 gmail:
   username: nguyenlengocmai000@gmail.com
   password: fyfo xyfe xswy toav

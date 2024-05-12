@@ -37,6 +37,36 @@ public class ProfileResponse {
 	)
 	private String image;
 
+	@Schema(
+			name = "phone",
+			example = "0123456789"
+	)
+	private String phone;
+
+	@Schema(
+			name = "address",
+			example = "TPHCM"
+	)
+	private String address;
+
+	@Schema(
+			name = "male",
+			example = "true"
+	)
+	private Boolean male;
+
+	@Schema(
+			name = "dob",
+			example = "12/12/2000"
+	)
+	private String dob;
+
+	@Schema(
+			name = "userIdentity",
+			example = "012345678901"
+	)
+	private String userIdentity;
+
 	@Schema(name = "unit")
 	private SimpleUnitWithFeatureResponse unit;
 }

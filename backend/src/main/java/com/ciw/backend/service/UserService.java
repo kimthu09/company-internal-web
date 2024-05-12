@@ -5,10 +5,11 @@ import com.ciw.backend.entity.Unit;
 import com.ciw.backend.entity.User;
 import com.ciw.backend.exception.AppException;
 import com.ciw.backend.payload.SimpleResponse;
-import com.ciw.backend.payload.auth.ChangePasswordRequest;
 import com.ciw.backend.payload.feature.FeatureResponse;
 import com.ciw.backend.payload.unit.SimpleUnitWithFeatureResponse;
+import com.ciw.backend.payload.user.ChangePasswordRequest;
 import com.ciw.backend.payload.user.ProfileResponse;
+import com.ciw.backend.payload.user.UpdateUserRequest;
 import com.ciw.backend.repository.FeatureRepository;
 import com.ciw.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +53,17 @@ public class UserService {
 		User user = Common.findUserByEmail(email, userRepository);
 
 		return mapToProfileResponse(user);
+	}
+
+	@Transactional
+	public ProfileResponse updateUser(UpdateUserRequest request) {
+		User user = Common.findCurrUser(userRepository);
+
+		Common.updateIfNotNull(request.getPhone(), user::setPhone);
+		Common.updateIfNotNull(request.getAddress(), user::setAddress);
+		Common.updateIfNotNull(request.getImage(), user::setImage);
+
+		return mapToProfileResponse(userRepository.save(user));
 	}
 
 	private ProfileResponse mapToProfileResponse(User user) {

@@ -20,6 +20,7 @@ public class Message {
 		public static final String USER_NOT_EXIST = "Người dùng không tồn tại trong hệ thống";
 		public static final String NAME_VALIDATE = "Tên người dùng không được trống và tối đa 200 ký tự";
 		public static final String PHONE_VALIDATE = "Số điện thoại người dùng từ 10 đến 11 chữ số";
+		public static final String USER_IDENTITY_VALIDATE = "Căn cước công dân cần có 12 số";
 		public static final String DOB_VALIDATE = "Ngày sinh không hợp lệ";
 		public static final String ADDRESS_VALIDATE = "Địa chỉ không được để trống và có tối đa 50 ký tự";
 		public static final String UNIT_VALIDATE = "Phòng ban không được để trống";
@@ -56,7 +57,8 @@ public class Message {
 		public static final String UNIT_NOT_EXIST = "Phòng ban không tồn tại";
 		public static final String UNIT_MANAGER_EXIST = "Nhân viên đã là trưởng phòng của phòng ban khác";
 		public static final String UNIT_MANAGER_NOTEXIST = "Trưởng phòng là nhân viên không tồn tại";
-		public static final String UNIT_STILL_HAVE_STAFFS_CAN_NOT_DELETE ="Phòng ban vẫn còn nhân viên. Xin hãy xóa hết nhân viên rồi thử lại";
+		public static final String UNIT_STILL_HAVE_STAFFS_CAN_NOT_DELETE
+				= "Phòng ban vẫn còn nhân viên. Xin hãy xóa hết nhân viên rồi thử lại";
 
 
 	}

@@ -3,10 +3,10 @@ package com.ciw.backend.controller;
 import com.ciw.backend.payload.ListResponse;
 import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.page.AppPageRequest;
-import com.ciw.backend.payload.user.CreateUserRequest;
-import com.ciw.backend.payload.user.UpdateUserRequest;
-import com.ciw.backend.payload.user.UserFilter;
-import com.ciw.backend.payload.user.UserResponse;
+import com.ciw.backend.payload.staff.CreateStaffRequest;
+import com.ciw.backend.payload.staff.StaffFilter;
+import com.ciw.backend.payload.staff.StaffResponse;
+import com.ciw.backend.payload.staff.UpdateStaffRequest;
 import com.ciw.backend.service.StaffService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -43,9 +43,9 @@ public class StaffController {
 			description = "Http Status is 200 OK"
 	)
 	@PreAuthorize("hasAnyAuthority('ADMIN')")
-	public ResponseEntity<ListResponse<UserResponse, UserFilter>> getUsers(
+	public ResponseEntity<ListResponse<StaffResponse, StaffFilter>> getUsers(
 			@Valid AppPageRequest page,
-			@Valid UserFilter filter) {
+			@Valid StaffFilter filter) {
 		return new ResponseEntity<>(staffService.getUsers(page, filter), HttpStatus.OK);
 	}
 
@@ -62,7 +62,7 @@ public class StaffController {
 			description = "Http Status is 200 OK"
 	)
 	@PreAuthorize("hasAnyAuthority('ADMIN')")
-	public ResponseEntity<UserResponse> getUser(@PathVariable Long id) {
+	public ResponseEntity<StaffResponse> getUser(@PathVariable Long id) {
 		return new ResponseEntity<>(staffService.getUser(id), HttpStatus.OK);
 	}
 
@@ -79,8 +79,8 @@ public class StaffController {
 			description = "Http Status is 201 CREATED"
 	)
 	@PreAuthorize("hasAnyAuthority('ADMIN')")
-	public ResponseEntity<UserResponse> createStaff(
-			@Valid @RequestBody CreateUserRequest request
+	public ResponseEntity<StaffResponse> createStaff(
+			@Valid @RequestBody CreateStaffRequest request
 	) {
 		return new ResponseEntity<>(staffService.createStaff(request), HttpStatus.CREATED);
 	}
@@ -98,9 +98,9 @@ public class StaffController {
 			description = "Http Status is 200 OK"
 	)
 	@PreAuthorize("hasAnyAuthority('ADMIN')")
-	public ResponseEntity<UserResponse> updateStaff(
+	public ResponseEntity<StaffResponse> updateStaff(
 			@PathVariable Long id,
-			@Valid @RequestBody UpdateUserRequest request
+			@Valid @RequestBody UpdateStaffRequest request
 	) {
 		return new ResponseEntity<>(staffService.updateStaff(id, request), HttpStatus.OK);
 	}

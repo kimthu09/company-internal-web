@@ -1,17 +1,15 @@
-package com.ciw.backend.payload.user;
+package com.ciw.backend.payload.staff;
 
 import com.ciw.backend.constants.ApplicationConst;
 import com.ciw.backend.constants.Message;
 import com.ciw.backend.utils.validation.date.ValidDDMMYYYYFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 @Data
-public class CreateUserRequest {
+public class UpdateStaffRequest {
 	@Schema(
 			name = "name",
 			example = "user"
@@ -21,16 +19,7 @@ public class CreateUserRequest {
 			max = 200,
 			message = Message.User.NAME_VALIDATE
 	)
-	@NotNull(message = Message.User.NAME_VALIDATE)
 	private String name;
-
-	@Schema(
-			name = "email",
-			example = "user@gmail.com"
-	)
-	@Email(message = Message.EMAIL_VALIDATE)
-	@NotNull(message = Message.EMAIL_VALIDATE)
-	private String email;
 
 	@Schema(
 			name = "phone",
@@ -40,7 +29,6 @@ public class CreateUserRequest {
 			regexp = "\\d{10,11}",
 			message = Message.User.PHONE_VALIDATE
 	)
-	@NotNull(message = Message.User.PHONE_VALIDATE)
 	private String phone;
 
 	@Schema(
@@ -48,7 +36,6 @@ public class CreateUserRequest {
 			example = "12/12/2000"
 	)
 	@ValidDDMMYYYYFormat(message = Message.User.DOB_VALIDATE)
-	@NotNull(message = Message.User.DOB_VALIDATE)
 	private String dob;
 
 	@Schema(
@@ -60,8 +47,17 @@ public class CreateUserRequest {
 			max = 50,
 			message = Message.User.ADDRESS_VALIDATE
 	)
-	@NotNull(message = Message.User.ADDRESS_VALIDATE)
 	private String address;
+
+	@Schema(
+			name = "userIdentity",
+			example = "012345678901"
+	)
+	@Pattern(
+			regexp = "\\d{12}",
+			message = Message.User.USER_IDENTITY_VALIDATE
+	)
+	private String userIdentity;
 
 	@Schema(
 			name = "image",
@@ -73,13 +69,11 @@ public class CreateUserRequest {
 			name = "male",
 			example = "true"
 	)
-	@NotNull(message = Message.User.GENDER_VALIDATE)
 	private Boolean male;
 
 	@Schema(
 			name = "unit",
 			example = "1"
 	)
-	@NotNull(message = Message.User.UNIT_VALIDATE)
 	private Long unit;
 }

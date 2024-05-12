@@ -79,6 +79,13 @@ public class User implements UserDetails {
 	private String phone;
 
 	@Column(nullable = false)
+	@Length(
+			min = 12,
+			max = 12
+	)
+	private String userIdentity;
+
+	@Column(nullable = false)
 	private boolean male;
 
 	@Column(nullable = false)

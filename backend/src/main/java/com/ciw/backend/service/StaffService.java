@@ -9,8 +9,8 @@ import com.ciw.backend.payload.ListResponse;
 import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.page.AppPageRequest;
 import com.ciw.backend.payload.page.AppPageResponse;
+import com.ciw.backend.payload.staff.*;
 import com.ciw.backend.payload.unit.SimpleUnitWithoutManagerResponse;
-import com.ciw.backend.payload.user.*;
 import com.ciw.backend.repository.UnitRepository;
 import com.ciw.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +36,7 @@ public class StaffService {
 	private final PasswordEncoder passwordEncoder;
 
 	@Transactional
-	public UserResponse createStaff(CreateUserRequest request) {
+	public StaffResponse createStaff(CreateStaffRequest request) {
 		handleImage(request);
 		User user = mapToEntity(request);
 		user.setDeleted(false);
@@ -52,20 +52,21 @@ public class StaffService {
 		return mapToDTO(userRepository.save(user));
 	}
 
-	private void handleImage(CreateUserRequest request) {
+	private void handleImage(CreateStaffRequest request) {
 		if (request.getImage().isEmpty()) {
 			request.setImage(ApplicationConst.DEFAULT_AVATAR);
 		}
 	}
 
 	@Transactional
-	public UserResponse updateStaff(Long userId, UpdateUserRequest request) {
+	public StaffResponse updateStaff(Long userId, UpdateStaffRequest request) {
 		User user = Common.findUserById(userId, userRepository);
 
 		Common.updateIfNotNull(request.getName(), user::setName);
 		Common.updateIfNotNull(request.getPhone(), user::setPhone);
 		Common.updateIfNotNull(request.getDob(), user::setDob);
 		Common.updateIfNotNull(request.getAddress(), user::setAddress);
+		Common.updateIfNotNull(request.getUserIdentity(), user::setUserIdentity);
 		Common.updateIfNotNull(request.getImage(), user::setImage);
 		Common.updateIfNotNull(request.getMale(), user::setMale);
 		if (request.getUnit() != null) {
@@ -118,7 +119,7 @@ public class StaffService {
 
 
 	@Transactional
-	public ListResponse<UserResponse, UserFilter> getUsers(AppPageRequest page, UserFilter filter) {
+	public ListResponse<StaffResponse, StaffFilter> getUsers(AppPageRequest page, StaffFilter filter) {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String email = userDetails.getUsername();
 
@@ -131,9 +132,9 @@ public class StaffService {
 
 		List<User> users = userPage.getContent();
 
-		List<UserResponse> data = users.stream().map(this::mapToDTO).toList();
+		List<StaffResponse> data = users.stream().map(this::mapToDTO).toList();
 
-		return ListResponse.<UserResponse, UserFilter>builder()
+		return ListResponse.<StaffResponse, StaffFilter>builder()
 						   .data(data)
 						   .appPageResponse(AppPageResponse.builder()
 														   .index(page.getPage())
@@ -146,53 +147,54 @@ public class StaffService {
 	}
 
 	@Transactional
-	public UserResponse getUser(Long id) {
+	public StaffResponse getUser(Long id) {
 		User user = Common.findUserById(id, userRepository);
 
 		return mapToDTO(user);
 	}
 
-	private Specification<User> filterStaffs(UserFilter filter) {
+	private Specification<User> filterStaffs(StaffFilter filter) {
 		Specification<User> spec = Specification.where(null);
 		if (filter.getName() != null) {
-			spec = UserSpecs.hasName(filter.getName());
+			spec = StaffSpecs.hasName(filter.getName());
 		}
 		if (filter.getEmail() != null) {
-			spec = spec.and(UserSpecs.hasEmail(filter.getEmail()));
+			spec = spec.and(StaffSpecs.hasEmail(filter.getEmail()));
 		}
 		if (filter.getPhone() != null) {
-			spec = spec.and(UserSpecs.hasPhone(filter.getPhone()));
+			spec = spec.and(StaffSpecs.hasPhone(filter.getPhone()));
 		}
 		if (filter.getUnit() != null) {
-			spec = spec.and(UserSpecs.hasUnitName(filter.getUnit()));
+			spec = spec.and(StaffSpecs.hasUnitName(filter.getUnit()));
 		}
 		if (filter.getUnitId() != null) {
-			spec = spec.and(UserSpecs.hasUnitId(filter.getUnitId()));
+			spec = spec.and(StaffSpecs.hasUnitId(filter.getUnitId()));
 		}
 		if (filter.getMale() != null) {
-			spec = spec.and(UserSpecs.isMale(filter.getMale()));
+			spec = spec.and(StaffSpecs.isMale(filter.getMale()));
 		}
 		if (filter.getMonthDOB() != null) {
-			spec = spec.and(UserSpecs.hasDOBinMonth(filter.getMonthDOB()));
+			spec = spec.and(StaffSpecs.hasDOBinMonth(filter.getMonthDOB()));
 		}
 		if (filter.getYearDOB() != null) {
-			spec = spec.and(UserSpecs.hasDOBinYear(filter.getYearDOB()));
+			spec = spec.and(StaffSpecs.hasDOBinYear(filter.getYearDOB()));
 		}
 		return spec;
 	}
 
-	private UserResponse mapToDTO(User user) {
-		return UserResponse.builder()
-						   .id(user.getId())
-						   .name(user.getName())
-						   .email(user.getEmail())
-						   .unit(mapToSimpleUnitWithoutManager(user.getUnit()))
-						   .image(user.getImage())
-						   .phone(user.getPhone())
-						   .dob(user.getDob())
-						   .address(user.getAddress())
-						   .male(user.isMale())
-						   .build();
+	private StaffResponse mapToDTO(User user) {
+		return StaffResponse.builder()
+							.id(user.getId())
+							.name(user.getName())
+							.email(user.getEmail())
+							.unit(mapToSimpleUnitWithoutManager(user.getUnit()))
+							.image(user.getImage())
+							.phone(user.getPhone())
+							.userIdentity(user.getUserIdentity())
+							.dob(user.getDob())
+							.address(user.getAddress())
+							.male(user.isMale())
+							.build();
 	}
 
 	private SimpleUnitWithoutManagerResponse mapToSimpleUnitWithoutManager(Unit unit) {
@@ -203,13 +205,14 @@ public class StaffService {
 											   .build();
 	}
 
-	private User mapToEntity(CreateUserRequest request) {
+	private User mapToEntity(CreateStaffRequest request) {
 		return User.builder()
 				   .name(request.getName())
 				   .email(request.getEmail())
 				   .address(request.getAddress())
 				   .dob(request.getDob())
 				   .phone(request.getPhone())
+				   .userIdentity(request.getUserIdentity())
 				   .image(request.getImage())
 				   .male(request.getMale())
 				   .build();
