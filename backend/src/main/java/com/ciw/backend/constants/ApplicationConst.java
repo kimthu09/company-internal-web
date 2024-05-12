@@ -17,4 +17,5 @@ public class ApplicationConst {
 	public static final String ADMIN_UNIT_NAME = "admin";
 
 	public static final Long BIRTHDAY_TAG_ID = 3L;
+	public static final Long STAFF_MANAGER_FEATURE_ID = 2L;
 }

@@ -4,8 +4,6 @@ import com.ciw.backend.payload.calendar.ShiftType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 
@@ -16,16 +14,15 @@ import java.util.Date;
 @Builder
 @Entity
 @Table(
-		name = "meeting_room_calendar",
+		name = "request_for_leave",
 		uniqueConstraints = {
 				@UniqueConstraint(
-						columnNames = {"date", "shift_type", "meeting_room_id"},
+						columnNames = {"date", "shift_type", "created_by"},
 						name = "Bảng ghi"
 				)
 		}
 )
-@EntityListeners(AuditingEntityListener.class)
-public class MeetingRoomCalendar {
+public class RequestForLeave {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -43,19 +40,11 @@ public class MeetingRoomCalendar {
 	)
 	private ShiftType shiftType;
 
-	@ManyToOne
-	@JoinColumn(
-			name = "meeting_room_id",
-			nullable = false,
-			updatable = false
-	)
-	private MeetingRoom meetingRoom;
-
 	@Column(
 			nullable = false
 	)
 	@Length(
-			min = 1,
+			min = 0,
 			max = 200
 	)
 	private String note;
@@ -66,6 +55,51 @@ public class MeetingRoomCalendar {
 			nullable = false,
 			updatable = false
 	)
-	@CreatedBy
 	private User createdBy;
+
+	@Column(
+			name = "created_at",
+			nullable = false,
+			updatable = false
+	)
+	private Date createdAt;
+
+	@ManyToOne
+	@JoinColumn(
+			name = "approved_by",
+			nullable = true
+	)
+	private User approvedBy;
+
+	@Column(
+			name = "approved_at",
+			nullable = true
+	)
+	private Date approvedAt;
+
+	@ManyToOne
+	@JoinColumn(
+			name = "accepted_by",
+			nullable = true
+	)
+	private User acceptedBy;
+
+	@Column(
+			name = "accepted_at",
+			nullable = true
+	)
+	private Date acceptedAt;
+
+	@ManyToOne
+	@JoinColumn(
+			name = "rejected_by",
+			nullable = true
+	)
+	private User rejectedBy;
+
+	@Column(
+			name = "rejected_at",
+			nullable = true
+	)
+	private Date rejectedAt;
 }

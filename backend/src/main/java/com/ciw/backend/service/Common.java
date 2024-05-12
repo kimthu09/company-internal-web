@@ -146,6 +146,13 @@ public class Common {
 															 Message.Resource.BOOK_EMPTY));
 	}
 
+	public static RequestForLeave findRequestForLeaveById(Long requestId,
+															RequestForLeaveRepository repository) {
+		return repository.findById(requestId)
+						 .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST,
+															 Message.RequestForLeave.REQUEST_NOT_EXIST));
+	}
+
 	public static List<CalendarPart> generateCalendarPart(CalendarPart from, CalendarPart to) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		LocalDate start = LocalDate.parse(from.getDate(), formatter);
