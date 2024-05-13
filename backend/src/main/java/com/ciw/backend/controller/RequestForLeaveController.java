@@ -145,7 +145,8 @@ public class RequestForLeaveController {
 			description = "Note:\n" +
 						  "- Everyone can create new request for leave\n" +
 						  "- Users can not create two requests for leave with the same date and shift type\n" +
-						  "- After creating, the system will create new notification to the user create request for leave"
+						  "- After creating, the system will create new notification to the user create request for leave\n" +
+						  "- Already check fromDate, toDate, fromShiftType, toShiftType"
 	)
 	@ApiResponse(
 			responseCode = "200",
