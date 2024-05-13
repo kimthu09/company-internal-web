@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class RequestForLeaveController {
 	private final RequestForLeaveService requestForLeaveService;
+
 	@GetMapping
 	@SecurityRequirement(
 			name = "Bearer Authentication"
@@ -99,7 +100,7 @@ public class RequestForLeaveController {
 			summary = "Reject request for leave",
 			description = "Note:\n" +
 						  "- Only manager, admin, those has feature staff manager can reject other request for leave\n" +
-						  "- Can only reject ones has not been approved\n"+
+						  "- Can only reject ones has not been approved\n" +
 						  "- After rejecting, the system will create new notification to the user create request for leave"
 	)
 	@ApiResponse(
@@ -142,9 +143,10 @@ public class RequestForLeaveController {
 	@Operation(
 			summary = "Create new request for leave",
 			description = "Note:\n" +
-						  "- Everyone can create new request for leave\n"+
-						  "- Users can not create two requests for leave with the same date and shift type\n"+
-						  "- After creating, the system will create new notification to the user create request for leave"
+						  "- Everyone can create new request for leave\n" +
+						  "- Users can not create two requests for leave with the same date and shift type\n" +
+						  "- After creating, the system will create new notification to the user create request for leave\n" +
+						  "- Already check fromDate, toDate, fromShiftType, toShiftType"
 	)
 	@ApiResponse(
 			responseCode = "200",

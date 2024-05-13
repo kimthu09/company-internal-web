@@ -14,17 +14,36 @@ import java.util.Date;
 @Builder
 public class RequestForLeaveResponse {
 	@Schema(
-			name = "date",
+			name = "id",
+			example = "1"
+	)
+	private Long id;
+
+	@Schema(
+			name = "fromDate",
 			example = "12/12/2000"
 	)
-	private String date;
+	private String fromDate;
 
 	@Enumerated(EnumType.STRING)
 	@Schema(
-			name = "shiftType",
+			name = "fromShiftType",
 			example = "DAY"
 	)
-	private ShiftType shiftType;
+	private ShiftType fromShiftType;
+
+	@Schema(
+			name = "toDate",
+			example = "12/12/2000"
+	)
+	private String toDate;
+
+	@Enumerated(EnumType.STRING)
+	@Schema(
+			name = "toShiftType",
+			example = "DAY"
+	)
+	private ShiftType toShiftType;
 
 	@Schema(
 			name = "note",

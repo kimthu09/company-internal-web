@@ -29,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -39,6 +41,36 @@ public class RequestForLeaveService {
 	private final UserRepository userRepository;
 	private final NotificationRepository notificationRepository;
 	private final MailSender mailSender;
+
+	private static String getContentMail(RequestForLeave requestForLeave, String action) {
+		String contentMail = "";
+		if (requestForLeave.getFromDate().equals(requestForLeave.getToDate())) {
+			if (requestForLeave.getFromShiftType().equals(requestForLeave.getToShiftType())) {
+				contentMail = String.format(
+						"Đơn nghỉ phép vào buổi %s ngày %s %s.\n" +
+						"Nếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
+						requestForLeave.getFromShiftType() == ShiftType.DAY ? "sáng" : "chiều",
+						requestForLeave.getFromDate(),
+						action);
+			} else {
+				contentMail = String.format(
+						"Đơn nghỉ phép vào ngày %s %s.\n" +
+						"Nếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
+						requestForLeave.getFromDate(),
+						action);
+			}
+		} else {
+			contentMail = String.format(
+					"Đơn nghỉ phép vào buổi %s ngày %s đến hết buổi %s ngày %s %s.\n" +
+					"Nếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
+					requestForLeave.getFromShiftType() == ShiftType.DAY ? "sáng" : "chiều",
+					requestForLeave.getFromDate(),
+					requestForLeave.getToShiftType() == ShiftType.DAY ? "sáng" : "chiều",
+					requestForLeave.getToDate(),
+					action);
+		}
+		return contentMail;
+	}
 
 	@Transactional
 	public ListResponse<RequestForLeaveResponse, RequestForLeaveFilter> getRequestForLeaves(AppPageRequest page,
@@ -172,24 +204,37 @@ public class RequestForLeaveService {
 
 	@Transactional
 	public RequestForLeaveResponse createRequestForLeave(CreateRequestForLeaveRequest request) {
+		if (!checkDate(request.getFromDate(), request.getToDate())) {
+			throw new AppException(HttpStatus.BAD_REQUEST, Message.RequestForLeave.FROM_DATE_CAN_NOT_AFTER_TO_DATE);
+		} else if (request.getFromDate().equals(request.getToDate())) {
+			if (request.getFromShiftType() == ShiftType.NIGHT && request.getToShiftType() == ShiftType.DAY) {
+				throw new AppException(HttpStatus.BAD_REQUEST, Message.RequestForLeave.FROM_DATE_CAN_NOT_AFTER_TO_DATE);
+			}
+		}
+
 		User currentUser = Common.findCurrUser(userRepository);
 
 		RequestForLeave requestForLeave = mapToEntity(request);
 		requestForLeave.setCreatedBy(currentUser);
 		requestForLeave.setCreatedAt(new Date());
 
+		String contentMail = getContentMail(requestForLeave, "đã được tạo");
 		Common.sendNotification(notificationRepository,
 								mailSender,
 								currentUser,
 								currentUser,
 								"Đơn nghỉ phép đã được tạo",
-								String.format(
-										"Bạn đã đặt nghỉ phép vào ngày %s buổi %s.\n" +
-										"Nếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
-										request.getDate(),
-										request.getShiftType() == ShiftType.DAY ? "sáng" : "chiều"));
+								contentMail);
 
 		return mapToDTO(requestForLeaveRepository.save(requestForLeave));
+	}
+
+	private boolean checkDate(String fromDate, String toDate) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		LocalDate fromDateObj = LocalDate.parse(fromDate, formatter);
+		LocalDate toDateObj = LocalDate.parse(toDate, formatter);
+
+		return !fromDateObj.isAfter(toDateObj);
 	}
 
 	@Transactional
@@ -208,16 +253,13 @@ public class RequestForLeaveService {
 
 		requestForLeaveRepository.delete(requestForLeave);
 
+		String contentMail = getContentMail(requestForLeave, "đã bị xóa");
 		Common.sendNotification(notificationRepository,
 								mailSender,
 								currUser,
 								currUser,
 								"Đơn nghỉ phép đã xóa",
-								String.format(
-										"Đơn nghỉ phép vào ngày %s buổi %s của bạn đã bị xóa.\n" +
-										"Nếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
-										requestForLeave.getDate(),
-										requestForLeave.getShiftType() == ShiftType.DAY ? "sáng" : "chiều"));
+								contentMail);
 
 		return new SimpleResponse();
 	}
@@ -234,16 +276,13 @@ public class RequestForLeaveService {
 		requestForLeave.setRejectedAt(new Date());
 		requestForLeaveRepository.save(requestForLeave);
 
+		String contentMail = getContentMail(requestForLeave, "đã từ chối");
 		Common.sendNotification(notificationRepository,
 								mailSender,
 								requestForLeave.getCreatedBy(),
 								curr,
 								"Đơn nghỉ phép đã bị từ chối",
-								String.format(
-										"Đơn nghỉ phép vào ngày %s buổi %s của bạn đã bị từ chối.\n" +
-										"Nếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
-										requestForLeave.getDate(),
-										requestForLeave.getShiftType() == ShiftType.DAY ? "sáng" : "chiều"));
+								contentMail);
 
 		return new SimpleResponse();
 	}
@@ -257,11 +296,7 @@ public class RequestForLeaveService {
 			throw new AppException(HttpStatus.BAD_REQUEST, Message.RequestForLeave.REQUEST_ALREADY_HAS_BEEN_APPROVED);
 		}
 		String title = "Đơn xin nghỉ phép đã được phê duyệt";
-		String content = String.format(
-				"Đơn nghỉ phép vào ngày %s buổi %s của bạn đã được phê duyệt.\n" +
-				"Nếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
-				requestForLeave.getDate(),
-				requestForLeave.getShiftType() == ShiftType.DAY ? "sáng" : "chiều");
+		String contentMail = getContentMail(requestForLeave, "được phê duyệt");
 
 		User currUser = Common.findCurrUser(userRepository);
 		boolean isAdmin = isAdmin(currUser);
@@ -279,12 +314,8 @@ public class RequestForLeaveService {
 				requestForLeave.setApprovedBy(currUser);
 				requestForLeave.setApprovedAt(now);
 			} else {
-				title   = "Đơn nghỉ phép đã được chuyển tới nhân sự";
-				content = String.format(
-						"Đơn nghỉ phép vào ngày %s buổi %s của bạn đã được chuyển tới nhân sự.\n" +
-						"Nếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
-						requestForLeave.getDate(),
-						requestForLeave.getShiftType() == ShiftType.DAY ? "sáng" : "chiều");
+				title       = "Đơn nghỉ phép đã được chuyển tới nhân sự";
+				contentMail = getContentMail(requestForLeave, "được chuyển tới nhân sự");
 			}
 		} else {
 			if (!isHasStaffManagerFeature && !isAdmin) {
@@ -302,7 +333,7 @@ public class RequestForLeaveService {
 								requestForLeave.getCreatedBy(),
 								currUser,
 								title,
-								content);
+								contentMail);
 
 		return new SimpleResponse();
 	}
@@ -313,17 +344,21 @@ public class RequestForLeaveService {
 
 	private RequestForLeave mapToEntity(CreateRequestForLeaveRequest request) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		Date date;
+		Date fromDate;
+		Date toDate;
 		try {
-			date = sdf.parse(request.getDate());
+			fromDate = sdf.parse(request.getFromDate());
+			toDate   = sdf.parse(request.getToDate());
 		} catch (ParseException e) {
 			throw new AppException(HttpStatus.BAD_REQUEST, Message.TIME_INVALID_FORMAT_DD_MM_YYYY);
 		}
 
 		return RequestForLeave.builder()
-							  .date(date)
+							  .fromDate(fromDate)
+							  .fromShiftType(request.getFromShiftType())
+							  .toDate(toDate)
+							  .toShiftType(request.getToShiftType())
 							  .note(request.getNote())
-							  .shiftType(request.getShiftType())
 							  .build();
 	}
 
@@ -331,9 +366,12 @@ public class RequestForLeaveService {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 		return RequestForLeaveResponse.builder()
-									  .date(sdf.format(entity.getDate()))
+									  .id(entity.getId())
+									  .fromDate(sdf.format(TimeHelper.plus7Hours(entity.getFromDate())))
+									  .fromShiftType(entity.getFromShiftType())
+									  .toDate(sdf.format(TimeHelper.plus7Hours(entity.getToDate())))
+									  .toShiftType(entity.getToShiftType())
 									  .note(entity.getNote())
-									  .shiftType(entity.getShiftType())
 									  .createdBy(mapToDTO(entity.getCreatedBy()))
 									  .createdAt(TimeHelper.plus7Hours(entity.getCreatedAt()))
 									  .approvedBy(mapToDTO(entity.getApprovedBy()))
