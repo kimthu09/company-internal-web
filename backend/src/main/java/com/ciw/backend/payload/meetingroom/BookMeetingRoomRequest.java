@@ -5,6 +5,7 @@ import com.ciw.backend.payload.calendar.CalendarPart;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 @Data
 public class BookMeetingRoomRequest {
@@ -19,6 +20,10 @@ public class BookMeetingRoomRequest {
 	@Schema(
 			name = "note",
 			example = "Ghi chú"
+	)
+	@Length(
+			max = 200,
+			message = Message.MeetingRoom.NOTE_VALIDATE
 	)
 	private String note = "";
 }

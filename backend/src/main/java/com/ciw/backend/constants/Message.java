@@ -87,6 +87,7 @@ public class Message {
 		public static final String BOOK_EMPTY = "Không có lịch đặt tương ứng";
 		public static final String CAN_NOT_DELETE_BOOKED = "Không thể xóa phòng họp đang được đặt lịch";
 		public static final String MISSING_DATE = "Không thể bỏ trống ngày";
+		public static final String NOTE_VALIDATE = "Ghi chú tối đa 200 ký tự";
 	}
 
 	public static class Calendar {
@@ -106,6 +107,7 @@ public class Message {
 		public static final String BOOK_EMPTY = "Không có lịch đặt tương ứng";
 		public static final String CAN_NOT_DELETE_BOOKED = "Không thể xóa tài nguyên đang được đặt lịch";
 		public static final String MISSING_DATE = "Không thể bỏ trống ngày";
+		public static final String NOTE_VALIDATE = "Ghi chú tối đa 200 ký tự";
 	}
 
 	public static class UnitShift {
@@ -120,5 +122,13 @@ public class Message {
 		public static final String RECEIVERS_VALIDATE = "Phải có ít nhất 1 người nhận";
 		public static final String NOTIFICATION_NOT_EXIST = "Thông báo không tồn tại";
 		public static final String CAN_NOT_READ_OTHER_S_NOTIFICATION = "Không thể đọc thông báo của người khác";
+	}
+	public static class RequestForLeave{
+		public static final String NOTE_VALIDATE = "Ghi chú tối đa 200 ký tự";
+		public static final String REQUEST_NOT_EXIST = "Không tồn tại đơn xin nghỉ việc";
+		public static final String REQUEST_HAS_BEEN_DELETED = "Đơn nghỉ việc đã được xóa";
+		public static final String REQUEST_ALREADY_HAS_BEEN_APPROVED = "Đơn nghỉ việc đã được chấp nhận rồi";
+		public static final String REQUEST_ALREADY_HAS_BEEN_REJECTED = "Đơn nghỉ việc đã được từ chối rồi";
+		public static final String REQUEST_CAN_ONLY_DELETED_BY_CREATOR = "Bạn chỉ có thể xóa đơn nghỉ việc của chính mình";
 	}
 }

@@ -11,7 +11,6 @@ CREATE DATABASE ciw;
 
 USE ciw;
 
-
 DROP TABLE IF EXISTS `feature`;
 CREATE TABLE `feature` (
   `id` bigint NOT NULL AUTO_INCREMENT,
@@ -20,7 +19,7 @@ CREATE TABLE `feature` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `Tên` (`name`),
   UNIQUE KEY `UK_lqtnexxep9h8avuryfstf6eqk` (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 DROP TABLE IF EXISTS `meeting_room`;
 CREATE TABLE `meeting_room` (
@@ -30,13 +29,13 @@ CREATE TABLE `meeting_room` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `Tên` (`name`),
   UNIQUE KEY `Vị trí` (`location`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 DROP TABLE IF EXISTS `meeting_room_calendar`;
 CREATE TABLE `meeting_room_calendar` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `date` datetime(6) NOT NULL,
-  `note` varchar(255) NOT NULL,
+  `note` varchar(200) NOT NULL,
   `shift_type` enum('DAY','NIGHT') NOT NULL,
   `created_by` bigint NOT NULL,
   `meeting_room_id` bigint NOT NULL,
@@ -100,19 +99,45 @@ CREATE TABLE `post_tag` (
   CONSTRAINT `FKc2auetuvsec0k566l0eyvr9cs` FOREIGN KEY (`post_id`) REFERENCES `post` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+DROP TABLE IF EXISTS `request_for_leave`;
+CREATE TABLE `request_for_leave` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `accepted_at` datetime(6) DEFAULT NULL,
+  `approved_at` datetime(6) DEFAULT NULL,
+  `created_at` datetime(6) NOT NULL,
+  `date` datetime(6) NOT NULL,
+  `note` varchar(200) NOT NULL,
+  `rejected_at` datetime(6) DEFAULT NULL,
+  `shift_type` enum('DAY','NIGHT') NOT NULL,
+  `accepted_by` bigint DEFAULT NULL,
+  `approved_by` bigint DEFAULT NULL,
+  `created_by` bigint NOT NULL,
+  `rejected_by` bigint DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `Bảng ghi` (`date`,`shift_type`,`created_by`),
+  KEY `FK6at8o80gqpt66n82ycyvwyava` (`accepted_by`),
+  KEY `FKax9mikh5a0tamgxad77qigt0y` (`approved_by`),
+  KEY `FKd5qri6xr3psa9irxhwnh8m7r1` (`created_by`),
+  KEY `FKqpo4jeeey8yeqglpk2lg1645j` (`rejected_by`),
+  CONSTRAINT `FK6at8o80gqpt66n82ycyvwyava` FOREIGN KEY (`accepted_by`) REFERENCES `user` (`id`),
+  CONSTRAINT `FKax9mikh5a0tamgxad77qigt0y` FOREIGN KEY (`approved_by`) REFERENCES `user` (`id`),
+  CONSTRAINT `FKd5qri6xr3psa9irxhwnh8m7r1` FOREIGN KEY (`created_by`) REFERENCES `user` (`id`),
+  CONSTRAINT `FKqpo4jeeey8yeqglpk2lg1645j` FOREIGN KEY (`rejected_by`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 DROP TABLE IF EXISTS `resource`;
 CREATE TABLE `resource` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Tên` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 DROP TABLE IF EXISTS `resource_calendar`;
 CREATE TABLE `resource_calendar` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `date` datetime(6) NOT NULL,
-  `note` varchar(255) NOT NULL,
+  `note` varchar(200) NOT NULL,
   `shift_type` enum('DAY','NIGHT') NOT NULL,
   `created_by` bigint NOT NULL,
   `resource_id` bigint NOT NULL,
@@ -131,7 +156,7 @@ CREATE TABLE `tag` (
   `number_post` int NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Tên` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 DROP TABLE IF EXISTS `unit`;
 CREATE TABLE `unit` (
@@ -141,7 +166,7 @@ CREATE TABLE `unit` (
   `number_staffs` int NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Tên` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 DROP TABLE IF EXISTS `unit_feature`;
 CREATE TABLE `unit_feature` (
@@ -191,6 +216,7 @@ CREATE TABLE `user` (
   `name` varchar(200) NOT NULL,
   `password` varchar(255) NOT NULL,
   `phone` varchar(11) NOT NULL,
+  `user_identity` varchar(12) NOT NULL,
   `unit_id` bigint DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Email` (`email`),
@@ -202,7 +228,8 @@ INSERT INTO `feature` (`id`, `code`, `name`) VALUES
 (1, 'ADMIN', 'Admin');
 INSERT INTO `feature` (`id`, `code`, `name`) VALUES
 (2, 'POST', 'Quản lý bài báo');
-
+INSERT INTO `feature` (`id`, `code`, `name`) VALUES
+(3, 'STAFF MANAGER', 'Quản lý nghỉ phép');
 
 INSERT INTO `meeting_room` (`id`, `location`, `name`) VALUES
 (1, 'A2.2', 'Phòng họp A2');
@@ -293,10 +320,12 @@ INSERT INTO `post_tag` (`post_id`, `tag_id`) VALUES
 INSERT INTO `post_tag` (`post_id`, `tag_id`) VALUES
 (3, 2),
 (6, 2),
-(4, 3),
-(6, 3),
 (4, 4),
-(3, 5);
+(3, 5),
+(4, 6),
+(6, 6);
+
+
 
 INSERT INTO `resource` (`id`, `name`) VALUES
 (1, 'Micro 1');
@@ -312,10 +341,11 @@ INSERT INTO `tag` (`id`, `name`, `number_post`) VALUES
 INSERT INTO `tag` (`id`, `name`, `number_post`) VALUES
 (2, 'Quan trọng', 2);
 INSERT INTO `tag` (`id`, `name`, `number_post`) VALUES
-(3, 'Sự kiện', 2);
+(3, 'Chúc mừng sinh nhật', 0);
 INSERT INTO `tag` (`id`, `name`, `number_post`) VALUES
 (4, 'Thể thao', 1),
-(5, 'Kỷ niệm', 0);
+(5, 'Kỷ niệm', 0),
+(6, 'Sự kiện', 2);
 
 INSERT INTO `unit` (`id`, `manager_id`, `name`, `number_staffs`) VALUES
 (1, 1, 'admin', 1);
@@ -351,19 +381,19 @@ INSERT INTO `unit_shift` (`day_of_week`, `unit_id`, `is_has_day_shift`, `is_has_
 
 
 
-INSERT INTO `user` (`id`, `address`, `dob`, `email`, `image`, `is_deleted`, `male`, `name`, `password`, `phone`, `unit_id`) VALUES
-(1, 'TPHCM', '23/12/2000', 'admin@gmail.com', 'https://firebasestorage.googleapis.com/v0/b/company-internal-web.appspot.com/o/Default%2Fdefault-avatar.png?alt=media', 0, 1, 'Admin\'s name', '$2a$10$Hj6e38XWk3g/tEb6M4C7fO8WddInLsvLFypKE0bbhVQddMUnIAspa', '0123456789', 1);
-INSERT INTO `user` (`id`, `address`, `dob`, `email`, `image`, `is_deleted`, `male`, `name`, `password`, `phone`, `unit_id`) VALUES
-(2, 'Thủ Đức', '22/01/2004', 'user@gmail.com', 'https://firebasestorage.googleapis.com/v0/b/company-internal-web.appspot.com/o/Default%2Fdefault-avatar.png?alt=media', 0, 0, 'User\'s name', '$2a$10$HaDXxAFsuseSQHdmCaShhOu90UOVYiyRHj6fyDMBG5xUXAKS3FCLe', '0123456789', 2);
-INSERT INTO `user` (`id`, `address`, `dob`, `email`, `image`, `is_deleted`, `male`, `name`, `password`, `phone`, `unit_id`) VALUES
-(3, 'Hà Nội', '23/05/2006', '21520339@gm.uit.edu.vn', 'https://firebasestorage.googleapis.com/v0/b/company-internal-web.appspot.com/o/Default%2Fdefault-avatar.png?alt=media', 0, 0, 'Nguyễn Lê Ngọc Mai', '$2a$10$SSOCK5ehQgO5A/zWiLw3uuwpyWHPbmIfoBuRjP0jeGs.y5dHZ7DbK', '0123456789', 2);
-INSERT INTO `user` (`id`, `address`, `dob`, `email`, `image`, `is_deleted`, `male`, `name`, `password`, `phone`, `unit_id`) VALUES
-(4, 'Hà Nội', '23/05/2006', 'deletedUser@gmail.com', 'https://firebasestorage.googleapis.com/v0/b/company-internal-web.appspot.com/o/Default%2Fdefault-avatar.png?alt=media', 1, 1, 'Tên nhân viên đã bị xóa', '$2a$10$HaDXxAFsuseSQHdmCaShhOu90UOVYiyRHj6fyDMBG5xUXAKS3FCLe', '0123456789', NULL),
-(5, 'TPHCM', '02/12/2000', 'kimdong@gmail.com', 'https://firebasestorage.googleapis.com/v0/b/company-internal-web.appspot.com/o/Default%2Fdefault-avatar.png?alt=media', 1, 1, 'Kim Đồng', 'App123', '0585885214', NULL),
-(7, 'TPHCM', '08/08/2020', 'kimdong123@gmail.com', 'https://firebasestorage.googleapis.com/v0/b/company-internal-web.appspot.com/o/Default%2Fdefault-avatar.png?alt=media', 1, 1, 'Nhân viên Kim Đồng', 'App123', '0585885212', NULL),
-(8, 'Thủ Đức', '31/12/2000', 'nvm@gmail.com', 'https://firebasestorage.googleapis.com/v0/b/company-internal-web.appspot.com/o/cac-buoc-toi-uu-hinh-anh-chuan-seo_0a745096-344e-4fca-97d4-6947025a3342.jpg?alt=media', 1, 1, 'Nhân viên mới sửa', '$2a$10$BHFc7jdar.KaPgqQvFo6h.tp8QKSRbUDJIJNHn62pajaHDtv59Ea2', '0585885218', NULL),
-(9, 'TPHCM', '02/02/2222', 'a@gmail.com', 'https://firebasestorage.googleapis.com/v0/b/company-internal-web.appspot.com/o/Default%2Fdefault-avatar.png?alt=media', 1, 1, 'Dạy nấu ăn 2', '$2a$10$BHFc7jdar.KaPgqQvFo6h.tp8QKSRbUDJIJNHn62pajaHDtv59Ea2', '0919676723', NULL),
-(10, 'TPHCM', '01/01/2000', 'b@gmail.com', 'https://firebasestorage.googleapis.com/v0/b/company-internal-web.appspot.com/o/Default%2Fdefault-avatar.png?alt=media', 1, 1, 'đâsdsada', '$2a$10$oxUccLYefUpb2zcRmRpWC.uuLhM.ERs2kxenecXiLtLnz653uqmzC', '0585885214', NULL);
+INSERT INTO `user` (`id`, `address`, `dob`, `email`, `image`, `is_deleted`, `male`, `name`, `password`, `phone`, `user_identity`, `unit_id`) VALUES
+(1, 'TPHCM', '23/12/2000', 'admin@gmail.com', 'https://firebasestorage.googleapis.com/v0/b/company-internal-web.appspot.com/o/Default%2Fdefault-avatar.png?alt=media', 0, 1, 'Admin\'s name', '$2a$10$Hj6e38XWk3g/tEb6M4C7fO8WddInLsvLFypKE0bbhVQddMUnIAspa', '0123456789', '012345678901', 1);
+INSERT INTO `user` (`id`, `address`, `dob`, `email`, `image`, `is_deleted`, `male`, `name`, `password`, `phone`, `user_identity`, `unit_id`) VALUES
+(2, 'Thủ Đức', '22/01/2004', 'user@gmail.com', 'https://firebasestorage.googleapis.com/v0/b/company-internal-web.appspot.com/o/Default%2Fdefault-avatar.png?alt=media', 0, 0, 'User\'s name', '$2a$10$HaDXxAFsuseSQHdmCaShhOu90UOVYiyRHj6fyDMBG5xUXAKS3FCLe', '0123456789', '012345678901', 2);
+INSERT INTO `user` (`id`, `address`, `dob`, `email`, `image`, `is_deleted`, `male`, `name`, `password`, `phone`, `user_identity`, `unit_id`) VALUES
+(3, 'Hà Nội', '23/05/2006', '21520339@gm.uit.edu.vn', 'https://firebasestorage.googleapis.com/v0/b/company-internal-web.appspot.com/o/Default%2Fdefault-avatar.png?alt=media', 0, 0, 'Nguyễn Lê Ngọc Mai', '$2a$10$SSOCK5ehQgO5A/zWiLw3uuwpyWHPbmIfoBuRjP0jeGs.y5dHZ7DbK', '0123456789', '012345678901', 2);
+INSERT INTO `user` (`id`, `address`, `dob`, `email`, `image`, `is_deleted`, `male`, `name`, `password`, `phone`, `user_identity`, `unit_id`) VALUES
+(4, 'Hà Nội', '23/05/2006', 'deletedUser@gmail.com', 'https://firebasestorage.googleapis.com/v0/b/company-internal-web.appspot.com/o/Default%2Fdefault-avatar.png?alt=media', 1, 1, 'Tên nhân viên đã bị xóa', '$2a$10$HaDXxAFsuseSQHdmCaShhOu90UOVYiyRHj6fyDMBG5xUXAKS3FCLe', '0123456789', '012345678901', NULL),
+(5, 'TPHCM', '02/12/2000', 'kimdong@gmail.com', 'https://firebasestorage.googleapis.com/v0/b/company-internal-web.appspot.com/o/Default%2Fdefault-avatar.png?alt=media', 1, 1, 'Kim Đồng', 'App123', '0585885214', '012345678901', NULL),
+(7, 'TPHCM', '08/08/2020', 'kimdong123@gmail.com', 'https://firebasestorage.googleapis.com/v0/b/company-internal-web.appspot.com/o/Default%2Fdefault-avatar.png?alt=media', 1, 1, 'Nhân viên Kim Đồng', 'App123', '0585885212', '012345678901', NULL),
+(8, 'Thủ Đức', '31/12/2000', 'nvm@gmail.com', 'https://firebasestorage.googleapis.com/v0/b/company-internal-web.appspot.com/o/cac-buoc-toi-uu-hinh-anh-chuan-seo_0a745096-344e-4fca-97d4-6947025a3342.jpg?alt=media', 1, 1, 'Nhân viên mới sửa', '$2a$10$BHFc7jdar.KaPgqQvFo6h.tp8QKSRbUDJIJNHn62pajaHDtv59Ea2', '0585885218', '012345678901', NULL),
+(9, 'TPHCM', '02/02/2222', 'a@gmail.com', 'https://firebasestorage.googleapis.com/v0/b/company-internal-web.appspot.com/o/Default%2Fdefault-avatar.png?alt=media', 1, 1, 'Dạy nấu ăn 2', '$2a$10$BHFc7jdar.KaPgqQvFo6h.tp8QKSRbUDJIJNHn62pajaHDtv59Ea2', '0919676723', '012345678901', NULL),
+(10, 'TPHCM', '01/01/2000', 'b@gmail.com', 'https://firebasestorage.googleapis.com/v0/b/company-internal-web.appspot.com/o/Default%2Fdefault-avatar.png?alt=media', 1, 1, 'đâsdsada', '$2a$10$oxUccLYefUpb2zcRmRpWC.uuLhM.ERs2kxenecXiLtLnz653uqmzC', '0585885214', '012345678901', NULL);
 
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
