@@ -36,9 +36,9 @@ public class RequestForLeaveController {
 	@Operation(
 			summary = "Fetch requests for leave",
 			description = "Note:\n" +
-						  "- If user is manager:" +
-						  "\t+ The units in filter will not be effected\n" +
-						  "\t+ Get the requests for leave of user's unit\n" +
+						  "- If user is manager:\n" +
+						  "-- The units in filter will not be effected\n" +
+						  "-- Get the requests for leave of user's unit\n" +
 						  "- If user is admin or has feature staff manager: this API works normally"
 	)
 	@ApiResponse(

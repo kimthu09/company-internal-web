@@ -14,13 +14,7 @@ import java.util.Date;
 @Builder
 @Entity
 @Table(
-		name = "request_for_leave",
-		uniqueConstraints = {
-				@UniqueConstraint(
-						columnNames = {"date", "shift_type", "created_by"},
-						name = "Bảng ghi"
-				)
-		}
+		name = "request_for_leave"
 )
 public class RequestForLeave {
 	@Id
