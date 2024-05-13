@@ -147,7 +147,7 @@ public class Common {
 	}
 
 	public static RequestForLeave findRequestForLeaveById(Long requestId,
-															RequestForLeaveRepository repository) {
+														  RequestForLeaveRepository repository) {
 		return repository.findById(requestId)
 						 .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST,
 															 Message.RequestForLeave.REQUEST_NOT_EXIST));

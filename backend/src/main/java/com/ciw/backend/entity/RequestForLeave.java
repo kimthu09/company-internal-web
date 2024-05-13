@@ -28,17 +28,30 @@ public class RequestForLeave {
 	private Long id;
 
 	@Column(
-			name = "date",
+			name = "from_date",
 			nullable = false
 	)
-	private Date date;
+	private Date fromDate;
+
+	@Column(
+			name = "to_date",
+			nullable = false
+	)
+	private Date toDate;
 
 	@Enumerated(EnumType.STRING)
 	@Column(
-			name = "shift_type",
+			name = "from_shift_type",
 			nullable = false
 	)
-	private ShiftType shiftType;
+	private ShiftType fromShiftType;
+
+	@Enumerated(EnumType.STRING)
+	@Column(
+			name = "to_shift_type",
+			nullable = false
+	)
+	private ShiftType toShiftType;
 
 	@Column(
 			nullable = false

@@ -123,12 +123,16 @@ public class Message {
 		public static final String NOTIFICATION_NOT_EXIST = "Thông báo không tồn tại";
 		public static final String CAN_NOT_READ_OTHER_S_NOTIFICATION = "Không thể đọc thông báo của người khác";
 	}
-	public static class RequestForLeave{
+
+	public static class RequestForLeave {
 		public static final String NOTE_VALIDATE = "Ghi chú tối đa 200 ký tự";
 		public static final String REQUEST_NOT_EXIST = "Không tồn tại đơn xin nghỉ việc";
 		public static final String REQUEST_HAS_BEEN_DELETED = "Đơn nghỉ việc đã được xóa";
 		public static final String REQUEST_ALREADY_HAS_BEEN_APPROVED = "Đơn nghỉ việc đã được chấp nhận rồi";
 		public static final String REQUEST_ALREADY_HAS_BEEN_REJECTED = "Đơn nghỉ việc đã được từ chối rồi";
-		public static final String REQUEST_CAN_ONLY_DELETED_BY_CREATOR = "Bạn chỉ có thể xóa đơn nghỉ việc của chính mình";
+		public static final String REQUEST_CAN_ONLY_DELETED_BY_CREATOR
+				= "Bạn chỉ có thể xóa đơn nghỉ việc của chính mình";
+		public static final String FROM_DATE_CAN_NOT_AFTER_TO_DATE
+				= "Ngày hoặc ca làm muốn nghỉ bắt đầu và kết thúc không hợp lệ";
 	}
 }
