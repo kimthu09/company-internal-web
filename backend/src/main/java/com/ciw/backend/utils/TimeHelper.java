@@ -12,6 +12,7 @@ import java.util.Date;
 
 public class TimeHelper {
 	public static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
 	public static Date plus7Hours(Date date) {
 		LocalDateTime dateTime = convertDateToLocalDateTime(date);
 		return convertLocalDateTimeToDate(dateTime.plusHours(7));
