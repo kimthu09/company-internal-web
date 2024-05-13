@@ -65,8 +65,8 @@ const NewsListItem = ({
         className="object-cover w-2/5 rounded-2xl aspect-[3/2] h-[150px]"
         src={item.image}
         alt="image"
-        width={225}
-        height={150}
+        width={450}
+        height={300}
       />
       <div className="flex flex-col gap-3 self-center w-full ">
         <div className="flex flex-row flex-wrap gap-3">
