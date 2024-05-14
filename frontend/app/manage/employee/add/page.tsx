@@ -10,9 +10,9 @@ import createEmployee from "@/lib/employee/createEmployee";
 import { useLoading } from "@/hooks/loading-context";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { toast } from "@/components/ui/use-toast";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import UnitList from "@/components/manage/unit/unit-list";
+import { toast } from "@/components/ui/use-toast";
 const Schema = z.object({
   name: required,
   email: z.string().email("Email không hợp lệ"),
@@ -28,6 +28,12 @@ const Schema = z.object({
   unit: z
     .number({ invalid_type_error: "Lựa chọn không hợp lệ" })
     .min(1, "Vui lòng chọn phòng ban"),
+  userIdentity: z
+    .string()
+    .length(12, "Căn cước công dân phải đủ 12 số")
+    .refine((value) => /^[0-9]+$/.test(value), {
+      message: "Căn cước công dân chỉ chứa số",
+    }),
 });
 const AddNewEmployee = () => {
   const { showLoading, hideLoading } = useLoading();
@@ -60,6 +66,7 @@ const AddNewEmployee = () => {
         email: data.email,
         phone: data.phone,
         dob: format(data.dob, "dd/MM/yyyy", { locale: vi }),
+        userIdentity: data.userIdentity,
         address: data.address,
         unit: data.unit,
         male: data.male,
@@ -71,6 +78,8 @@ const AddNewEmployee = () => {
     const responseData = await response;
 
     hideLoading();
+
+    console.log(responseData);
     if (
       responseData.hasOwnProperty("response") &&
       responseData.response.hasOwnProperty("data") &&
@@ -102,6 +111,7 @@ const AddNewEmployee = () => {
         email: "",
         phone: "",
         address: "",
+        userIdentity: "",
         male: true,
         unit: -1,
       });
@@ -132,6 +142,26 @@ const AddNewEmployee = () => {
           ></Input>
           {errors.name && (
             <span className="error___message ml-3">{errors.name.message}</span>
+          )}
+        </div>
+
+        {/* cccd */}
+        <label
+          className="font-medium md:mt-2 mt-7 text-black"
+          htmlFor="userIdentity"
+        >
+          CCCD <span className="error___message">*</span>
+        </label>
+        <div className="col-span-2">
+          <Input
+            id="userIdentity"
+            className=" rounded-full"
+            {...register("userIdentity")}
+          ></Input>
+          {errors.userIdentity && (
+            <span className="error___message ml-3">
+              {errors.userIdentity.message}
+            </span>
           )}
         </div>
 
