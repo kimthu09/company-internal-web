@@ -1,6 +1,5 @@
 "use client";
 import { getUser } from "@/lib/auth/action";
-import getProfile from "@/lib/profile/getProfile";
 import { useEffect, useState } from "react";
 
 export const useCurrentUser = () => {
@@ -17,6 +16,8 @@ export const useCurrentUser = () => {
     const fetchUser = async () => {
       try {
         const user = await getUser();
+
+        console.log(user);
         setCurrentUser(user);
       } catch (error) {
         console.error("Error fetching user data:", error);

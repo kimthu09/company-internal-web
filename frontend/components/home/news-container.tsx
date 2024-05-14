@@ -33,7 +33,7 @@ const NewsContainer = ({
     <div className="p-7 rounded-2xl bg-white shadow-[0_3px_20px_#1d26260d] flex flex-col">
       <h1 className="pb-5 border-b text-xl font-bold">{title}</h1>
       {posts.data.map((item: News) => (
-        <NewsListItem item={item} />
+        <NewsListItem key={item.id} item={item} />
       ))}
       <ViewMoreLink href={viewMoreHref} />
     </div>

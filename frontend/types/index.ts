@@ -117,3 +117,44 @@ export type Tag = {
   name: string;
   numberPost: number;
 };
+
+export type LeaveRequest = {
+  id: number;
+  fromDate: string;
+  fromShiftType: string;
+  toDate: string;
+  toShiftType: string;
+  note: string;
+  createdBy: {
+    id: number;
+    email: string;
+    phone: string;
+    name: string;
+    image: string;
+  };
+  createdAt: string;
+  approvedBy?: {
+    id: number;
+    email: string;
+    phone: string;
+    name: string;
+    image: string;
+  };
+  approvedAt?: string;
+  acceptedBy?: {
+    id: number;
+    email: string;
+    phone: string;
+    name: string;
+    image: string;
+  };
+  acceptedAt?: string;
+  rejectedBy?: {
+    id: number;
+    email: string;
+    phone: string;
+    name: string;
+    image: string;
+  };
+  rejectedAt?: string;
+};
