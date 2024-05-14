@@ -68,6 +68,7 @@ public class Common {
 			res.add(FeatureResponse.builder()
 								   .id(feature.getId())
 								   .name(feature.getName())
+								   .code(feature.getCode())
 								   .has(has).build());
 		}
 

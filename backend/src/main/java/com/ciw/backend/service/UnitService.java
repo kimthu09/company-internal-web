@@ -102,7 +102,11 @@ public class UnitService {
 			if (!featureResponse.isHas()) {
 				continue;
 			}
-			Feature feature = Feature.builder().id(featureResponse.getId()).name(featureResponse.getName()).build();
+			Feature feature = Feature.builder()
+									 .id(featureResponse.getId())
+									 .code(featureResponse.getCode())
+									 .name(featureResponse.getName())
+									 .build();
 			res.add(UnitFeature.builder().feature(feature).unit(unit).build());
 		}
 		return res;
