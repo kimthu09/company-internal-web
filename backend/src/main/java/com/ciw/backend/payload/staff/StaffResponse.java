@@ -1,7 +1,7 @@
 package com.ciw.backend.payload.staff;
 
 import com.ciw.backend.constants.ApplicationConst;
-import com.ciw.backend.payload.unit.SimpleUnitWithoutManagerResponse;
+import com.ciw.backend.payload.unit.UnitWithNumStaffResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -68,5 +68,5 @@ public class StaffResponse {
 	private boolean male;
 
 	@Schema(name = "unit")
-	private SimpleUnitWithoutManagerResponse unit;
+	private UnitWithNumStaffResponse unit;
 }

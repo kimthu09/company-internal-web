@@ -1,19 +1,16 @@
 package com.ciw.backend.payload.unit;
 
-import com.ciw.backend.payload.feature.FeatureResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SimpleUnitWithFeatureResponse {
+public class UnitWithNumStaffResponse {
 	@Schema(
 			name = "id",
 			example = "1"
@@ -26,6 +23,9 @@ public class SimpleUnitWithFeatureResponse {
 	)
 	private String name;
 
-	@Schema(name = "features")
-	private List<FeatureResponse> features;
+	@Schema(
+			name = "numberStaffs",
+			example = "1"
+	)
+	private int numberStaffs = 0;
 }

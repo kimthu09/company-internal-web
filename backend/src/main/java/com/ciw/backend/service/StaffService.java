@@ -10,7 +10,7 @@ import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.page.AppPageRequest;
 import com.ciw.backend.payload.page.AppPageResponse;
 import com.ciw.backend.payload.staff.*;
-import com.ciw.backend.payload.unit.SimpleUnitWithoutManagerResponse;
+import com.ciw.backend.payload.unit.UnitWithNumStaffResponse;
 import com.ciw.backend.repository.UnitRepository;
 import com.ciw.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -197,12 +197,12 @@ public class StaffService {
 							.build();
 	}
 
-	private SimpleUnitWithoutManagerResponse mapToSimpleUnitWithoutManager(Unit unit) {
-		return SimpleUnitWithoutManagerResponse.builder()
-											   .id(unit.getId())
-											   .name(unit.getName())
-											   .numberStaffs(unit.getNumberStaffs())
-											   .build();
+	private UnitWithNumStaffResponse mapToSimpleUnitWithoutManager(Unit unit) {
+		return UnitWithNumStaffResponse.builder()
+									   .id(unit.getId())
+									   .name(unit.getName())
+									   .numberStaffs(unit.getNumberStaffs())
+									   .build();
 	}
 
 	private User mapToEntity(CreateStaffRequest request) {

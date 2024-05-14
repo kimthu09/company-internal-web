@@ -1,7 +1,7 @@
 package com.ciw.backend.payload.user;
 
 import com.ciw.backend.constants.ApplicationConst;
-import com.ciw.backend.payload.unit.SimpleUnitWithFeatureResponse;
+import com.ciw.backend.payload.unit.UnitWithFeatureManagerIdResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -68,5 +68,5 @@ public class ProfileResponse {
 	private String userIdentity;
 
 	@Schema(name = "unit")
-	private SimpleUnitWithFeatureResponse unit;
+	private UnitWithFeatureManagerIdResponse unit;
 }

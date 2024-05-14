@@ -39,7 +39,7 @@ public class UnitController {
 			responseCode = "200",
 			description = "Http Status is 200 OK"
 	)
-	public ResponseEntity<ListResponse<SimpleUnitResponse, UnitFilter>> getUnits(
+	public ResponseEntity<ListResponse<UnitWithManagerNumStaffResponse, UnitFilter>> getUnits(
 			@Valid AppPageRequest page,
 			@Valid UnitFilter filter) {
 		return new ResponseEntity<>(unitService.getUnits(page, filter), HttpStatus.OK);
@@ -93,7 +93,7 @@ public class UnitController {
 			description = "Http Status is 200 OK"
 	)
 	@PreAuthorize("hasAnyAuthority('ADMIN')")
-	public ResponseEntity<SimpleUnitResponse> updateUnit(
+	public ResponseEntity<UnitWithManagerNumStaffResponse> updateUnit(
 			@PathVariable Long id,
 			@Valid @RequestBody UpdateUnitRequest request
 	) {
