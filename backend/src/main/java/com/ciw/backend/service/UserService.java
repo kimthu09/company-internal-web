@@ -6,7 +6,7 @@ import com.ciw.backend.entity.User;
 import com.ciw.backend.exception.AppException;
 import com.ciw.backend.payload.SimpleResponse;
 import com.ciw.backend.payload.feature.FeatureResponse;
-import com.ciw.backend.payload.unit.SimpleUnitWithFeatureResponse;
+import com.ciw.backend.payload.unit.UnitWithFeatureManagerIdResponse;
 import com.ciw.backend.payload.user.ChangePasswordRequest;
 import com.ciw.backend.payload.user.ProfileResponse;
 import com.ciw.backend.payload.user.UpdateUserRequest;
@@ -52,7 +52,7 @@ public class UserService {
 
 		User user = Common.findUserByEmail(email, userRepository);
 
-		return mapToProfileResponse(user);
+		return mapToDTO(user);
 	}
 
 	@Transactional
@@ -63,29 +63,30 @@ public class UserService {
 		Common.updateIfNotNull(request.getAddress(), user::setAddress);
 		Common.updateIfNotNull(request.getImage(), user::setImage);
 
-		return mapToProfileResponse(userRepository.save(user));
+		return mapToDTO(userRepository.save(user));
 	}
 
-	private ProfileResponse mapToProfileResponse(User user) {
+	private ProfileResponse mapToDTO(User user) {
 		return ProfileResponse.builder()
 							  .id(user.getId())
 							  .name(user.getName())
 							  .email(user.getEmail())
 							  .image(user.getImage())
-							  .unit(mapToSimpleUnitWithFeature(user.getUnit()))
+							  .unit(mapToDTO(user.getUnit()))
 							  .build();
 	}
 
-	private SimpleUnitWithFeatureResponse mapToSimpleUnitWithFeature(Unit unit) {
-		return SimpleUnitWithFeatureResponse.builder()
-											.id(unit.getId())
-											.name(unit.getName())
-											.features(getFeatureResponses(unit.getUnitFeatures()
-																			  .stream()
-																			  .map(unitFeature -> unitFeature.getFeature()
-																											 .getId())
-																			  .toList()))
-											.build();
+	private UnitWithFeatureManagerIdResponse mapToDTO(Unit unit) {
+		return UnitWithFeatureManagerIdResponse.builder()
+											   .id(unit.getId())
+											   .name(unit.getName())
+											   .features(getFeatureResponses(unit.getUnitFeatures()
+																				 .stream()
+																				 .map(unitFeature -> unitFeature.getFeature()
+																												.getId())
+																				 .toList()))
+											   .managerId(unit.getManagerId())
+											   .build();
 	}
 
 	private List<FeatureResponse> getFeatureResponses(List<Long> featureIds) {

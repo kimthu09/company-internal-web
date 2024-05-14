@@ -37,7 +37,7 @@ public class UnitService {
 	private final UnitShiftAbsentRepository unitShiftAbsentRepository;
 
 	@Transactional
-	public ListResponse<SimpleUnitResponse, UnitFilter> getUnits(AppPageRequest page, UnitFilter filter) {
+	public ListResponse<UnitWithManagerNumStaffResponse, UnitFilter> getUnits(AppPageRequest page, UnitFilter filter) {
 		Pageable pageable = PageRequest.of(page.getPage() - 1, page.getLimit(), Sort.by(Sort.Direction.DESC, "name"));
 		Specification<Unit> spec = filterUnits(filter);
 
@@ -45,9 +45,9 @@ public class UnitService {
 
 		List<Unit> units = unitPage.getContent();
 
-		List<SimpleUnitResponse> data = units.stream().map(this::mapToSimpleDTO).toList();
+		List<UnitWithManagerNumStaffResponse> data = units.stream().map(this::mapToSimpleDTO).toList();
 
-		return ListResponse.<SimpleUnitResponse, UnitFilter>builder()
+		return ListResponse.<UnitWithManagerNumStaffResponse, UnitFilter>builder()
 						   .data(data)
 						   .appPageResponse(AppPageResponse.builder()
 														   .index(page.getPage())
@@ -109,17 +109,13 @@ public class UnitService {
 	}
 
 	@Transactional
-	public SimpleUnitResponse updateUnit(Long unitId, UpdateUnitRequest request) {
+	public UnitWithManagerNumStaffResponse updateUnit(Long unitId, UpdateUnitRequest request) {
 		Unit unit = Common.findUnitById(unitId, unitRepository);
 		Common.updateIfNotNull(request.getName(), unit::setName);
 		if (request.getManagerId() != null) {
 			Optional<Unit> existManagerUnit = unitRepository.findByManagerId(request.getManagerId());
 
-			User manager = userRepository.findById(request.getManagerId())
-										 .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST,
-																			 Message.Unit.UNIT_MANAGER_NOTEXIST));
-
-			if (existManagerUnit.isPresent() && existManagerUnit.get().getId() != unitId) {
+			if (existManagerUnit.isPresent() && !existManagerUnit.get().getId().equals(unitId)) {
 				throw new AppException(HttpStatus.BAD_REQUEST, Message.Unit.UNIT_MANAGER_EXIST);
 			} else {
 				Common.updateIfNotNull(request.getManagerId(), unit::setManagerId);
@@ -157,21 +153,21 @@ public class UnitService {
 		return new SimpleResponse();
 	}
 
-	private SimpleUnitResponse mapToSimpleDTO(Unit unit) {
+	private UnitWithManagerNumStaffResponse mapToSimpleDTO(Unit unit) {
 		if (unit.getManagerId() == null) {
-			return SimpleUnitResponse.builder()
-									 .id(unit.getId())
-									 .name(unit.getName())
-									 .numberStaffs(unit.getNumberStaffs())
-									 .build();
+			return UnitWithManagerNumStaffResponse.builder()
+												  .id(unit.getId())
+												  .name(unit.getName())
+												  .numberStaffs(unit.getNumberStaffs())
+												  .build();
 		}
 		User manager = Common.findUserById(unit.getManagerId(), userRepository);
-		return SimpleUnitResponse.builder()
-								 .id(unit.getId())
-								 .name(unit.getName())
-								 .manager(mapToSimpleUser(manager))
-								 .numberStaffs(unit.getNumberStaffs())
-								 .build();
+		return UnitWithManagerNumStaffResponse.builder()
+											  .id(unit.getId())
+											  .name(unit.getName())
+											  .manager(mapToSimpleUser(manager))
+											  .numberStaffs(unit.getNumberStaffs())
+											  .build();
 	}
 
 	private Unit mapToEntity(CreateUnitRequest request) {

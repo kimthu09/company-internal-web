@@ -1,6 +1,5 @@
 package com.ciw.backend.payload.unit;
 
-import com.ciw.backend.payload.staff.SimpleStaffResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,13 +22,4 @@ public class SimpleUnitResponse {
 			example = "Tên phòng ban"
 	)
 	private String name;
-
-	@Schema(name = "manager")
-	private SimpleStaffResponse manager;
-
-	@Schema(
-			name = "numberStaffs",
-			example = "1"
-	)
-	private int numberStaffs = 0;
 }

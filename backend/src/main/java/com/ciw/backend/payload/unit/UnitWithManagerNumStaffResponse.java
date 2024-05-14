@@ -1,5 +1,6 @@
 package com.ciw.backend.payload.unit;
 
+import com.ciw.backend.payload.staff.SimpleStaffResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UnitWithIdAndNameResponse {
+public class UnitWithManagerNumStaffResponse {
 	@Schema(
 			name = "id",
 			example = "1"
@@ -22,4 +23,13 @@ public class UnitWithIdAndNameResponse {
 			example = "Tên phòng ban"
 	)
 	private String name;
+
+	@Schema(name = "manager")
+	private SimpleStaffResponse manager;
+
+	@Schema(
+			name = "numberStaffs",
+			example = "1"
+	)
+	private int numberStaffs = 0;
 }

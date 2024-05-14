@@ -15,7 +15,7 @@ import com.ciw.backend.payload.calendar.CalendarPart;
 import com.ciw.backend.payload.calendar.DayOfWeek;
 import com.ciw.backend.payload.calendar.ShiftType;
 import com.ciw.backend.payload.staff.SimpleStaffResponse;
-import com.ciw.backend.payload.unit.UnitWithIdAndNameResponse;
+import com.ciw.backend.payload.unit.SimpleUnitResponse;
 import com.ciw.backend.payload.unitshift.*;
 import com.ciw.backend.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -386,8 +386,8 @@ public class UnitShiftService {
 		return UnitShiftResponse.builder().unit(mapToDTO(unit)).shifts(shifts).build();
 	}
 
-	private UnitWithIdAndNameResponse mapToDTO(Unit unit) {
-		return UnitWithIdAndNameResponse.builder().id(unit.getId()).name(unit.getName()).build();
+	private SimpleUnitResponse mapToDTO(Unit unit) {
+		return SimpleUnitResponse.builder().id(unit.getId()).name(unit.getName()).build();
 	}
 
 	private UnitShiftDayDetailAbsentResponse mapToDTO(UnitShiftAbsent unitShiftAbsent) {
