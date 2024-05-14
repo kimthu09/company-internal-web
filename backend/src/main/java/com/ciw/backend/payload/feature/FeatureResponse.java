@@ -18,6 +18,12 @@ public class FeatureResponse {
 	private Long id;
 
 	@Schema(
+			name = "code",
+			example = "MANAGER STAFF"
+	)
+	private String code;
+
+	@Schema(
 			name = "name",
 			example = "Tên chức năng"
 	)
