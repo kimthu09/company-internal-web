@@ -115,11 +115,7 @@ public class UnitService {
 		if (request.getManagerId() != null) {
 			Optional<Unit> existManagerUnit = unitRepository.findByManagerId(request.getManagerId());
 
-			User manager = userRepository.findById(request.getManagerId())
-										 .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST,
-																			 Message.Unit.UNIT_MANAGER_NOTEXIST));
-
-			if (existManagerUnit.isPresent() && existManagerUnit.get().getId() != unitId) {
+			if (existManagerUnit.isPresent() && !existManagerUnit.get().getId().equals(unitId)) {
 				throw new AppException(HttpStatus.BAD_REQUEST, Message.Unit.UNIT_MANAGER_EXIST);
 			} else {
 				Common.updateIfNotNull(request.getManagerId(), unit::setManagerId);

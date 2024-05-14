@@ -52,7 +52,7 @@ public class UserService {
 
 		User user = Common.findUserByEmail(email, userRepository);
 
-		return mapToProfileResponse(user);
+		return mapToDTO(user);
 	}
 
 	@Transactional
