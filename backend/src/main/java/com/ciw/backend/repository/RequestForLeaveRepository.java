@@ -12,7 +12,7 @@ public interface RequestForLeaveRepository extends JpaRepository<RequestForLeave
 	@Query(
 			"SELECT r " +
 			"FROM RequestForLeave r " +
-			"WHERE r.createdBy = :createdBy " +
+			"WHERE r.createdBy.id = :createdBy " +
 			"AND (" +
 			"(r.fromDate <= :fromDate AND r.toDate >= :toDate)" +
 			"OR (r.fromDate >= :fromDate AND r.fromDate <= :toDate)" +

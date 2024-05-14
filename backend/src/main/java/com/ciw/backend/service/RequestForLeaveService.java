@@ -283,9 +283,9 @@ public class RequestForLeaveService {
 				}
 			}
 
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	@Transactional
