@@ -27,8 +27,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -46,28 +44,25 @@ public class RequestForLeaveService {
 		String contentMail = "";
 		if (requestForLeave.getFromDate().equals(requestForLeave.getToDate())) {
 			if (requestForLeave.getFromShiftType().equals(requestForLeave.getToShiftType())) {
-				contentMail = String.format(
-						"Đơn nghỉ phép vào buổi %s ngày %s %s.\n" +
-						"Nếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
-						requestForLeave.getFromShiftType() == ShiftType.DAY ? "sáng" : "chiều",
-						requestForLeave.getFromDate(),
-						action);
+				contentMail = String.format("Đơn nghỉ phép vào buổi %s ngày %s %s.\n" +
+											"Nếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
+											requestForLeave.getFromShiftType() == ShiftType.DAY ? "sáng" : "chiều",
+											requestForLeave.getFromDate(),
+											action);
 			} else {
-				contentMail = String.format(
-						"Đơn nghỉ phép vào ngày %s %s.\n" +
-						"Nếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
-						requestForLeave.getFromDate(),
-						action);
+				contentMail = String.format("Đơn nghỉ phép vào ngày %s %s.\n" +
+											"Nếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
+											requestForLeave.getFromDate(),
+											action);
 			}
 		} else {
-			contentMail = String.format(
-					"Đơn nghỉ phép vào buổi %s ngày %s đến hết buổi %s ngày %s %s.\n" +
-					"Nếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
-					requestForLeave.getFromShiftType() == ShiftType.DAY ? "sáng" : "chiều",
-					requestForLeave.getFromDate(),
-					requestForLeave.getToShiftType() == ShiftType.DAY ? "sáng" : "chiều",
-					requestForLeave.getToDate(),
-					action);
+			contentMail = String.format("Đơn nghỉ phép vào buổi %s ngày %s đến hết buổi %s ngày %s %s.\n" +
+										"Nếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
+										requestForLeave.getFromShiftType() == ShiftType.DAY ? "sáng" : "chiều",
+										requestForLeave.getFromDate(),
+										requestForLeave.getToShiftType() == ShiftType.DAY ? "sáng" : "chiều",
+										requestForLeave.getToDate(),
+										action);
 		}
 		return contentMail;
 	}
@@ -204,15 +199,22 @@ public class RequestForLeaveService {
 
 	@Transactional
 	public RequestForLeaveResponse createRequestForLeave(CreateRequestForLeaveRequest request) {
-		if (!checkDate(request.getFromDate(), request.getToDate())) {
+		if (!checkDate(request.getFromDate(),
+					   request.getToDate(),
+					   request.getFromShiftType(),
+					   request.getToShiftType())) {
 			throw new AppException(HttpStatus.BAD_REQUEST, Message.RequestForLeave.FROM_DATE_CAN_NOT_AFTER_TO_DATE);
-		} else if (request.getFromDate().equals(request.getToDate())) {
-			if (request.getFromShiftType() == ShiftType.NIGHT && request.getToShiftType() == ShiftType.DAY) {
-				throw new AppException(HttpStatus.BAD_REQUEST, Message.RequestForLeave.FROM_DATE_CAN_NOT_AFTER_TO_DATE);
-			}
 		}
 
 		User currentUser = Common.findCurrUser(userRepository);
+
+		if (existRecord(currentUser.getId(),
+						request.getFromDate(),
+						request.getToDate(),
+						request.getFromShiftType(),
+						request.getToShiftType())) {
+			throw new AppException(HttpStatus.BAD_REQUEST, Message.RequestForLeave.REQUEST_FOR_LEAVE_CONFLICT_TIME);
+		}
 
 		RequestForLeave requestForLeave = mapToEntity(request);
 		requestForLeave.setCreatedBy(currentUser);
@@ -229,12 +231,61 @@ public class RequestForLeaveService {
 		return mapToDTO(requestForLeaveRepository.save(requestForLeave));
 	}
 
-	private boolean checkDate(String fromDate, String toDate) {
+	private boolean checkDate(String fromDate, String toDate, ShiftType fromShiftType, ShiftType toShiftType) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		LocalDate fromDateObj = LocalDate.parse(fromDate, formatter);
 		LocalDate toDateObj = LocalDate.parse(toDate, formatter);
 
-		return !fromDateObj.isAfter(toDateObj);
+		if (fromDateObj.isAfter(toDateObj)) {
+			return false;
+		} else if (fromDate.equals(toDate)) {
+			return fromShiftType != ShiftType.NIGHT || toShiftType != ShiftType.DAY;
+		}
+
+		return true;
+	}
+
+	private boolean existRecord(Long userId,
+								String fromDate,
+								String toDate,
+								ShiftType fromShiftType,
+								ShiftType toShiftType) {
+		Date from = TimeHelper.convertStringToDate(fromDate);
+		Date to = TimeHelper.convertStringToDate(toDate);
+		List<RequestForLeave> requestForLeavesInDateRange = requestForLeaveRepository.getAllByCreatedByAndInDateRange(
+				userId,
+				from,
+				to);
+		for (RequestForLeave entity : requestForLeavesInDateRange) {
+			String entityFromDate = TimeHelper.convertDateToString(entity.getFromDate());
+			String entityToDate = TimeHelper.convertDateToString(entity.getToDate());
+
+			//entity	|
+			//request	|
+			if (entityFromDate.equals(fromDate) && entityToDate.equals(toDate) && toDate.equals(fromDate)) {
+				if (entity.getFromShiftType() == entity.getToShiftType() && entity.getToShiftType() != fromShiftType &&
+					fromShiftType == toShiftType) {
+					continue;
+				}
+			}
+			//entity				|-----------|
+			//request	|-----------|
+			else if (entityFromDate.equals(toDate)) {
+				if (entity.getFromShiftType() == ShiftType.NIGHT && toShiftType == ShiftType.DAY) {
+					continue;
+				}
+			}
+			//entity	|-----------|
+			//request				|-----------|
+			else if (entityToDate.equals(fromDate)) {
+				if (entity.getToShiftType() == ShiftType.DAY && fromShiftType == ShiftType.NIGHT) {
+					continue;
+				}
+			}
+
+			return false;
+		}
+		return true;
 	}
 
 	@Transactional
@@ -343,15 +394,8 @@ public class RequestForLeaveService {
 	}
 
 	private RequestForLeave mapToEntity(CreateRequestForLeaveRequest request) {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		Date fromDate;
-		Date toDate;
-		try {
-			fromDate = sdf.parse(request.getFromDate());
-			toDate   = sdf.parse(request.getToDate());
-		} catch (ParseException e) {
-			throw new AppException(HttpStatus.BAD_REQUEST, Message.TIME_INVALID_FORMAT_DD_MM_YYYY);
-		}
+		Date fromDate = TimeHelper.convertStringToDate(request.getFromDate());
+		Date toDate = TimeHelper.convertStringToDate(request.getToDate());
 
 		return RequestForLeave.builder()
 							  .fromDate(fromDate)
@@ -363,13 +407,11 @@ public class RequestForLeaveService {
 	}
 
 	private RequestForLeaveResponse mapToDTO(RequestForLeave entity) {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
 		return RequestForLeaveResponse.builder()
 									  .id(entity.getId())
-									  .fromDate(sdf.format(TimeHelper.plus7Hours(entity.getFromDate())))
+									  .fromDate(TimeHelper.convertDateToString(TimeHelper.plus7Hours(entity.getFromDate())))
 									  .fromShiftType(entity.getFromShiftType())
-									  .toDate(sdf.format(TimeHelper.plus7Hours(entity.getToDate())))
+									  .toDate(TimeHelper.convertDateToString(TimeHelper.plus7Hours(entity.getToDate())))
 									  .toShiftType(entity.getToShiftType())
 									  .note(entity.getNote())
 									  .createdBy(mapToDTO(entity.getCreatedBy()))

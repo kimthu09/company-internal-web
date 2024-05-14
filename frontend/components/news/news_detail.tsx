@@ -11,7 +11,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import dynamic from "next/dynamic";
 import { OutputData } from "@editorjs/editorjs";
 import NewsDetailSkeleton from "./news_detail_skeleton";
-import Error from "@/app/error";
 
 
 const EditorBlock = dynamic(() => import("./editor"), {
@@ -48,8 +47,8 @@ export const NewsDetail = ({ params }: { params: { newsId: number } }) => {
                     className="w-full object-cover aspect-[4/1]"
                     src={news.image}
                     alt="image"
-                    width={200}
-                    height={50}
+                    width={1000}
+                    height={250}
                 />
             </div>
             <div className="py-7">

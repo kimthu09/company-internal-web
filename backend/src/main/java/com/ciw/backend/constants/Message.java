@@ -134,5 +134,7 @@ public class Message {
 				= "Bạn chỉ có thể xóa đơn nghỉ việc của chính mình";
 		public static final String FROM_DATE_CAN_NOT_AFTER_TO_DATE
 				= "Ngày hoặc ca làm muốn nghỉ bắt đầu và kết thúc không hợp lệ";
+		public static final String REQUEST_FOR_LEAVE_CONFLICT_TIME
+				= "Người dùng đang đặt lịch nghỉ trùng nhau";
 	}
 }
