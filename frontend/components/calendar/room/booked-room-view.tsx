@@ -27,13 +27,14 @@ import {
 } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { AiOutlineClose } from "react-icons/ai";
-import { stringToDate } from "@/lib/utils";
+import { includesRoles, stringToDate } from "@/lib/utils";
 import BookingItemSkeleton from "../resources/booking-item-skeleton";
 import CalendarLink from "./links-item";
 import getAllRoomBooking from "@/lib/room/getAllRoomBooking";
 import RoomList from "@/components/manage/room/room-list";
 import BookingItemList, { BookingProps } from "./booking-item-list";
 import StaffList from "@/components/manage/employee/staff-filter-list";
+import { useCurrentUser } from "@/hooks/use-user";
 
 type FormValues = {
   filters: {
@@ -100,6 +101,10 @@ const BookedRoomView = ({
   const onDelete = () => {
     mutate();
   };
+  const { currentUser } = useCurrentUser();
+  const isAdmin =
+    currentUser &&
+    includesRoles({ currentUser: currentUser, roleCodes: ["ADMIN"] });
   if (isLoading) {
     return <BookingItemSkeleton />;
   } else if (isError) {
@@ -294,6 +299,7 @@ const BookedRoomView = ({
                   dayArray={item.day}
                   nightArray={item.night}
                   onDeleted={onDelete}
+                  isAdmin={isAdmin}
                 />
               );
             }

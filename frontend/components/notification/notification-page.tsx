@@ -27,7 +27,7 @@ import NotificationItem from "./notification-item";
 import { Notification } from "@/types";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { stringToDate } from "@/lib/utils";
+import { includesRoles, stringToDate } from "@/lib/utils";
 import DaypickerPopup from "../ui/daypicker-popup";
 import StaffList from "../manage/employee/staff-filter-list";
 import { AiOutlineClose } from "react-icons/ai";
@@ -39,6 +39,7 @@ import { useLoading } from "@/hooks/loading-context";
 import NotiListSkeleton from "./noti-list-skeleton";
 import { endpoint } from "@/constants";
 import { useSWRConfig } from "swr";
+import { useCurrentUser } from "@/hooks/use-user";
 type FormValues = {
   filters: {
     type: string;
@@ -124,6 +125,10 @@ const NotiPage = () => {
     }
   };
   const [openFilter, setOpenFilter] = useState(false);
+  const { currentUser } = useCurrentUser();
+  const canAdd =
+    currentUser &&
+    includesRoles({ currentUser: currentUser, roleCodes: ["ADMIN"] });
   if (isLoading) {
     return <NotiListSkeleton number={5} />;
   } else if (isError || notifications.hasOwnProperty("message")) {
@@ -133,7 +138,7 @@ const NotiPage = () => {
     <div>
       <div className="pb-5 mb-7 border-b w-full flex flex-row justify-between items-center">
         <h1 className="table___title">Tất cả thông báo</h1>
-        <CreateNotification onCreated={() => mutate()} />
+        {canAdd && <CreateNotification onCreated={() => mutate()} />}
       </div>
       <div className="w-full flex flex-col overflow-x-auto">
         <div className="mb-4 flex gap-3">
@@ -170,7 +175,7 @@ const NotiPage = () => {
                         </label>
                         <div className=" flex gap-1 items-center">
                           {item.type === "toDate" ||
-                            item.type === "fromDate" ? (
+                          item.type === "fromDate" ? (
                             <Controller
                               control={control}
                               name={`filters.${index}.value`}

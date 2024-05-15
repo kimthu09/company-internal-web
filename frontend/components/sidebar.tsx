@@ -7,8 +7,14 @@ import { useEffect, useState } from "react";
 
 import { usePathname } from "next/navigation";
 import { LuChevronDown } from "react-icons/lu";
-import { sidebarItems } from "@/constants";
+import {
+  adminSidebarItems,
+  managerSidebarItems,
+  sidebarItems,
+} from "@/constants";
 import { SidebarItem } from "@/types";
+import { useCurrentUser } from "@/hooks/use-user";
+import { includesRoles, isManager } from "@/lib/utils";
 
 export default function Sidebar() {
   const [isCollapse, toggleIsCollapse] = useState(false);
@@ -17,7 +23,18 @@ export default function Sidebar() {
     toggleIsCollapse((prev) => !prev);
   };
 
+  const { currentUser } = useCurrentUser();
+
   const [items, setItems] = useState<SidebarItem[]>(sidebarItems);
+  useEffect(() => {
+    if (currentUser) {
+      if (includesRoles({ currentUser: currentUser, roleCodes: ["ADMIN"] })) {
+        setItems(adminSidebarItems);
+      } else if (isManager({ currentUser: currentUser })) {
+        setItems(managerSidebarItems);
+      }
+    }
+  }, [currentUser]);
   return (
     <div className="lg:flex hidden z-20">
       <aside

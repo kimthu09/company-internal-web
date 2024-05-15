@@ -167,6 +167,13 @@ const EmployeeTable = () => {
       ),
     },
     {
+      accessorKey: "cccd",
+      header: ({ column }) => {
+        return <span>CCCD</span>;
+      },
+      cell: ({ row }) => <span>{row.original.userIdentity}</span>,
+    },
+    {
       accessorKey: "male",
       header: ({ column }) => {
         return (

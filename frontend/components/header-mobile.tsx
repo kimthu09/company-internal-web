@@ -5,10 +5,16 @@ import React, { ReactNode, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { sidebarItems } from "@/constants";
+import {
+  adminSidebarItems,
+  managerSidebarItems,
+  sidebarItems,
+} from "@/constants";
 import { SidebarItem } from "@/types";
 import { motion, useCycle } from "framer-motion";
 import { LuChevronDown } from "react-icons/lu";
+import { useCurrentUser } from "@/hooks/use-user";
+import { includesRoles, isManager } from "@/lib/utils";
 
 type MenuItemWithSubMenuProps = {
   item: SidebarItem;
@@ -40,7 +46,18 @@ const HeaderMobile = () => {
   const { height } = useDimensions(containerRef);
   const [isOpen, toggleOpen] = useCycle(false, true);
 
+  const { currentUser } = useCurrentUser();
+
   const [items, setItems] = useState<SidebarItem[]>(sidebarItems);
+  useEffect(() => {
+    if (currentUser) {
+      if (includesRoles({ currentUser: currentUser, roleCodes: ["ADMIN"] })) {
+        setItems(adminSidebarItems);
+      } else if (isManager({ currentUser: currentUser })) {
+        setItems(managerSidebarItems);
+      }
+    }
+  }, [currentUser]);
   return (
     <motion.nav
       initial={false}

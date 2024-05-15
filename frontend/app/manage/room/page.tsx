@@ -1,5 +1,6 @@
 import RoomTable from "@/components/manage/room/table";
 import TableSkeleton from "@/components/skeleton/table-skeleton";
+import { withAuth } from "@/lib/auth/withAuth";
 import React, { Suspense } from "react";
 
 const RoomManage = () => {
@@ -35,4 +36,4 @@ const RoomManage = () => {
   );
 };
 
-export default RoomManage;
+export default withAuth(RoomManage, ["ADMIN"]);

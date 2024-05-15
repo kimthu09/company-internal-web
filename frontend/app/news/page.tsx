@@ -1,11 +1,11 @@
+import NewsListItemSkeleton from "@/components/news/news-list-item-skeleton";
 import PostPage from "@/components/news/post-page";
-import NotiListSkeleton from "@/components/notification/noti-list-skeleton";
 import { Suspense } from "react";
 
 const NewsPage = () => {
   return (
     <div className="card___style">
-      <Suspense fallback={<NotiListSkeleton number={5} />}>
+      <Suspense fallback={<NewsListItemSkeleton number={3} />}>
         <PostPage />
       </Suspense>
     </div>

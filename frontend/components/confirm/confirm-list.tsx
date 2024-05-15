@@ -65,8 +65,8 @@ const ConfirmList = () => {
   filters.pop();
   const filterValues = [
     { type: "isRejected", name: "Từ chối" },
-    { type: "isApproved", name: "Xác nhận" },
-    { type: "isAccepted", name: "Duyệt" },
+    { type: "isApproved", name: "Duyệt" },
+    { type: "isAccepted", name: "Xác nhận" },
 
     { type: "dateFrom", name: "Từ ngày" },
     { type: "dateTo", name: "Đến ngày" },
@@ -179,6 +179,16 @@ const ConfirmList = () => {
   };
   const { currentUser } = useCurrentUser();
   const isManagerRole = currentUser && isManager({ currentUser: currentUser });
+  const isFinalRole =
+    currentUser &&
+    (includesRoles({
+      currentUser: currentUser,
+      roleCodes: ["ADMIN"],
+    }) ||
+      includesRoles({
+        currentUser: currentUser,
+        roleCodes: ["STAFF MANAGER"],
+      }));
   if (isLoading) {
     return <NotiListSkeleton number={5} />;
   } else if (isError || requests.hasOwnProperty("message")) {
@@ -295,6 +305,8 @@ const ConfirmList = () => {
                               locale: vi,
                             }),
                           });
+                        } else if (value.includes("is")) {
+                          append({ type: value, value: "false" });
                         } else {
                           append({ type: value, value: "" });
                         }
@@ -361,32 +373,31 @@ const ConfirmList = () => {
             requests.data.map((item: LeaveRequest) => (
               <div
                 key={item.id}
-                className="flex border-b border-b-border py-4 my-2 gap-2"
+                className="flex border-b border-b-border py-4 my-2 gap-2 flex-wrap sm:flex-row flex-col"
               >
                 <LeaveItem className="flex-1" item={item} />
-                {/* {currentUser&& currentUser} */}
-                {isManagerRole && !item.acceptedBy && (
-                  <ConfirmDialog
-                    title={"Xác nhận"}
-                    description="Bạn muốn xác nhận đơn xin nghỉ phép này?"
-                    handleYes={() => {
-                      onPassLeave({ id: item.id });
-                    }}
-                  >
-                    <Button
-                      title="Xác nhận"
-                      className="font-semibold tracking-widest rounded-full hover:bg-hover-accent"
-                    >
-                      Xác nhận
-                    </Button>
-                  </ConfirmDialog>
-                )}
-                {!item.approvedBy &&
-                  currentUser &&
-                  includesRoles({
-                    currentUser: currentUser,
-                    roleCodes: ["ADMIN", "STAFF MANAGER"],
-                  }) && (
+                <div className="flex ml-auto gap-2 flex-wrap">
+                  {isManagerRole &&
+                    !isFinalRole &&
+                    !item.acceptedBy &&
+                    !item.rejectedBy &&
+                    !item.approvedBy && (
+                      <ConfirmDialog
+                        title={"Xác nhận"}
+                        description="Bạn muốn xác nhận đơn xin nghỉ phép này?"
+                        handleYes={() => {
+                          onPassLeave({ id: item.id });
+                        }}
+                      >
+                        <Button
+                          title="Xác nhận"
+                          className="font-semibold tracking-widest rounded-full bg-blue-primary/80 hover:bg-blue-primary/90 "
+                        >
+                          Xác nhận
+                        </Button>
+                      </ConfirmDialog>
+                    )}
+                  {!item.approvedBy && !item.rejectedBy && isFinalRole && (
                     <ConfirmDialog
                       title={"Xác nhận"}
                       description="Bạn xác nhận muốn duyệt đơn xin nghỉ phép này?"
@@ -396,34 +407,33 @@ const ConfirmList = () => {
                     >
                       <Button
                         title="Duyệt"
-                        className="font-semibold tracking-widest rounded-full hover:bg-hover-accent"
+                        className="font-semibold tracking-widest rounded-full bg-green-primary hover:bg-green-hover"
                       >
                         Duyệt
                       </Button>
                     </ConfirmDialog>
                   )}
-                {!item.approvedBy &&
-                  (isManagerRole ||
-                    (currentUser &&
-                      includesRoles({
-                        currentUser: currentUser,
-                        roleCodes: ["ADMIN", "STAFF MANAGER"],
-                      }))) && (
-                    <ConfirmDialog
-                      title={"Xác nhận"}
-                      description="Bạn xác nhận từ chối đơn xin nghỉ phép này?"
-                      handleYes={() => {
-                        onRejectLeave({ id: item.id });
-                      }}
-                    >
-                      <Button
-                        title="Từ chối"
-                        className="font-semibold tracking-widest rounded-full hover:bg-hover-accent"
+                  {!item.approvedBy &&
+                    !item.rejectedBy &&
+                    (isManagerRole || isFinalRole) && (
+                      <ConfirmDialog
+                        title={"Xác nhận"}
+                        description="Bạn xác nhận từ chối đơn xin nghỉ phép này?"
+                        handleYes={() => {
+                          onRejectLeave({ id: item.id });
+                        }}
                       >
-                        Từ chối
-                      </Button>
-                    </ConfirmDialog>
-                  )}
+                        <Button
+                          title="Từ chối"
+                          className="font-semibold tracking-widest rounded-full 
+                          bg-rose-400
+                          hover:bg-rose-500/90"
+                        >
+                          Từ chối
+                        </Button>
+                      </ConfirmDialog>
+                    )}
+                </div>
               </div>
             ))
           ) : (
