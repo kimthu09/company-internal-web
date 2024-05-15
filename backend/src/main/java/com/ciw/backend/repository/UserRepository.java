@@ -1,5 +1,6 @@
 package com.ciw.backend.repository;
 
+import com.ciw.backend.constants.ApplicationConst;
 import com.ciw.backend.entity.User;
 import com.ciw.backend.payload.staff.StaffSpecs;
 import org.springframework.data.domain.Page;
@@ -34,9 +35,9 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
 	List<User> findByNameContains(String name);
 
-	default Page<User> findAllNotDeletedAndNotYourself(Specification<User> specs, Pageable pageable, String email) {
+	default Page<User> findAllNotDeletedAndNotAdmin(Specification<User> specs, Pageable pageable) {
 		Specification<User> spec = StaffSpecs.isNotDeleted()
-											 .and(StaffSpecs.notHaveEmail(email));
+											 .and(StaffSpecs.notHaveEmail(ApplicationConst.ADMIN_EMAIL));
 		return findAll(specs.and(spec), pageable);
 	}
 

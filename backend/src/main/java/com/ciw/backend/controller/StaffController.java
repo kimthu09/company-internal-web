@@ -36,7 +36,8 @@ public class StaffController {
 	)
 	@Operation(
 			summary = "Fetch staffs",
-			description = "Fetch staffs from database by filter and paging"
+			description = "Note:\n+" +
+						  "- Fetch all user are not deleted and not admin (admin@gmail.com)"
 	)
 	@ApiResponse(
 			responseCode = "200",
@@ -49,13 +50,34 @@ public class StaffController {
 		return new ResponseEntity<>(staffService.getUsers(page, filter), HttpStatus.OK);
 	}
 
+	@GetMapping("/all")
+	@SecurityRequirement(
+			name = "Bearer Authentication"
+	)
+	@Operation(
+			summary = "Fetch all staffs",
+			description = "Note:\n+" +
+						  "- Fetch all user are not deleted and deleted if current user is admin\n" +
+						  "- Else fetch all user except admin"
+	)
+	@ApiResponse(
+			responseCode = "200",
+			description = "Http Status is 200 OK"
+	)
+	public ResponseEntity<ListResponse<StaffResponse, StaffFilter>> getListUsers(
+			@Valid AppPageRequest page,
+			@Valid StaffFilter filter) {
+		return new ResponseEntity<>(staffService.getListUsers(page, filter), HttpStatus.OK);
+	}
+
 	@GetMapping("/{id}")
 	@SecurityRequirement(
 			name = "Bearer Authentication"
 	)
 	@Operation(
 			summary = "Fetch detail staff",
-			description = "Fetch detail staff from database"
+			description = "Note:\n" +
+						  "- Can not reach admin's info"
 	)
 	@ApiResponse(
 			responseCode = "200",
@@ -91,7 +113,8 @@ public class StaffController {
 	)
 	@Operation(
 			summary = "Update staff",
-			description = "Update staff"
+			description = "Note:\n" +
+						  "- Can not update admin's info"
 	)
 	@ApiResponse(
 			responseCode = "200",
@@ -111,7 +134,8 @@ public class StaffController {
 	)
 	@Operation(
 			summary = "Delete staff",
-			description = "Delete staff by id"
+			description = "Note:\n" +
+						  "- Can not delete admin"
 	)
 	@ApiResponse(
 			responseCode = "200",

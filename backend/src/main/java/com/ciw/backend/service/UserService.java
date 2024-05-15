@@ -72,6 +72,12 @@ public class UserService {
 							  .name(user.getName())
 							  .email(user.getEmail())
 							  .image(user.getImage())
+							  .phone(user.getPhone())
+							  .email(user.getEmail())
+							  .address(user.getAddress())
+							  .userIdentity(user.getUserIdentity())
+							  .male(user.isMale())
+							  .dob(user.getDob())
 							  .unit(mapToDTO(user.getUnit()))
 							  .build();
 	}
@@ -80,16 +86,16 @@ public class UserService {
 		return UnitWithFeatureManagerIdResponse.builder()
 											   .id(unit.getId())
 											   .name(unit.getName())
-											   .features(getFeatureResponses(unit.getUnitFeatures()
-																				 .stream()
-																				 .map(unitFeature -> unitFeature.getFeature()
-																												.getId())
-																				 .toList()))
+											   .features(getAllFeatureResponses(unit.getUnitFeatures()
+																					.stream()
+																					.map(unitFeature -> unitFeature.getFeature()
+																												   .getId())
+																					.toList()))
 											   .managerId(unit.getManagerId())
 											   .build();
 	}
 
-	private List<FeatureResponse> getFeatureResponses(List<Long> featureIds) {
-		return getFeatureResponse(featureIds, featureRepository);
+	private List<FeatureResponse> getAllFeatureResponses(List<Long> featureIds) {
+		return getFeatureResponse(featureIds, true, featureRepository);
 	}
 }

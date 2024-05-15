@@ -19,7 +19,10 @@ public class FeatureService {
 
 	@Transactional
 	public SimpleListResponse<SimpleFeatureResponse> getAllFeatures() {
-		List<SimpleFeatureResponse> features = featureRepository.findAll().stream().map(this::mapToDTO).toList();
+		List<SimpleFeatureResponse> features = featureRepository.findAllNotAdmin()
+																.stream()
+																.map(this::mapToDTO)
+																.toList();
 		return new SimpleListResponse<>(features);
 	}
 

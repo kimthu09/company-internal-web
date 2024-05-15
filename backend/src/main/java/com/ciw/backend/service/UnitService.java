@@ -1,5 +1,6 @@
 package com.ciw.backend.service;
 
+import com.ciw.backend.constants.ApplicationConst;
 import com.ciw.backend.constants.Message;
 import com.ciw.backend.entity.*;
 import com.ciw.backend.exception.AppException;
@@ -60,9 +61,9 @@ public class UnitService {
 	}
 
 	private Specification<Unit> filterUnits(UnitFilter filter) {
-		Specification<Unit> spec = Specification.where(null);
+		Specification<Unit> spec = UnitSpecs.notIncludeAdmin();
 		if (filter.getName() != null) {
-			spec = UnitSpecs.hasName(filter.getName());
+			spec = spec.and(UnitSpecs.hasName(filter.getName()));
 		}
 		if (filter.getManager() != null) {
 			List<Long> managerIds = userRepository.findByNameContains(filter.getManager())
@@ -77,6 +78,9 @@ public class UnitService {
 	@Transactional
 	public UnitResponse getUnit(Long id) {
 		Unit unit = Common.findUnitById(id, unitRepository);
+		if (unit.getName().equals(ApplicationConst.ADMIN_UNIT_NAME)) {
+			throw new AppException(HttpStatus.BAD_REQUEST, Message.Unit.ADMIN_UNIT_CAN_NOT_BE_INCLUDED);
+		}
 
 		List<User> staffs = userRepository.findByUnitIdAndNotDeleted(unit.getId());
 
@@ -86,7 +90,7 @@ public class UnitService {
 	@Transactional
 	public UnitResponse createUnit(CreateUnitRequest request) {
 		Unit unit = mapToEntity(request);
-		List<FeatureResponse> features = getFeatureResponses(request.getFeatures());
+		List<FeatureResponse> features = getFeatureExcludeAdminResponses(request.getFeatures());
 
 		Unit savedUnit = unitRepository.save(unit);
 
@@ -115,6 +119,9 @@ public class UnitService {
 	@Transactional
 	public UnitWithManagerNumStaffResponse updateUnit(Long unitId, UpdateUnitRequest request) {
 		Unit unit = Common.findUnitById(unitId, unitRepository);
+		if (unit.getName().equals(ApplicationConst.ADMIN_UNIT_NAME)) {
+			throw new AppException(HttpStatus.BAD_REQUEST, Message.Unit.ADMIN_UNIT_CAN_NOT_BE_INCLUDED);
+		}
 		Common.updateIfNotNull(request.getName(), unit::setName);
 		if (request.getManagerId() != null) {
 			Optional<Unit> existManagerUnit = unitRepository.findByManagerId(request.getManagerId());
@@ -127,7 +134,7 @@ public class UnitService {
 		}
 		Unit savedUnit = unitRepository.save(unit);
 		if (request.getFeatures() != null) {
-			List<FeatureResponse> features = getFeatureResponses(request.getFeatures());
+			List<FeatureResponse> features = getFeatureExcludeAdminResponses(request.getFeatures());
 
 			List<UnitFeature> unitFeatures = getUnitFeatures(savedUnit, features);
 			Set<UnitFeature> existingUnitFeatures = savedUnit.getUnitFeatures();
@@ -142,6 +149,9 @@ public class UnitService {
 	@Transactional
 	public SimpleResponse deleteUnit(Long unitId) {
 		Unit unit = Common.findUnitById(unitId, unitRepository);
+		if (unit.getName().equals(ApplicationConst.ADMIN_UNIT_NAME)) {
+			throw new AppException(HttpStatus.BAD_REQUEST, Message.Unit.ADMIN_UNIT_CAN_NOT_BE_INCLUDED);
+		}
 		if (unit.getNumberStaffs() > 0) {
 			throw new AppException(HttpStatus.BAD_REQUEST, Message.Unit.UNIT_STILL_HAVE_STAFFS_CAN_NOT_DELETE);
 		}
@@ -204,10 +214,10 @@ public class UnitService {
 	}
 
 	private UnitResponse mapToDTO(Unit unit, List<User> staffs) {
-		return mapToDTO(getFeatureResponses(unit.getUnitFeatures()
-												.stream()
-												.map(unitFeature -> unitFeature.getFeature().getId())
-												.toList()),
+		return mapToDTO(getFeatureExcludeAdminResponses(unit.getUnitFeatures()
+															.stream()
+															.map(unitFeature -> unitFeature.getFeature().getId())
+															.toList()),
 						unit,
 						staffs);
 	}
@@ -222,7 +232,7 @@ public class UnitService {
 								  .build();
 	}
 
-	private List<FeatureResponse> getFeatureResponses(List<Long> featureIds) {
-		return Common.getFeatureResponse(featureIds, featureRepository);
+	private List<FeatureResponse> getFeatureExcludeAdminResponses(List<Long> featureIds) {
+		return Common.getFeatureResponse(featureIds, false, featureRepository);
 	}
 }
