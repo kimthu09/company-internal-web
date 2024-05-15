@@ -26,7 +26,7 @@ export default async function updateProfile({ address, image, phone }: Props) {
 
   // Make a POST request with headers
   const res = axios
-    .post(url, data, { headers: headers })
+    .put(url, data, { headers: headers })
     .then((response) => {
       if (response) return response.data;
     })

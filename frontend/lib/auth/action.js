@@ -23,14 +23,10 @@ export const logOut = async () => {
 
 export const getApiKey = async () => {
   const session = await auth();
-  console.log("GET API KEY")
-  console.log(session)
   return session?.user?.token;
 };
 
 export const getUser = async () => {
   const session = await auth();
-  console.log("GET User")
-  console.log(session)
   return session?.user;
 };
