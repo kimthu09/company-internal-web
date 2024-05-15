@@ -27,14 +27,19 @@ export const sidebarItems: SidebarItem[] = [
     icon: IoCalendarOutline,
     submenu: true,
     subMenuItems: [
-      { title: "Lịch làm việc", href: "/calendar/jobs" },
       { title: "Lịch phòng họp", href: "/calendar/room" },
       { title: "Lịch tài nguyên", href: "/calendar/resources" },
     ],
   },
   {
-    title: "Tài liệu",
-    href: "/document",
+    title: "Đơn nghỉ phép",
+    href: "/leave",
+    icon: SlDocs,
+    submenu: false,
+  },
+  {
+    title: "Duyệt đơn",
+    href: "/confirm-request",
     icon: SlDocs,
     submenu: false,
   },
@@ -61,11 +66,6 @@ export const unitLinks: UnitLink[] = [
     value: "employee",
     label: "Nhân viên",
     href: "/employee",
-  },
-  {
-    value: "calendar",
-    label: "Lịch",
-    href: "/unit-calendar",
   },
 ];
 
