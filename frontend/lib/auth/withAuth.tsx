@@ -2,7 +2,12 @@
 import { ReactNode } from "react";
 import { getUser } from "../auth/action";
 import NoRole from "@/components/no-role";
-import { includesRoles, isManager, isViewUnit } from "../utils";
+import {
+  includesOneRoles,
+  includesRoles,
+  isManager,
+  isViewUnit,
+} from "../utils";
 interface WithAuthProps {
   children: ReactNode;
 }
@@ -13,11 +18,20 @@ export const withAuth = (
   WrappedComponent: ComponentType,
   allowedCodes: string[],
   exceptCodes?: string[],
-  allowedManager?: boolean
+  allowedManager?: boolean,
+  includeOne?: boolean
 ) => {
   return async ({ ...props }: any) => {
     const currentUser = await getUser();
-
+    if (includeOne) {
+      if (
+        includesOneRoles({ currentUser: currentUser, roleCodes: allowedCodes })
+      ) {
+        return <WrappedComponent {...props} />;
+      } else {
+        return <NoRole />;
+      }
+    }
     if (allowedManager) {
       if (isManager({ currentUser })) {
         return <WrappedComponent {...props} />;

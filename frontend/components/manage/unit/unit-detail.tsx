@@ -107,6 +107,12 @@ const UnitDetail = ({ params }: { params: { unitId: string } }) => {
     }
   };
   const { currentUser } = useCurrentUser();
+  const isAdminRole =
+    currentUser &&
+    includesRoles({
+      currentUser: currentUser,
+      roleCodes: ["ADMIN"],
+    });
   const canView =
     !currentUser ||
     (currentUser &&
@@ -143,7 +149,7 @@ const UnitDetail = ({ params }: { params: { unitId: string } }) => {
                 </span>
                 <div className="flex flex-wrap">
                   <span className="text-sm leading-6 font-light">
-                    {data.manager.email} |
+                    {data.manager.email} |{" "}
                   </span>
                   <span className="text-sm leading-6 font-light">
                     {data.manager.phone}
@@ -155,41 +161,43 @@ const UnitDetail = ({ params }: { params: { unitId: string } }) => {
             <span>Không có trưởng phòng</span>
           )}
 
-          <ChangeManager unitId={params.unitId} />
+          {isAdminRole && <ChangeManager unitId={params.unitId} />}
         </div>
         <div className="flex flex-col py-7">
           <div className="flex justify-between">
             <label className="font-medium text-black" htmlFor="features">
               Chức năng
             </label>
-            {readOnly ? (
-              <Button
-                className="font-semibold tracking-widest rounded-full hover:bg-hover-accent"
-                onClick={() => setReadOnly(false)}
-              >
-                Sửa
-              </Button>
-            ) : (
-              <div className="flex gap-2">
+            {isAdminRole ? (
+              readOnly ? (
                 <Button
-                  variant={"outline"}
-                  className="bg-white border-rose-700 text-rose-700 hover:text-rose-700 hover:bg-rose-50/30 whitespace-nowrap  font-semibold tracking-widest rounded-full"
-                  onClick={() => {
-                    setReadOnly(true);
-                    resetForm();
-                  }}
+                  className="font-semibold tracking-widest rounded-full hover:bg-hover-accent"
+                  onClick={() => setReadOnly(false)}
                 >
-                  Hủy
+                  Sửa
                 </Button>
-                <Button
-                  className="whitespace-nowrap bg-green-primary hover:bg-green-hover font-semibold tracking-widest rounded-full"
-                  disabled={!isDirty}
-                  onClick={() => handleSubmit(onSubmit)()}
-                >
-                  Lưu
-                </Button>
-              </div>
-            )}
+              ) : (
+                <div className="flex gap-2">
+                  <Button
+                    variant={"outline"}
+                    className="bg-white border-rose-700 text-rose-700 hover:text-rose-700 hover:bg-rose-50/30 whitespace-nowrap  font-semibold tracking-widest rounded-full"
+                    onClick={() => {
+                      setReadOnly(true);
+                      resetForm();
+                    }}
+                  >
+                    Hủy
+                  </Button>
+                  <Button
+                    className="whitespace-nowrap bg-green-primary hover:bg-green-hover font-semibold tracking-widest rounded-full"
+                    disabled={!isDirty}
+                    onClick={() => handleSubmit(onSubmit)()}
+                  >
+                    Lưu
+                  </Button>
+                </div>
+              )
+            ) : null}
           </div>
 
           <div className="col-span-2 grid xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-y-4 gap-x-4 mt-4 items-end">
