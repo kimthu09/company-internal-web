@@ -29,7 +29,7 @@ import { format } from "date-fns";
 import vi from "date-fns/locale/vi";
 import { AiOutlineClose } from "react-icons/ai";
 import DaypickerPopup from "../ui/daypicker-popup";
-import { includesRoles, isManager, stringToDate } from "@/lib/utils";
+import { includesOneRoles, isManager, stringToDate } from "@/lib/utils";
 import StatusList from "./status-list";
 import ConfirmDialog from "../ui/confirm-dialog";
 import passLeaveRequest from "@/lib/leave/passLeaveRequest";
@@ -181,14 +181,10 @@ const ConfirmList = () => {
   const isManagerRole = currentUser && isManager({ currentUser: currentUser });
   const isFinalRole =
     currentUser &&
-    (includesRoles({
+    includesOneRoles({
       currentUser: currentUser,
-      roleCodes: ["ADMIN"],
-    }) ||
-      includesRoles({
-        currentUser: currentUser,
-        roleCodes: ["STAFF MANAGER"],
-      }));
+      roleCodes: ["ADMIN", "STAFF MANAGER"],
+    });
   if (isLoading) {
     return <NotiListSkeleton number={5} />;
   } else if (isError || requests.hasOwnProperty("message")) {

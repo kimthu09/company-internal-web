@@ -17,6 +17,12 @@ const HomePage = () => {
           title="Góc kiến thức"
           viewMoreHref="/news?limit=10&tags=1"
         />
+        <NewsContainer
+          limit="3"
+          tagId="3"
+          title="Chúc mừng sinh nhật"
+          viewMoreHref="/news?limit=10&tags=3"
+        />
       </div>
       <div className="flex flex-col flex-1 justify-start gap-8 mb-8">
         <div className="flex xl:flex-col-reverse sm:flex-row flex-col gap-8">

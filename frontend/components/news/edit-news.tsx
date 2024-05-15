@@ -18,14 +18,15 @@ import { Textarea } from "@/components/ui/textarea";
 import TagList from "@/components/tags/tag-list";
 import dynamic from "next/dynamic";
 import { OutputData } from "@editorjs/editorjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import { imageUpload } from "@/lib/employee/uploadImage";
 import { useRouter } from "next/navigation";
-import { useCurrentUser } from "@/hooks/use-user";
-import { includesRoles } from "@/lib/utils";
-import NoRole from "@/components/no-role";
-import NewsDetailSkeleton from "@/components/news/news_detail_skeleton";
+import { News } from "@/types";
+import getDetailNews from "@/lib/post/getDetailNews";
+import NewsDetailSkeleton from "./news_detail_skeleton";
+import updateNewNews from "@/lib/post/updateNew";
+import updateNews from "@/lib/post/updateNew";
 
 const Schema = z.object({
   title: z.string().min(1, "Không được để trống").max(100, "Tối đa 100 ký tự"),
@@ -34,11 +35,11 @@ const Schema = z.object({
   tagIds: z.array(z.object({ tagId: z.coerce.number() })),
 });
 
-const EditorBlock = dynamic(() => import("../../../components/news/editor"), {
+const EditorBlock = dynamic(() => import("./editor"), {
   ssr: false,
 });
 
-const AddNewsPage = () => {
+const EditNews = ({ params }: { params: { newsId: number } }) => {
   const router = useRouter();
   function redirectToNews() {
     router.push("/news");
@@ -75,15 +76,10 @@ const AddNewsPage = () => {
     time: Date.now(),
     blocks: [],
   });
+  const [news, setNews] = useState<News>();
 
   const form = useForm<z.infer<typeof Schema>>({
     resolver: zodResolver(Schema),
-    defaultValues: {
-      title: "",
-      description: "",
-      tagIds: [],
-      image: "",
-    },
   });
 
   const {
@@ -142,7 +138,8 @@ const AddNewsPage = () => {
       data.image = imgRes.file;
     }
 
-    const response: Promise<any> = createNewNews({
+    const response: Promise<any> = updateNews({
+      id: params.newsId.toString(),
       title: data.title,
       description: data.description,
       content: content,
@@ -176,23 +173,37 @@ const AddNewsPage = () => {
       toast({
         variant: "success",
         title: "Thành công",
-        description: "Thêm bài báo mới thành công",
+        description: "Chỉnh sửa bài báo mới thành công",
       });
       setImage(null);
 
       redirectToNews();
     }
   };
-  const { currentUser } = useCurrentUser();
-  const canAdd =
-    currentUser &&
-    (includesRoles({ currentUser: currentUser, roleCodes: ["ADMIN"] }) ||
-      includesRoles({ currentUser: currentUser, roleCodes: ["POST"] }));
-  if (!currentUser) {
+  const { data, isLoading, isError, mutate } = getDetailNews(params.newsId);
+  const resetForm = () => {
+    reset({
+      title: data?.title,
+      description: data?.description,
+      tagIds: data?.tags.map((item) => {
+        return { tagId: item.id };
+      }),
+      image: data?.image,
+    });
+    setImage(null);
+  };
+  useEffect(() => {
+    if (data && !data.hasOwnProperty("message")) {
+      resetForm();
+      setNews(data);
+      setContent(data.content);
+    }
+  }, [data]);
+  if (isLoading) {
     return <NewsDetailSkeleton />;
-  } else if (!canAdd) {
-    return <NoRole />;
-  } else
+  } else if (news == undefined) {
+    return <div>Failed to load</div>;
+  } else {
     return (
       <div className="flex flex-col gap-7">
         <h1 className="table___title">Thêm bảng tin mới</h1>
@@ -268,18 +279,25 @@ const AddNewsPage = () => {
                   <span className="w-2/3 font-medium">
                     Hình ảnh <span className="error___message">*</span>
                   </span>
+
                   <Input
                     id="img"
                     type="file"
                     onChange={handleMultipleImage}
                   ></Input>
                   <div>
-                    {image && (
+                    {image && imagePreviews ? (
                       <img
                         src={imagePreviews}
                         alt={`Preview`}
-                        className="h-24 w-auto"
+                        className="h-24 w-auto object-cover"
                       />
+                    ) : (
+                      <img
+                        src={data.image ?? "/no-image.jpg"}
+                        alt="ảnh"
+                        className="h-24 w-auto object-cover"
+                      ></img>
                     )}
                   </div>
                   {errors.image && (
@@ -306,7 +324,7 @@ const AddNewsPage = () => {
               >
                 <div className="flex flex-wrap gap-2 items-center">
                   <LuCheck />
-                  Thêm
+                  Lưu
                 </div>
               </Button>
             </div>
@@ -314,6 +332,7 @@ const AddNewsPage = () => {
         </form>
       </div>
     );
+  }
 };
 
-export default AddNewsPage;
+export default EditNews;

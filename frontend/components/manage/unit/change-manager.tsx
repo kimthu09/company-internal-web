@@ -1,7 +1,6 @@
 "use client";
 import { Employee } from "@/types";
 import { useState } from "react";
-import EmployeeList from "../employee/employee-list";
 import {
   Dialog,
   DialogContent,
@@ -98,7 +97,11 @@ const ChangeManager = ({ unitId }: { unitId: string }) => {
               </div>
             </div>
           ) : null}
-          <EmployeeListUnit value={value} onValueChange={onValueChange} unitId={unitId} />
+          <EmployeeListUnit
+            value={value}
+            onValueChange={onValueChange}
+            unitId={unitId}
+          />
         </div>
         <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
           <div className="flex gap-5 sm:justify-end justify-stretch">

@@ -24,7 +24,7 @@ import {
 import { Button } from "../ui/button";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { stringToDate } from "@/lib/utils";
+import { includesRoles, stringToDate } from "@/lib/utils";
 import DaypickerPopup from "../ui/daypicker-popup";
 import { AiOutlineClose } from "react-icons/ai";
 import ViewMoreLink from "../home/view-more-link";
@@ -36,6 +36,7 @@ import NewsListItem from "./news-list-item";
 import NewsListItemSkeleton from "./news-list-item-skeleton";
 import TagList from "../tags/tag-list";
 import getAllTags from "@/lib/tag/getAllTags";
+import { useCurrentUser } from "@/hooks/use-user";
 type FormValues = {
   filters: {
     type: string;
@@ -125,6 +126,11 @@ const PostPage = () => {
     setOpenFilter(false);
     router.push(`/news?limit=10${stringToFilter}`);
   };
+  const { currentUser } = useCurrentUser();
+  const hasRole =
+    currentUser &&
+    (includesRoles({ currentUser: currentUser, roleCodes: ["ADMIN"] }) ||
+      includesRoles({ currentUser: currentUser, roleCodes: ["POST"] }));
   const [openFilter, setOpenFilter] = useState(false);
   if (isLoading) {
     return <NewsListItemSkeleton number={3} />;
@@ -135,9 +141,11 @@ const PostPage = () => {
     <div>
       <div className="pb-5 mb-7 border-b w-full flex flex-row justify-between items-center">
         <h1 className="table___title">Tất cả bài viết</h1>
-        <Link className="link___primary" href={"/news/add"}>
-          Thêm bài viết
-        </Link>
+        {hasRole && (
+          <Link className="link___primary" href={"/news/add"}>
+            Thêm bài viết
+          </Link>
+        )}
       </div>
       <div className="w-full flex flex-col overflow-x-auto">
         <div className="mb-4 flex gap-3 basis-1/2 flex-wrap">
@@ -174,7 +182,7 @@ const PostPage = () => {
                         </label>
                         <div className=" flex gap-1 items-center">
                           {item.type === "updatedAtFrom" ||
-                            item.type === "updatedAtTo" ? (
+                          item.type === "updatedAtTo" ? (
                             <Controller
                               control={control}
                               name={`filters.${index}.value`}
@@ -336,7 +344,12 @@ const PostPage = () => {
 
         {posts.data.length > 0 ? (
           posts.data.map((item: News) => (
-            <NewsListItem key={item.id} item={item} canDelete={true} onDeleted={onDelete} />
+            <NewsListItem
+              key={item.id}
+              item={item}
+              canDelete={hasRole}
+              onDeleted={onDelete}
+            />
           ))
         ) : (
           <div className="flex justify-center py-20">

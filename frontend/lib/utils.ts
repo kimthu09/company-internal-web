@@ -41,6 +41,34 @@ export const includesRoles = ({
     throw new Error("Có lỗi xảy ra");
   }
 };
+export const includesOneRoles = ({
+  currentUser,
+  roleCodes,
+}: {
+  currentUser:
+    | {
+        name?: string | null | undefined;
+        email?: string | null | undefined;
+        image?: string | null | undefined;
+      }
+    | undefined
+    | Employee;
+  roleCodes: string[];
+}) => {
+  try {
+    const json = JSON.stringify(currentUser);
+    const user = JSON.parse(json);
+    const features = user.unit.features.map((item: any) => item.code);
+    const set1 = new Set(features);
+    if (currentUser && roleCodes.some((item) => set1.has(item))) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    throw new Error("Có lỗi xảy ra");
+  }
+};
 export const isManager = ({
   currentUser,
 }: {

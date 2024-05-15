@@ -4,7 +4,7 @@ import Image from "next/image";
 import { IoPersonOutline } from "react-icons/io5";
 import ConfirmDialog from "../ui/confirm-dialog";
 import { Button } from "../ui/button";
-import { FaTrash } from "react-icons/fa";
+import { FaPen, FaTrash } from "react-icons/fa";
 import { useLoading } from "@/hooks/loading-context";
 import deletePost from "@/lib/post/deletePost";
 import { toast } from "../ui/use-toast";
@@ -95,24 +95,38 @@ const NewsListItem = ({
           <p className="ml-auto">{dateTimeStringFormat(item.updatedAt)}</p>
         </div>
       </div>
-      <ConfirmDialog
-        title={"Xác nhận"}
-        description="Bạn xác nhận muốn xóa bài viết ?"
-        handleYes={() => {
-          onDelete({ id: item.id });
-        }}
-      >
-        <Button
-          title="Xoá bài viết"
-          size={"icon"}
-          variant={"ghost"}
-          className={`rounded-full  text-rose-500 hover:text-rose-600 ${
-            canDelete ? "visible" : "collapse"
-          }`}
-        >
-          <FaTrash />
-        </Button>
-      </ConfirmDialog>
+      {canDelete && (
+        <div className="flex flex-col gap-2">
+          <Link href={`/news/${item.id}/edit`} title="Xoá bài viết">
+            <Button
+              title="Chỉnh sửa bài viết"
+              size={"icon"}
+              variant={"ghost"}
+              className={`rounded-full  text-primary hover:text-hover-accent ${
+                canDelete ? "visible" : "collapse"
+              }`}
+            >
+              <FaPen />
+            </Button>
+          </Link>
+          <ConfirmDialog
+            title={"Xác nhận"}
+            description="Bạn xác nhận muốn xóa bài viết ?"
+            handleYes={() => {
+              onDelete({ id: item.id });
+            }}
+          >
+            <Button
+              title="Xoá bài viết"
+              size={"icon"}
+              variant={"ghost"}
+              className={`rounded-full  text-rose-500 hover:text-rose-600`}
+            >
+              <FaTrash />
+            </Button>
+          </ConfirmDialog>
+        </div>
+      )}
     </div>
   );
 };
