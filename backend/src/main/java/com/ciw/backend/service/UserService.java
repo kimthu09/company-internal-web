@@ -72,6 +72,12 @@ public class UserService {
 							  .name(user.getName())
 							  .email(user.getEmail())
 							  .image(user.getImage())
+							  .phone(user.getPhone())
+							  .email(user.getEmail())
+							  .address(user.getAddress())
+							  .userIdentity(user.getUserIdentity())
+							  .male(user.isMale())
+							  .dob(user.getDob())
 							  .unit(mapToDTO(user.getUnit()))
 							  .build();
 	}
@@ -83,7 +89,7 @@ public class UserService {
 											   .features(getAllFeatureResponses(unit.getUnitFeatures()
 																					.stream()
 																					.map(unitFeature -> unitFeature.getFeature()
-																												.getId())
+																												   .getId())
 																					.toList()))
 											   .managerId(unit.getManagerId())
 											   .build();
