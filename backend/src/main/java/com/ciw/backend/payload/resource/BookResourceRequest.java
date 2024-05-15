@@ -16,14 +16,4 @@ public class BookResourceRequest {
 	@Schema(name = "to")
 	@NotNull(message = Message.Resource.BOOKED_TO_VALIDATE)
 	private CalendarPart to;
-
-	@Schema(
-			name = "note",
-			example = "Ghi chú"
-	)
-	@Length(
-			max = 200,
-			message = Message.Resource.NOTE_VALIDATE
-	)
-	private String note = "";
 }

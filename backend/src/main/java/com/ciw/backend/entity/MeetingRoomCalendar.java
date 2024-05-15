@@ -51,15 +51,6 @@ public class MeetingRoomCalendar {
 	)
 	private MeetingRoom meetingRoom;
 
-	@Column(
-			nullable = false
-	)
-	@Length(
-			min = 1,
-			max = 200
-	)
-	private String note;
-
 	@ManyToOne
 	@JoinColumn(
 			name = "created_by",

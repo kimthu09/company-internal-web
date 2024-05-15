@@ -51,15 +51,6 @@ public class ResourceCalendar {
 	)
 	private Resource resource;
 
-	@Column(
-			nullable = false
-	)
-	@Length(
-			min = 1,
-			max = 200
-	)
-	private String note;
-
 	@ManyToOne
 	@JoinColumn(
 			name = "created_by",
