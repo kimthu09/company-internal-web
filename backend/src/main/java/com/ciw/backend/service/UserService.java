@@ -5,7 +5,7 @@ import com.ciw.backend.entity.Unit;
 import com.ciw.backend.entity.User;
 import com.ciw.backend.exception.AppException;
 import com.ciw.backend.payload.SimpleResponse;
-import com.ciw.backend.payload.feature.FeatureResponse;
+import com.ciw.backend.payload.feature.SimpleFeatureResponse;
 import com.ciw.backend.payload.unit.UnitWithFeatureManagerIdResponse;
 import com.ciw.backend.payload.user.ChangePasswordRequest;
 import com.ciw.backend.payload.user.ProfileResponse;
@@ -19,10 +19,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static com.ciw.backend.service.Common.getFeatureResponse;
 
 
 @RequiredArgsConstructor
@@ -86,16 +82,18 @@ public class UserService {
 		return UnitWithFeatureManagerIdResponse.builder()
 											   .id(unit.getId())
 											   .name(unit.getName())
-											   .features(getAllFeatureResponses(unit.getUnitFeatures()
-																					.stream()
-																					.map(unitFeature -> unitFeature.getFeature()
-																												   .getId())
-																					.toList()))
+											   .features(unit.getUnitFeatures()
+															 .stream()
+															 .map(unitFeature -> SimpleFeatureResponse.builder()
+																									  .id(unitFeature.getFeature()
+																													 .getId())
+																									  .code(unitFeature.getFeature()
+																													   .getCode())
+																									  .name(unitFeature.getFeature()
+																													   .getName())
+																									  .build())
+															 .toList())
 											   .managerId(unit.getManagerId())
 											   .build();
-	}
-
-	private List<FeatureResponse> getAllFeatureResponses(List<Long> featureIds) {
-		return getFeatureResponse(featureIds, true, featureRepository);
 	}
 }

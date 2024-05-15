@@ -235,4 +235,8 @@ public class UnitService {
 	private List<FeatureResponse> getFeatureExcludeAdminResponses(List<Long> featureIds) {
 		return Common.getFeatureResponse(featureIds, false, featureRepository);
 	}
+
+	private List<FeatureResponse> getFeatureIncludeAdminResponses(List<Long> featureIds) {
+		return Common.getFeatureResponse(featureIds, false, featureRepository);
+	}
 }

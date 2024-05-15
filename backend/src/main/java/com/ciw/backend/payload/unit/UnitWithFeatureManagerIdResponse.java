@@ -1,6 +1,6 @@
 package com.ciw.backend.payload.unit;
 
-import com.ciw.backend.payload.feature.FeatureResponse;
+import com.ciw.backend.payload.feature.SimpleFeatureResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +23,7 @@ public class UnitWithFeatureManagerIdResponse {
 	private String name;
 
 	@Schema(name = "features")
-	private List<FeatureResponse> features;
+	private List<SimpleFeatureResponse> features;
 
 	@Schema(name = "managerId")
 	private Long managerId;
