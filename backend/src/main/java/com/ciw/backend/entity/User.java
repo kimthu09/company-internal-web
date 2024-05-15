@@ -22,78 +22,61 @@ import java.util.List;
 		uniqueConstraints = {@UniqueConstraint(
 				columnNames = {"email"},
 				name = "Email"
+		), @UniqueConstraint(
+				columnNames = {"userIdentity"},
+				name = "CCCD"
 		)}
 )
 public class User implements UserDetails {
-	@Getter @Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@Getter @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
 
-	@Column(nullable = false)
-	@Length(
+	@Column(nullable = false) @Length(
 			min = 1,
 			max = 200
-	)
-	private String name;
+	) private String name;
 
 	@Column(
 			unique = true,
 			nullable = false
-	)
-	@Email
-	@NotEmpty
-	private String email;
+	) @Email @NotEmpty private String email;
 
-	@Column(nullable = false)
-	private String password;
+	@Column(nullable = false) private String password;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "unit_id")
-	private Unit unit;
+	@ManyToOne(fetch = FetchType.EAGER) @JoinColumn(name = "unit_id") private Unit unit;
 
 	@Column(
 			nullable = false,
 			columnDefinition = "text"
-	)
-	private String image;
+	) private String image;
 
-	@Column(nullable = false)
-	@Length(
+	@Column(nullable = false) @Length(
 			min = 10,
 			max = 10
-	)
-	private String dob;
+	) private String dob;
 
-	@Column(nullable = false)
-	@Length(
+	@Column(nullable = false) @Length(
 			min = 1,
 			max = 50
-	)
-	private String address;
+	) private String address;
 
-	@Column(nullable = false)
-	@Length(
+	@Column(nullable = false) @Length(
 			min = 10,
 			max = 11
-	)
-	private String phone;
+	) private String phone;
 
-	@Column(nullable = false)
-	@Length(
+	@Column(nullable = false) @Length(
 			min = 12,
 			max = 12
-	)
-	private String userIdentity;
+	) private String userIdentity;
 
-	@Column(nullable = false)
-	private boolean male;
+	@Column(nullable = false) private boolean male;
 
-	@Column(nullable = false)
-	private boolean isDeleted = false;
+	@Column(nullable = false) private boolean isDeleted = false;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		List<SimpleGrantedAuthority> res = unit.getUnitFeatures().stream()
+		List<SimpleGrantedAuthority> res = unit.getUnitFeatures()
+											   .stream()
 											   .map(unitFeature -> new SimpleGrantedAuthority(unitFeature.getFeature()
 																										 .getCode()))
 											   .toList();

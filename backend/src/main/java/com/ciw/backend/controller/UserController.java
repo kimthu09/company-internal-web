@@ -44,7 +44,7 @@ public class UserController {
 		return new ResponseEntity<>(userService.changePassword(request), HttpStatus.OK);
 	}
 
-	@PostMapping("/info")
+	@PutMapping("/info")
 	@SecurityRequirement(
 			name = "Bearer Authentication"
 	)
