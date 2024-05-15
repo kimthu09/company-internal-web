@@ -22,12 +22,14 @@ import ChangeImage from "@/components/manage/employee/change-image";
 import getProfile from "@/lib/profile/getProfile";
 import updateProfile from "@/lib/profile/updateProfile";
 import UnitList from "@/components/manage/unit/unit-list";
+import { useSession } from "next-auth/react";
 
 const FormSchema = z.object({
   phone: z.string().regex(phoneRegex, "Số điện thoại không hợp lệ"),
   address: required,
 });
 const ProfileScreen = () => {
+  const { update } = useSession();
   const { showLoading, hideLoading } = useLoading();
   const [open, setOpen] = useState(false);
   const [readOnly, setReadOnly] = useState(true);
@@ -38,7 +40,6 @@ const ProfileScreen = () => {
   const {
     register,
     handleSubmit,
-    control,
     reset,
     formState: { errors, isDirty },
   } = form;
@@ -91,6 +92,7 @@ const ProfileScreen = () => {
         description: "Chỉnh sửa thông tin thành công",
       });
       mutate();
+      update();
     }
   };
 
@@ -149,6 +151,7 @@ const ProfileScreen = () => {
           description: "Thay đổi ảnh đại diện thành công",
         });
         mutate();
+        update();
       }
     }
   };

@@ -1,12 +1,12 @@
+import { NextResponse } from 'next/server';
+
 export const authConfig = {
   pages: {
-    signIn: "/login",
-    resetPassword: "/reset-password",
+    signIn: "/login"
   },
   providers: [],
   callbacks: {
     jwt({ token, user }) {
-      // console.log(user)
       if (user) {
         token.id = user;
       }
@@ -20,16 +20,18 @@ export const authConfig = {
     },
     async authorized({ auth, request }) {
       const user = auth?.user;
+      console.log("Đang chuyển trang")
+      console.log(user)
 
       const isOnLoginPage = request.nextUrl?.pathname.startsWith("/login");
       const isOnResetPasswordPage =
         request.nextUrl?.pathname.startsWith("/reset-password");
 
       if (user && isOnLoginPage) {
-        return Response.redirect(new URL("/", request.nextUrl));
+        return NextResponse.redirect(new URL("/", request.nextUrl));
       }
       if (user && isOnResetPasswordPage) {
-        return Response.redirect(new URL("/", request.nextUrl));
+        return NextResponse.redirect(new URL("/", request.nextUrl));
       }
 
       if (isOnLoginPage) {
