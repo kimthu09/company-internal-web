@@ -262,7 +262,6 @@ public class ResourceService {
 								   .resource(resource)
 								   .shiftType(cp.getShiftType())
 								   .date(date)
-								   .note(request.getNote())
 								   .build();
 		}).toList();
 
@@ -321,7 +320,6 @@ public class ResourceService {
 									   .id(calendar.getId())
 									   .createdBy(mapToSimpleDTO(calendar.getCreatedBy()))
 									   .resource(mapToDTO(calendar.getResource()))
-									   .note(calendar.getNote())
 									   .build();
 	}
 

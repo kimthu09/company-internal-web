@@ -272,7 +272,6 @@ public class MeetingRoomService {
 									  .meetingRoom(meetingRoom)
 									  .shiftType(cp.getShiftType())
 									  .date(date)
-									  .note(request.getNote())
 									  .build();
 		}).toList();
 
@@ -332,7 +331,6 @@ public class MeetingRoomService {
 										  .id(calendar.getId())
 										  .createdBy(mapToSimpleDTO(calendar.getCreatedBy()))
 										  .meetingRoom(mapToDTO(calendar.getMeetingRoom()))
-										  .note(calendar.getNote())
 										  .build();
 	}
 
