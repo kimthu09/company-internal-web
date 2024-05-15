@@ -5,9 +5,20 @@ import Image from "next/image";
 import { GoBell } from "react-icons/go";
 import getUnseenNumber from "@/lib/notification/getUnseenNumber";
 import Profile from "./home/profile";
-
+import { FaRegBuilding } from "react-icons/fa";
+import getProfile from "@/lib/profile/getProfile";
+import { includesRoles } from "@/lib/utils";
+import { FaRegFileAlt } from "react-icons/fa";
 const Header = () => {
   const { data, mutate, isLoading, isError } = getUnseenNumber();
+  const {
+    data: user,
+    mutate: mutateUser,
+    isLoading: isLoadingUser,
+    isError: isErrorUser,
+  } = getProfile();
+  const canView =
+    user && !includesRoles({ currentUser: user, roleCodes: ["ADMIN"] });
   return (
     <div className="flex z-10 bg-white w-[100%] border-b border-gray-200 px-4 pl-12">
       <div className="flex flex-1 h-[56px] items-center justify-between">
@@ -27,7 +38,30 @@ const Header = () => {
           </Link>
         </div>
         <div className="self-center flex items-center gap-4">
+          {canView && (
+            <Link
+              href={`/manage/unit/${user.unit.id}`}
+              title="Phòng ban của bạn"
+              className="hover:text-primary transition-colors"
+            >
+              <div className="relative">
+                <FaRegBuilding className="w-6 h-6 " />
+              </div>
+            </Link>
+          )}
+          {canView && (
+            <Link
+              href={`/leave`}
+              title="Đơn nghỉ phép của bạn"
+              className="hover:text-primary transition-colors"
+            >
+              <div className="relative">
+                <FaRegFileAlt className="w-6 h-6 " />
+              </div>
+            </Link>
+          )}
           <Link
+            title="Thông báo"
             href={"/notifications"}
             className="hover:text-primary transition-colors"
           >
@@ -41,7 +75,7 @@ const Header = () => {
             </div>
           </Link>
 
-          <Profile />
+          <Profile user={user} />
         </div>
       </div>
     </div>
