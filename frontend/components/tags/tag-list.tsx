@@ -19,6 +19,8 @@ import CreateTag from "./create-tag";
 import { FaPlus } from "react-icons/fa";
 import getAllTags from "@/lib/tag/getAllTags";
 import DropDownSkeleton from "../skeleton/dropdown-skeleton";
+import { useCurrentUser } from "@/hooks/use-user";
+import { includesOneRoles } from "@/lib/utils";
 
 export interface TagListProps {
   checkedTags: Array<number>;
@@ -45,6 +47,7 @@ const TagList = ({
     await mutate();
     onCheckChanged(tagId);
   };
+  const { currentUser } = useCurrentUser();
   if (isError) return <div>Failed to load</div>;
   if (isLoading) {
     return <DropDownSkeleton />;
@@ -93,7 +96,13 @@ const TagList = ({
               </Command>
             </DropdownMenuContent>
           </DropdownMenu>
-          {canAdd && (isEdit === true || isEdit === null) ? (
+          {canAdd &&
+          (isEdit === true || isEdit === null) &&
+          currentUser &&
+          includesOneRoles({
+            currentUser: currentUser,
+            roleCodes: ["ADMIN", "POST"],
+          }) ? (
             <CreateTag handleTagAdded={handleTagAdded}>
               <Button type="button" size={"icon"} className="px-3">
                 <FaPlus />
