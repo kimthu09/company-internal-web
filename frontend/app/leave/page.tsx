@@ -1,5 +1,6 @@
 import LeaveTable from "@/components/leave/table";
 import NotiListSkeleton from "@/components/notification/noti-list-skeleton";
+import { withAuth } from "@/lib/auth/withAuth";
 import React, { Suspense } from "react";
 
 const LeaveScreen = () => {
@@ -12,4 +13,4 @@ const LeaveScreen = () => {
   );
 };
 
-export default LeaveScreen;
+export default withAuth(LeaveScreen, [], ["ADMIN"]);

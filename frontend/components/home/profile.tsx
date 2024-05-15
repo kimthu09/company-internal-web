@@ -1,5 +1,4 @@
 import React from "react";
-import { useCurrentUser } from "@/hooks/use-user";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { useEffect, useState } from "react";
@@ -22,6 +21,8 @@ import axios from "axios";
 import { toast } from "../ui/use-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useLoading } from "@/hooks/loading-context";
+import Link from "next/link";
+import { Employee } from "@/types";
 const PasswordSchema = z
   .object({
     oldPassword: z.string().min(6, "Ít nhất 6 ký tự"),
@@ -32,29 +33,19 @@ const PasswordSchema = z
     message: "Mật khẩu mới không khớp",
     path: ["confirmNewPass"],
   });
-const Profile = () => {
-  const { currentUser } = useCurrentUser();
+const Profile = ({ user }: { user: Employee }) => {
   const [open, setOpen] = useState(false);
   const [openPass, setOpenPass] = useState(false);
 
   const [avatar, setAvatar] = useState("");
   const [name, setName] = useState({ name: "", id: "" });
   useEffect(() => {
-    if (currentUser) {
-      const json = JSON.stringify(currentUser);
-      const user = JSON.parse(json);
-      const image = currentUser.image;
-      if (image) {
-        setAvatar(image);
-      }
+    if (user) {
+      setAvatar(user.image);
 
-      const userName = currentUser.name ?? "";
-      const userId = user.id ?? "";
-      if (name && userId) {
-        setName({ name: userName, id: userId });
-      }
+      setName({ name: user.name, id: user.id.toString() });
     }
-  }, [currentUser]);
+  }, [user]);
   const passForm = useForm<z.infer<typeof PasswordSchema>>({
     resolver: zodResolver(PasswordSchema),
     defaultValues: {
@@ -148,7 +139,9 @@ const Profile = () => {
         </PopoverTrigger>
         <PopoverContent className="w-44 mx-4 flex flex-col gap-2 p-0 py-2">
           <div className="flex flex-col px-4 pt-2">
-            <h1 className="text-lg font-semibold">{name.name}</h1>
+            <Link href={`/profile`}>
+              <h1 className="text-lg font-semibold">{name.name}</h1>
+            </Link>
           </div>
           <Dialog open={openPass} onOpenChange={onOpenPass}>
             <DialogTrigger asChild>

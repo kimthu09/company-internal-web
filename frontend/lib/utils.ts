@@ -1,4 +1,4 @@
-import { ShiftType } from "@/types";
+import { Employee, ShiftType } from "@/types";
 import { type ClassValue, clsx } from "clsx";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
@@ -24,7 +24,8 @@ export const includesRoles = ({
         email?: string | null | undefined;
         image?: string | null | undefined;
       }
-    | undefined;
+    | undefined
+    | Employee;
   roleCodes: string[];
 }) => {
   try {
@@ -69,7 +70,34 @@ export const isManager = ({
     throw new Error("Có lỗi xảy ra");
   }
 };
-
+export const isViewUnit = ({
+  currentUser,
+  unitId,
+}: {
+  currentUser:
+    | {
+        name?: string | null | undefined;
+        email?: string | null | undefined;
+        image?: string | null | undefined;
+      }
+    | undefined;
+  unitId: string;
+}) => {
+  try {
+    if (currentUser) {
+      const json = JSON.stringify(currentUser);
+      const user = JSON.parse(json);
+      if (user.unit.id.toString() === unitId) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return false;
+  } catch (error) {
+    throw new Error("Có lỗi xảy ra");
+  }
+};
 export const stringToDate = (value: string) => {
   try {
     var dateParts = value.split("/");

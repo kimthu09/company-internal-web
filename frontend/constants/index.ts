@@ -31,11 +31,59 @@ export const sidebarItems: SidebarItem[] = [
       { title: "Lịch tài nguyên", href: "/calendar/resources" },
     ],
   },
+];
+export const managerSidebarItems: SidebarItem[] = [
   {
-    title: "Đơn nghỉ phép",
-    href: "/leave",
+    title: "Home",
+    href: "/",
+    icon: FiHome,
+    submenu: false,
+  },
+  {
+    title: "Bảng tin",
+    href: "/news",
+    icon: IoNewspaperOutline,
+    submenu: false,
+  },
+  {
+    title: "Lịch",
+    href: "/calendar",
+    icon: IoCalendarOutline,
+    submenu: true,
+    subMenuItems: [
+      { title: "Lịch phòng họp", href: "/calendar/room" },
+      { title: "Lịch tài nguyên", href: "/calendar/resources" },
+    ],
+  },
+  {
+    title: "Duyệt đơn",
+    href: "/confirm-request",
     icon: SlDocs,
     submenu: false,
+  },
+];
+export const adminSidebarItems: SidebarItem[] = [
+  {
+    title: "Home",
+    href: "/",
+    icon: FiHome,
+    submenu: false,
+  },
+  {
+    title: "Bảng tin",
+    href: "/news",
+    icon: IoNewspaperOutline,
+    submenu: false,
+  },
+  {
+    title: "Lịch",
+    href: "/calendar",
+    icon: IoCalendarOutline,
+    submenu: true,
+    subMenuItems: [
+      { title: "Lịch phòng họp", href: "/calendar/room" },
+      { title: "Lịch tài nguyên", href: "/calendar/resources" },
+    ],
   },
   {
     title: "Duyệt đơn",
@@ -56,6 +104,7 @@ export const sidebarItems: SidebarItem[] = [
     ],
   },
 ];
+
 export const unitLinks: UnitLink[] = [
   {
     value: "info",

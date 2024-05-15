@@ -1,5 +1,6 @@
 import ConfirmList from "@/components/confirm/confirm-list";
 import NotiListSkeleton from "@/components/notification/noti-list-skeleton";
+import { withAuth } from "@/lib/auth/withAuth";
 import { Suspense } from "react";
 
 const ConfirmScreen = () => {
@@ -12,4 +13,4 @@ const ConfirmScreen = () => {
   );
 };
 
-export default ConfirmScreen;
+export default withAuth(ConfirmScreen, ["ADMIN"], undefined, true);

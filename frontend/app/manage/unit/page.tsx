@@ -1,5 +1,6 @@
 import UnitTable from "@/components/manage/unit/table";
 import TableSkeleton from "@/components/skeleton/table-skeleton";
+import { withAuth } from "@/lib/auth/withAuth";
 import Link from "next/link";
 import { Suspense } from "react";
 
@@ -42,4 +43,4 @@ const UnitManage = () => {
   );
 };
 
-export default UnitManage;
+export default withAuth(UnitManage, ["ADMIN"]);

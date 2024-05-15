@@ -10,51 +10,28 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
-import UnitList from "../unit/unit-list";
 import { AiOutlineClose } from "react-icons/ai";
 import { FaPen } from "react-icons/fa";
 import { LuCheck } from "react-icons/lu";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
-import updateEmployee from "@/lib/employee/updateEmployee";
 import { toast } from "@/components/ui/use-toast";
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import ChangeImage from "./change-image";
 import { imageUpload } from "@/lib/employee/uploadImage";
-import DetailSkeleton from "./detail-skeleton";
+import DetailSkeleton from "@/components/manage/employee/detail-skeleton";
+import ChangeImage from "@/components/manage/employee/change-image";
+import getProfile from "@/lib/profile/getProfile";
+import updateProfile from "@/lib/profile/updateProfile";
+import UnitList from "@/components/manage/unit/unit-list";
 
 const FormSchema = z.object({
-  name: required,
   phone: z.string().regex(phoneRegex, "Số điện thoại không hợp lệ"),
   address: required,
-  dob: z.coerce.date({
-    errorMap: (issue, { defaultError }) => ({
-      message:
-        issue.code === "invalid_date" ? "Ngày không hợp lệ" : defaultError,
-    }),
-  }),
-  male: z.boolean(),
-  unit: z
-    .number({ invalid_type_error: "Lựa chọn không hợp lệ" })
-    .min(1, "Vui lòng chọn phòng ban"),
-  userIdentity: z
-    .string()
-    .length(12, "Căn cước công dân phải đủ 12 số")
-    .refine((value) => /^[0-9]+$/.test(value), {
-      message: "Căn cước công dân chỉ chứa số",
-    }),
 });
-const EmployeeEditDetail = ({ params }: { params: { employeeId: string } }) => {
+const ProfileScreen = () => {
   const { showLoading, hideLoading } = useLoading();
   const [open, setOpen] = useState(false);
   const [readOnly, setReadOnly] = useState(true);
-  const {
-    data: employee,
-    isLoading,
-    isError,
-    mutate,
-  } = getEmployee(params.employeeId);
+  const { data: employee, isLoading, isError, mutate } = getProfile();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
@@ -66,17 +43,9 @@ const EmployeeEditDetail = ({ params }: { params: { employeeId: string } }) => {
     formState: { errors, isDirty },
   } = form;
   const resetForm = () => {
-    var dateParts = employee.dob.split("/");
-    var dateObject = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]);
-    console.log(dateObject);
     reset({
-      name: employee.name,
       phone: employee.phone,
       address: employee.address,
-      dob: dateObject,
-      male: employee.male,
-      unit: employee.unit.id,
-      userIdentity: employee.userIdentity,
     });
   };
   useEffect(() => {
@@ -89,15 +58,9 @@ const EmployeeEditDetail = ({ params }: { params: { employeeId: string } }) => {
     console.log(data);
     setReadOnly(true);
     showLoading();
-    const response: Promise<any> = updateEmployee({
-      id: params.employeeId,
+    const response: Promise<any> = updateProfile({
       address: data.address,
       phone: data.phone,
-      name: data.name,
-      male: data.male,
-      unit: data.unit,
-      dob: format(data.dob, "dd/MM/yyyy", { locale: vi }),
-      userIdentity: data.userIdentity,
     });
     const responseData = await response;
     hideLoading();
@@ -125,7 +88,7 @@ const EmployeeEditDetail = ({ params }: { params: { employeeId: string } }) => {
       toast({
         variant: "success",
         title: "Thành công",
-        description: "Chỉnh sửa nhân viên thành công",
+        description: "Chỉnh sửa thông tin thành công",
       });
       mutate();
     }
@@ -167,8 +130,7 @@ const EmployeeEditDetail = ({ params }: { params: { employeeId: string } }) => {
       return;
     } else {
       console.log(imgRes);
-      const response: Promise<any> = updateEmployee({
-        id: params.employeeId,
+      const response: Promise<any> = updateProfile({
         image: imgRes.file,
       });
       const data = await response;
@@ -184,7 +146,7 @@ const EmployeeEditDetail = ({ params }: { params: { employeeId: string } }) => {
         toast({
           variant: "success",
           title: "Thành công",
-          description: "Thay đổi ảnh nhân viên thành công",
+          description: "Thay đổi ảnh đại diện thành công",
         });
         mutate();
       }
@@ -204,38 +166,28 @@ const EmployeeEditDetail = ({ params }: { params: { employeeId: string } }) => {
               className="font-medium md:mt-2 mt-7 text-black"
               htmlFor="name"
             >
-              Tên nhân viên <span className="error___message">*</span>
+              Tên người dùng
             </label>
             <Input
-              readOnly={readOnly}
+              readOnly
+              value={employee.name}
               id="name"
               className=" rounded-full"
-              {...register("name")}
             ></Input>
-            {errors.name && (
-              <span className="error___message ml-3">
-                {errors.name.message}
-              </span>
-            )}
           </div>
           <div>
             <label
               className="font-medium md:mt-2 mt-7 text-black"
               htmlFor="cccd"
             >
-              CCCD <span className="error___message">*</span>
+              CCCD
             </label>
             <Input
-              readOnly={readOnly}
+              readOnly
               id="cccd"
               className=" rounded-full"
-              {...register("userIdentity")}
+              value={employee.userIdentity}
             ></Input>
-            {errors.userIdentity && (
-              <span className="error___message ml-3">
-                {errors.userIdentity.message}
-              </span>
-            )}
           </div>
           <div>
             <label
@@ -261,31 +213,14 @@ const EmployeeEditDetail = ({ params }: { params: { employeeId: string } }) => {
               className="font-medium md:mt-2 mt-7 text-black"
               htmlFor="dob"
             >
-              Ngày sinh <span className="error___message">*</span>
+              Ngày sinh
             </label>
-            <Controller
-              control={control}
-              name="dob"
-              render={({ field }) => (
-                <Input
-                  readOnly={readOnly}
-                  onClick={(e) => e.preventDefault()}
-                  id="dob"
-                  value={
-                    field.value instanceof Date
-                      ? field.value.toISOString().split("T")[0]
-                      : field.value || ""
-                  }
-                  onChange={(e) => field.onChange(e.target.value)}
-                  type="date"
-                  className="col-span-2 rounded-full"
-                ></Input>
-              )}
-            />
-
-            {errors.dob && (
-              <span className="error___message ml-3">{errors.dob.message}</span>
-            )}
+            <Input
+              readOnly
+              id="dob"
+              className="col-span-2 rounded-full"
+              value={employee.dob}
+            ></Input>
           </div>
           <div>
             <label
@@ -311,64 +246,40 @@ const EmployeeEditDetail = ({ params }: { params: { employeeId: string } }) => {
               className="font-medium md:mt-2 mt-7 text-black"
               htmlFor="male"
             >
-              Giới tính <span className="error___message">*</span>
+              Giới tính
             </label>
-            <Controller
-              control={control}
-              name="male"
-              render={({ field }) => (
-                <RadioGroup
-                  disabled={readOnly}
-                  className="flex gap-4"
-                  defaultValue={employee.male ? "true" : "false"}
-                  value={field.value ? "true" : "false"}
-                  onValueChange={(e: string) => field.onChange(e === "true")}
-                >
-                  <div className="flex items-center space-x-1">
-                    <RadioGroupItem value="true" id="r1" />
-                    <label htmlFor="r1" className="font-normal">
-                      Nam
-                    </label>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <RadioGroupItem value="false" id="r2" />
-                    <label className="font-normal" htmlFor="r2">
-                      Nữ
-                    </label>
-                  </div>
-                </RadioGroup>
-              )}
-            />
-            {errors.male && (
-              <span className="error___message ml-3">
-                {errors.male.message}
-              </span>
-            )}
+            <RadioGroup
+              disabled
+              className="flex gap-4"
+              value={employee.male ? "true" : "false"}
+            >
+              <div className="flex items-center space-x-1">
+                <RadioGroupItem value="true" id="r1" />
+                <label htmlFor="r1" className="font-normal">
+                  Nam
+                </label>
+              </div>
+              <div className="flex items-center space-x-1">
+                <RadioGroupItem value="false" id="r2" />
+                <label className="font-normal" htmlFor="r2">
+                  Nữ
+                </label>
+              </div>
+            </RadioGroup>
           </div>
           <div>
             <label
               className="font-medium md:mt-2 mt-7 text-black"
               htmlFor="unit"
             >
-              Phòng ban <span className="error___message">*</span>
+              Phòng ban
             </label>
-            <Controller
-              control={control}
-              name="unit"
-              render={({ field }) => (
-                <UnitList
-                  readonly={readOnly}
-                  isId
-                  unit={field.value}
-                  setUnit={(unit: string | number) => field.onChange(unit)}
-                />
-              )}
-            />
-            {errors.unit && (
-              <span className="error___message ml-3">
-                {errors.unit.message}
-              </span>
-            )}
+            <Input
+              readOnly
+              id="unit"
+              className="col-span-2 rounded-full"
+              value={employee.unit.name}
+            ></Input>
           </div>
           <div className="flex gap-2 justify-end sm:flex-row flex-col">
             <div className="flex gap-2 justify-center">
@@ -387,7 +298,7 @@ const EmployeeEditDetail = ({ params }: { params: { employeeId: string } }) => {
                   </Button>
                   <ConfirmDialog
                     title={"Xác nhận"}
-                    description="Bạn xác nhận chỉnh sửa thông tin nhân viên này ?"
+                    description="Bạn xác nhận chỉnh sửa thông tin ?"
                     handleYes={() => handleSubmit(onSubmit)()}
                   >
                     <Button
@@ -435,4 +346,4 @@ const EmployeeEditDetail = ({ params }: { params: { employeeId: string } }) => {
   }
 };
 
-export default EmployeeEditDetail;
+export default ProfileScreen;

@@ -1,5 +1,6 @@
 import ResourcesTable from "@/components/manage/resource/table";
 import TableSkeleton from "@/components/skeleton/table-skeleton";
+import { withAuth } from "@/lib/auth/withAuth";
 import React, { Suspense } from "react";
 
 const ResourcesManage = () => {
@@ -35,4 +36,4 @@ const ResourcesManage = () => {
   );
 };
 
-export default ResourcesManage;
+export default withAuth(ResourcesManage, ["ADMIN"]);

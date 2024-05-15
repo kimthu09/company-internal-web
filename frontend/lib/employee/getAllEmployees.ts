@@ -56,7 +56,10 @@ export default function getAllEmployees({
   }
   const { data, error, isLoading, mutate } = useSWR(
     `${endpoint}/staff?${encodeString}`,
-    fetcher
+    fetcher,
+    {
+      revalidateOnFocus: true,
+    }
   );
 
   return {
