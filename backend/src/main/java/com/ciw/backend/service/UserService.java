@@ -80,16 +80,16 @@ public class UserService {
 		return UnitWithFeatureManagerIdResponse.builder()
 											   .id(unit.getId())
 											   .name(unit.getName())
-											   .features(getFeatureResponses(unit.getUnitFeatures()
-																				 .stream()
-																				 .map(unitFeature -> unitFeature.getFeature()
+											   .features(getAllFeatureResponses(unit.getUnitFeatures()
+																					.stream()
+																					.map(unitFeature -> unitFeature.getFeature()
 																												.getId())
-																				 .toList()))
+																					.toList()))
 											   .managerId(unit.getManagerId())
 											   .build();
 	}
 
-	private List<FeatureResponse> getFeatureResponses(List<Long> featureIds) {
-		return getFeatureResponse(featureIds, featureRepository);
+	private List<FeatureResponse> getAllFeatureResponses(List<Long> featureIds) {
+		return getFeatureResponse(featureIds, true, featureRepository);
 	}
 }

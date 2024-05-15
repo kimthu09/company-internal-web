@@ -55,8 +55,14 @@ public class Common {
 	}
 
 	public static List<FeatureResponse> getFeatureResponse(List<Long> featureIds,
+														   boolean isIncludeAdmin,
 														   FeatureRepository featureRepository) {
-		List<Feature> features = featureRepository.findAllNotAdmin();
+		List<Feature> features;
+		if (isIncludeAdmin) {
+			features = featureRepository.findAll();
+		} else {
+			features = featureRepository.findAllNotAdmin();
+		}
 
 		List<Long> currFeature = new ArrayList<>();
 		List<FeatureResponse> res = new ArrayList<>();

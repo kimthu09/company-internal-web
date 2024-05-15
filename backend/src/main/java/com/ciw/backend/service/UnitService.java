@@ -90,7 +90,7 @@ public class UnitService {
 	@Transactional
 	public UnitResponse createUnit(CreateUnitRequest request) {
 		Unit unit = mapToEntity(request);
-		List<FeatureResponse> features = getFeatureResponses(request.getFeatures());
+		List<FeatureResponse> features = getFeatureExcludeAdminResponses(request.getFeatures());
 
 		Unit savedUnit = unitRepository.save(unit);
 
@@ -134,7 +134,7 @@ public class UnitService {
 		}
 		Unit savedUnit = unitRepository.save(unit);
 		if (request.getFeatures() != null) {
-			List<FeatureResponse> features = getFeatureResponses(request.getFeatures());
+			List<FeatureResponse> features = getFeatureExcludeAdminResponses(request.getFeatures());
 
 			List<UnitFeature> unitFeatures = getUnitFeatures(savedUnit, features);
 			Set<UnitFeature> existingUnitFeatures = savedUnit.getUnitFeatures();
@@ -214,10 +214,10 @@ public class UnitService {
 	}
 
 	private UnitResponse mapToDTO(Unit unit, List<User> staffs) {
-		return mapToDTO(getFeatureResponses(unit.getUnitFeatures()
-												.stream()
-												.map(unitFeature -> unitFeature.getFeature().getId())
-												.toList()),
+		return mapToDTO(getFeatureExcludeAdminResponses(unit.getUnitFeatures()
+															.stream()
+															.map(unitFeature -> unitFeature.getFeature().getId())
+															.toList()),
 						unit,
 						staffs);
 	}
@@ -232,7 +232,7 @@ public class UnitService {
 								  .build();
 	}
 
-	private List<FeatureResponse> getFeatureResponses(List<Long> featureIds) {
-		return Common.getFeatureResponse(featureIds, featureRepository);
+	private List<FeatureResponse> getFeatureExcludeAdminResponses(List<Long> featureIds) {
+		return Common.getFeatureResponse(featureIds, false, featureRepository);
 	}
 }
