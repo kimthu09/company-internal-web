@@ -2,17 +2,19 @@ import { endpoint } from "@/constants";
 import axios from "axios";
 import { getApiKey } from "../auth/action";
 
-export type Props = {
-  id: string;
-  shifts: {};
+type CreateLeaveProps = {
+  fromDate: string;
+  toDate: string;
+  fromShiftType: string;
+  toShiftType: string;
+  note: string;
 };
-export default async function changeUnitShift({ id, shifts }: Props) {
-  const url = `${endpoint}/unit/${id}/shift`;
-
-  const data = {
-    shifts: shifts,
-  };
-
+export default async function createLeave({
+  data,
+}: {
+  data: CreateLeaveProps;
+}) {
+  const url = `${endpoint}/requestForLeave`;
   const token = await getApiKey();
   const headers = {
     accept: "*/*",
@@ -20,7 +22,6 @@ export default async function changeUnitShift({ id, shifts }: Props) {
     Authorization: `Bearer ${token}`,
     // Add other headers as needed
   };
-
   // Make a POST request with headers
   const res = axios
     .post(url, data, { headers: headers })
@@ -29,6 +30,7 @@ export default async function changeUnitShift({ id, shifts }: Props) {
     })
     .catch((error) => {
       console.error("Error:", error);
+
       return error;
     });
   return res;

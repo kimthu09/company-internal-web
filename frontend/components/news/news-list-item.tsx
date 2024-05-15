@@ -68,7 +68,7 @@ const NewsListItem = ({
         width={450}
         height={300}
       />
-      <div className="flex flex-col gap-3 self-center w-full ">
+      <div className="flex flex-col gap-3 self-center flex-1">
         <div className="flex flex-row flex-wrap gap-3">
           {item.tags.map((tag) => (
             <h2

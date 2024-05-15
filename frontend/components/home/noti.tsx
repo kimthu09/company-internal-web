@@ -17,7 +17,7 @@ const Noti = () => {
   } else if (isError || notifications.hasOwnProperty("message")) {
     return <div>Failed to load</div>;
   }
-  return (
+  return notifications.data.length > 0 ? (
     <div className="p-7 rounded-2xl bg-white card-shadow xl:min-w-[24rem]">
       <h1 className="pb-5 border-b text-xl font-bold">Thông báo</h1>
       {notifications.data.slice(0, 2).map((item: Notification, idx: number) => (
@@ -37,7 +37,7 @@ const Noti = () => {
       ))}
       <ViewMoreLink href="/notifications" />
     </div>
-  );
+  ) : null;
 };
 
 export default Noti;

@@ -14,6 +14,61 @@ export const shiftTypeToString = (value: ShiftType | string) => {
     return "Chiều";
   }
 };
+export const includesRoles = ({
+  currentUser,
+  roleCodes,
+}: {
+  currentUser:
+    | {
+        name?: string | null | undefined;
+        email?: string | null | undefined;
+        image?: string | null | undefined;
+      }
+    | undefined;
+  roleCodes: string[];
+}) => {
+  try {
+    const json = JSON.stringify(currentUser);
+    const user = JSON.parse(json);
+    const features = user.unit.features.map((item: any) => item.code);
+    if (currentUser && roleCodes.every((item) => features.includes(item))) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    throw new Error("Có lỗi xảy ra");
+  }
+};
+export const isManager = ({
+  currentUser,
+}: {
+  currentUser:
+    | {
+        name?: string | null | undefined;
+        email?: string | null | undefined;
+        image?: string | null | undefined;
+      }
+    | undefined;
+}) => {
+  try {
+    if (currentUser) {
+      const json = JSON.stringify(currentUser);
+      const user = JSON.parse(json);
+      if (
+        user.unit.managerId &&
+        user.id.toString() === user.unit.managerId.toString()
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return false;
+  } catch (error) {
+    throw new Error("Có lỗi xảy ra");
+  }
+};
 
 export const stringToDate = (value: string) => {
   try {

@@ -21,7 +21,10 @@ const SmallNews = () => {
     return <div>Failed to load</div>;
   }
   return posts.data.map((item: News) => (
-    <div className="rounded-xl card-shadow overflow-clip bg-white flex-1 group">
+    <div
+      key={item.id}
+      className="rounded-xl card-shadow overflow-clip bg-white flex-1 group"
+    >
       <Image
         className="object-cover w-full aspect-[3/2]"
         src={item.image}
