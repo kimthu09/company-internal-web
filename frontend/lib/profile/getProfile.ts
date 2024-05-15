@@ -1,27 +1,36 @@
 import { endpoint } from "@/constants";
+import { Employee } from "@/types";
 import axios from "axios";
+import useSWR from "swr";
 import { getApiKey } from "../auth/action";
 
-export default async function getProfile() {
-  const url = `${endpoint}/resource`;
+const fetcher = async (url: string) => {
   const token = await getApiKey();
-  const headers = {
-    accept: "*/*",
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-    // Add other headers as needed
-  };
-
-  // Make a POST request with headers
-  const res = axios
-    .get(url, { headers: headers })
-    .then((response) => {
-      if (response) return response.data;
+  return axios
+    .get(url, {
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((res) => {
+      return res.data;
     })
     .catch((error) => {
       console.error("Error:", error);
-
-      return error;
+      return error.response.data;
     });
-  return res;
+};
+export default function getProfile() {
+  const { data, error, isLoading, mutate } = useSWR(
+    `${endpoint}/user`,
+    fetcher
+  );
+
+  return {
+    data: data as Employee,
+    isLoading,
+    isError: error,
+    mutate: mutate,
+  };
 }

@@ -38,6 +38,12 @@ const FormSchema = z.object({
   unit: z
     .number({ invalid_type_error: "Lựa chọn không hợp lệ" })
     .min(1, "Vui lòng chọn phòng ban"),
+  userIdentity: z
+    .string()
+    .length(12, "Căn cước công dân phải đủ 12 số")
+    .refine((value) => /^[0-9]+$/.test(value), {
+      message: "Căn cước công dân chỉ chứa số",
+    }),
 });
 const EmployeeEditDetail = ({ params }: { params: { employeeId: string } }) => {
   const { showLoading, hideLoading } = useLoading();
@@ -70,6 +76,7 @@ const EmployeeEditDetail = ({ params }: { params: { employeeId: string } }) => {
       dob: dateObject,
       male: employee.male,
       unit: employee.unit.id,
+      userIdentity: employee.userIdentity,
     });
   };
   useEffect(() => {
@@ -90,6 +97,7 @@ const EmployeeEditDetail = ({ params }: { params: { employeeId: string } }) => {
       male: data.male,
       unit: data.unit,
       dob: format(data.dob, "dd/MM/yyyy", { locale: vi }),
+      userIdentity: data.userIdentity,
     });
     const responseData = await response;
     hideLoading();
@@ -207,6 +215,25 @@ const EmployeeEditDetail = ({ params }: { params: { employeeId: string } }) => {
             {errors.name && (
               <span className="error___message ml-3">
                 {errors.name.message}
+              </span>
+            )}
+          </div>
+          <div>
+            <label
+              className="font-medium md:mt-2 mt-7 text-black"
+              htmlFor="cccd"
+            >
+              CCCD <span className="error___message">*</span>
+            </label>
+            <Input
+              readOnly={readOnly}
+              id="cccd"
+              className=" rounded-full"
+              {...register("userIdentity")}
+            ></Input>
+            {errors.userIdentity && (
+              <span className="error___message ml-3">
+                {errors.userIdentity.message}
               </span>
             )}
           </div>
