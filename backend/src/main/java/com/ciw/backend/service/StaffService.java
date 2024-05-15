@@ -61,6 +61,9 @@ public class StaffService {
 	@Transactional
 	public StaffResponse updateStaff(Long userId, UpdateStaffRequest request) {
 		User user = Common.findUserById(userId, userRepository);
+		if (user.getEmail().equals(ApplicationConst.ADMIN_EMAIL)) {
+			throw new AppException(HttpStatus.BAD_REQUEST, Message.User.CAN_NOT_REACH_ADMIN);
+		}
 
 		Common.updateIfNotNull(request.getName(), user::setName);
 		Common.updateIfNotNull(request.getPhone(), user::setPhone);
@@ -100,13 +103,7 @@ public class StaffService {
 	@Transactional
 	public SimpleResponse deleteStaff(Long userId) {
 		User user = Common.findUserById(userId, userRepository);
-
-		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		String email = userDetails.getUsername();
-
-		if (user.getEmail().equals(email)) {
-			throw new AppException(HttpStatus.BAD_REQUEST, Message.User.CAN_NOT_DELETE_YOURSELF);
-		} else if (user.getEmail().equals(ApplicationConst.ADMIN_EMAIL)) {
+		if (user.getEmail().equals(ApplicationConst.ADMIN_EMAIL)) {
 			throw new AppException(HttpStatus.BAD_REQUEST, Message.User.CAN_NOT_DELETE_ADMIN);
 		}
 
@@ -117,9 +114,8 @@ public class StaffService {
 		return new SimpleResponse();
 	}
 
-
 	@Transactional
-	public ListResponse<StaffResponse, StaffFilter> getUsers(AppPageRequest page, StaffFilter filter) {
+	public ListResponse<StaffResponse, StaffFilter> getListUsers(AppPageRequest page, StaffFilter filter) {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String email = userDetails.getUsername();
 
@@ -128,8 +124,19 @@ public class StaffService {
 										   Sort.by(Sort.Direction.DESC, "name"));
 		Specification<User> spec = filterStaffs(filter);
 
-		Page<User> userPage = userRepository.findAllNotDeletedAndNotYourself(spec, pageable, email);
+		Page<User> userPage;
+		if (email.equals(ApplicationConst.ADMIN_EMAIL)) {
+			userPage = userRepository.findAllNotDeletedAndNotAdmin(spec, pageable);
+		} else {
+			userPage = userRepository.findAll(spec, pageable);
+		}
 
+		return getListResponseFromPage(userPage, page, filter);
+	}
+
+	private ListResponse<StaffResponse, StaffFilter> getListResponseFromPage(Page<User> userPage,
+																			 AppPageRequest page,
+																			 StaffFilter filter) {
 		List<User> users = userPage.getContent();
 
 		List<StaffResponse> data = users.stream().map(this::mapToDTO).toList();
@@ -146,9 +153,25 @@ public class StaffService {
 						   .build();
 	}
 
+
+	@Transactional
+	public ListResponse<StaffResponse, StaffFilter> getUsers(AppPageRequest page, StaffFilter filter) {
+		Pageable pageable = PageRequest.of(page.getPage() - 1,
+										   page.getLimit(),
+										   Sort.by(Sort.Direction.DESC, "name"));
+		Specification<User> spec = filterStaffs(filter);
+
+		Page<User> userPage = userRepository.findAllNotDeletedAndNotAdmin(spec, pageable);
+
+		return getListResponseFromPage(userPage, page, filter);
+	}
+
 	@Transactional
 	public StaffResponse getUser(Long id) {
 		User user = Common.findUserById(id, userRepository);
+		if (user.getEmail().equals(ApplicationConst.ADMIN_EMAIL)) {
+			throw new AppException(HttpStatus.BAD_REQUEST, Message.User.CAN_NOT_REACH_ADMIN);
+		}
 
 		return mapToDTO(user);
 	}

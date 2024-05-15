@@ -32,7 +32,8 @@ public class FeatureController {
 	)
 	@Operation(
 			summary = "Fetch all features",
-			description = "Fetch all features from database"
+			description = "Note:\n" +
+						  "- Get all feature except ADMIN feature"
 	)
 	@ApiResponse(
 			responseCode = "200",

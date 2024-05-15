@@ -30,6 +30,7 @@ public class Message {
 		public static final String OLD_PASSWORD_NOT_CORRECT = "Mật khẩu cũ không khớp";
 		public static final String CAN_NOT_DELETE_YOURSELF = "Bạn không thể xóa chính mình";
 		public static final String CAN_NOT_DELETE_ADMIN = "Bạn không thể xóa tài khoản admin";
+		public static final String CAN_NOT_REACH_ADMIN = "Bạn đang truy cập đến tài khoản tối mật. Xin hãy ngùng lại";
 	}
 
 	public static class Page {
@@ -56,11 +57,12 @@ public class Message {
 		public static final String UNIT_NAME_FILTER_VALIDATE = "Tên phòng ban không được quá 100 ký tự";
 		public static final String UNIT_NOT_EXIST = "Phòng ban không tồn tại";
 		public static final String UNIT_MANAGER_EXIST = "Nhân viên đã là trưởng phòng của phòng ban khác";
-		public static final String UNIT_MANAGER_NOTEXIST = "Trưởng phòng là nhân viên không tồn tại";
 		public static final String UNIT_STILL_HAVE_STAFFS_CAN_NOT_DELETE
 				= "Phòng ban vẫn còn nhân viên. Xin hãy xóa hết nhân viên rồi thử lại";
-
-
+		public static final String ADMIN_UNIT_CAN_NOT_BE_INCLUDED
+				= "Bạn đang cố truy cập phòng ban tối mật. Xin hãy ngừng lại.";
+		public static final String ADMIN_FEATURE_CAN_NOT_BE_INCLUDED
+				= "Bạn đang cố truy cập quyền tối mật. Xin hãy ngừng lại.";
 	}
 
 	public static class Feature {

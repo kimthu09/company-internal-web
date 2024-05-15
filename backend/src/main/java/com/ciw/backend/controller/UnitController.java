@@ -33,7 +33,8 @@ public class UnitController {
 	)
 	@Operation(
 			summary = "Fetch units",
-			description = "Fetch units from database by filter and paging"
+			description = "Note:\n" +
+						  "- Fetch all unit except admin unit"
 	)
 	@ApiResponse(
 			responseCode = "200",
@@ -51,7 +52,8 @@ public class UnitController {
 	)
 	@Operation(
 			summary = "Fetch detail unit",
-			description = "Fetch detail unit from database"
+			description = "Note:\n" +
+						  "- Can not reach admin unit"
 	)
 	@ApiResponse(
 			responseCode = "200",
@@ -67,7 +69,8 @@ public class UnitController {
 	)
 	@Operation(
 			summary = "Create unit",
-			description = "Create new unit"
+			description = "Note:\n" +
+						  "- Can not create unit with ADMIN feature"
 	)
 	@ApiResponse(
 			responseCode = "201",
@@ -86,7 +89,9 @@ public class UnitController {
 	)
 	@Operation(
 			summary = "Update unit",
-			description = "Update unit"
+			description = "Note:\n" +
+						  "- Can not reach admin unit\n" +
+						  "- Can not make unit has feature ADMIN"
 	)
 	@ApiResponse(
 			responseCode = "200",
@@ -106,7 +111,8 @@ public class UnitController {
 	)
 	@Operation(
 			summary = "Delete unit",
-			description = "Delete one unit"
+			description = "Note:\n" +
+						  "- Can not reach admin unit"
 	)
 	@ApiResponse(
 			responseCode = "200",

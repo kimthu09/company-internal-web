@@ -56,7 +56,7 @@ public class Common {
 
 	public static List<FeatureResponse> getFeatureResponse(List<Long> featureIds,
 														   FeatureRepository featureRepository) {
-		List<Feature> features = featureRepository.findAll();
+		List<Feature> features = featureRepository.findAllNotAdmin();
 
 		List<Long> currFeature = new ArrayList<>();
 		List<FeatureResponse> res = new ArrayList<>();
