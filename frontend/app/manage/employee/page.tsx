@@ -1,9 +1,10 @@
 import EmployeeTable from "@/components/manage/employee/table";
 import TableSkeleton from "@/components/skeleton/table-skeleton";
+import { withAuth } from "@/lib/auth/withAuth";
 import Link from "next/link";
 import React, { Suspense } from "react";
 
-const EmployeeManage = async () => {
+const EmployeeManage = () => {
   return (
     <div className="card___style">
       <div className="pb-5 mb-7 border-b w-full flex flex-row justify-between items-center">
@@ -42,4 +43,4 @@ const EmployeeManage = async () => {
   );
 };
 
-export default EmployeeManage;
+export default withAuth(EmployeeManage, ["ADMIN"]);

@@ -17,7 +17,6 @@ export const useCurrentUser = () => {
       try {
         const user = await getUser();
 
-        console.log(user);
         setCurrentUser(user);
       } catch (error) {
         console.error("Error fetching user data:", error);

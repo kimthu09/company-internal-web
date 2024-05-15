@@ -1,15 +1,28 @@
 "use client";
-import Link from "next/link";
 import getUnit from "@/lib/unit/getUnit";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FaPhoneAlt } from "react-icons/fa";
 import { TbMailFilled } from "react-icons/tb";
 import UnitEmployeeSkeleton from "@/components/manage/unit/unit-employee-skeleton";
 import UnitTitleLinks from "@/components/manage/unit/unit-title-links";
+import { useCurrentUser } from "@/hooks/use-user";
+import { includesRoles, isViewUnit } from "@/lib/utils";
+import NoRole from "@/components/no-role";
 const UnitEmployee = ({ params }: { params: { unitId: string } }) => {
   const { data, isLoading, isError, mutate } = getUnit(params.unitId);
-  if (isLoading) return <UnitEmployeeSkeleton />;
-  else if (isError) return <div>Failed to load</div>;
+  const { currentUser } = useCurrentUser();
+  const canView =
+    !currentUser ||
+    (currentUser &&
+      (includesRoles({
+        currentUser: currentUser,
+        roleCodes: ["ADMIN"],
+      }) ||
+        isViewUnit({ currentUser: currentUser, unitId: params.unitId })));
+  if (isLoading || !currentUser) return <UnitEmployeeSkeleton />;
+  else if (!canView) {
+    return <NoRole />;
+  } else if (isError) return <div>Failed to load</div>;
   else
     return (
       <div className="card___style flex flex-col">
