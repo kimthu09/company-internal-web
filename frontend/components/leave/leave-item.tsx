@@ -30,7 +30,17 @@ const LeaveItem = ({
         </span>
         <span className="font-light ">{item.note}</span>
         <div className="flex gap-1 items-center text-sm text-gray-text">
-          <span className=" rounded-full px-3 py-[0.4rem]  outline-none text-xs bg-green-primary text-white whitespace-nowrap uppercase ">
+          <span
+            className={`rounded-full px-3 py-[0.4rem]  outline-none text-xs  text-white whitespace-nowrap uppercase ${
+              item.approvedBy
+                ? "bg-green-primary/90"
+                : item.acceptedBy
+                ? "bg-blue-primary/80"
+                : item.rejectedBy
+                ? "bg-rose-400"
+                : "bg-primary"
+            }`}
+          >
             {item.approvedBy
               ? "Đã duyệt"
               : item.acceptedBy
