@@ -5,15 +5,11 @@ public class Message {
 	public static final String EMAIL_VALIDATE = "Email không đúng định dạng";
 	public static final String USER_NOT_LOGIN = "Xin vui lòng đăng nhập để sử dụng chức năng";
 	public static final String USER_NOT_HAVE_FEATURE = "Bạn không có quyền sử dụng chức năng này";
-	public static final String CAN_NOT_SEND_EMAIL = "Không thể gửi mail cho người dùng";
 	public static final String TOKEN_NOT_EXIST = "Token không tồn tại. Xin vui lòng kiểm tra lại email";
 	public static final String TOKEN_EXPIRED = "Token đã hết hạn. Xin vui lòng điền lại form quên mật khẩu";
 	public static final String COMMON_ERR = "Đã có lỗi xảy ra. Xin hãy thử lại sau";
 	public static final String JSON_ERR = "JSON không đúng định dạng";
-	public static final String TIME_INVALID_FORMAT_YYYY_MM_DD_HH_mm_ss
-			= "Thời gian cần có định dạng yyyy-MM-dd HH:mm:ss";
 	public static final String TIME_INVALID_FORMAT_DD_MM_YYYY = "Thời gian cần có định dạng dd/MM/yyyy";
-	public static final String IMAGE_INVALID_FORMAT = "ĐỊnh dạng ảnh không hợp lệ";
 
 	public static class User {
 		public static final String USER_IS_DELETED = "Người dùng đã bị xóa khỏi hệ thống";
@@ -28,7 +24,6 @@ public class Message {
 		public static final String NAME_FILTER_VALIDATE = "Tên người dùng không được quá 200 ký tự";
 		public static final String PHONE_FILTER_VALIDATE = "Số điện thoại người dùng không được quá 11 ký tự";
 		public static final String OLD_PASSWORD_NOT_CORRECT = "Mật khẩu cũ không khớp";
-		public static final String CAN_NOT_DELETE_YOURSELF = "Bạn không thể xóa chính mình";
 		public static final String CAN_NOT_DELETE_ADMIN = "Bạn không thể xóa tài khoản admin";
 		public static final String CAN_NOT_REACH_ADMIN = "Bạn đang truy cập đến tài khoản tối mật. Xin hãy ngùng lại";
 	}
@@ -61,8 +56,6 @@ public class Message {
 				= "Phòng ban vẫn còn nhân viên. Xin hãy xóa hết nhân viên rồi thử lại";
 		public static final String ADMIN_UNIT_CAN_NOT_BE_INCLUDED
 				= "Bạn đang cố truy cập phòng ban tối mật. Xin hãy ngừng lại.";
-		public static final String ADMIN_FEATURE_CAN_NOT_BE_INCLUDED
-				= "Bạn đang cố truy cập quyền tối mật. Xin hãy ngừng lại.";
 	}
 
 	public static class Feature {
@@ -83,13 +76,11 @@ public class Message {
 				= "Tên phòng họp không được trống, tối thiểu 1 ký tự và tối đa 50 ký tự";
 		public static final String LOCATION_VALIDATE = "Vị trí phòng họp phải tối thiểu 1 ký tự và tối đa 50 ký tự";
 		public static final String MEETING_ROOM_NOT_EXIST = "Phòng họp không tồn tại";
-		public static final String BOOKED_BY_CAN_NOT_BE_NULL = "Người đặt lịch không được để trống";
 		public static final String BOOKED_FROM_VALIDATE = "Cần phải cung cấp thời điểm bắt đầu";
 		public static final String BOOKED_TO_VALIDATE = "Cần phải cung cấp thời điểm kết thúc";
 		public static final String BOOK_EMPTY = "Không có lịch đặt tương ứng";
 		public static final String CAN_NOT_DELETE_BOOKED = "Không thể xóa phòng họp đang được đặt lịch";
 		public static final String MISSING_DATE = "Không thể bỏ trống ngày";
-		public static final String NOTE_VALIDATE = "Ghi chú tối đa 200 ký tự";
 	}
 
 	public static class Calendar {
@@ -103,25 +94,16 @@ public class Message {
 		public static final String NAME_VALIDATE
 				= "Tên tài nguyên không được trống, tối thiểu 1 ký tự và tối đa 50 ký tự";
 		public static final String RESOURCE_NOT_EXIST = "Tài nguyên không tồn tại";
-		public static final String BOOKED_BY_CAN_NOT_BE_NULL = "Người đặt lịch không được để trống";
 		public static final String BOOKED_FROM_VALIDATE = "Cần phải cung cấp thời điểm bắt đầu";
 		public static final String BOOKED_TO_VALIDATE = "Cần phải cung cấp thời điểm kết thúc";
 		public static final String BOOK_EMPTY = "Không có lịch đặt tương ứng";
 		public static final String CAN_NOT_DELETE_BOOKED = "Không thể xóa tài nguyên đang được đặt lịch";
 		public static final String MISSING_DATE = "Không thể bỏ trống ngày";
-		public static final String NOTE_VALIDATE = "Ghi chú tối đa 200 ký tự";
-	}
-
-	public static class UnitShift {
-		public static final String NEED_TO_HAVE_SHIFT_INFORMATION = "Thông tin làm việc không được để trống";
-		public static final String FROM_VALIDATE = "Cần phải cung cấp thời điểm bắt đầu";
-		public static final String TO_VALIDATE = "Cần phải cung cấp thời điểm kết thúc";
 	}
 
 	public static class Notification {
 		public static final String TITLE_VALIDATE = "Tiêu đề bài viết không được để trống và có tối đa 100 ký tự";
 		public static final String DESCRIPTION_VALIDATE = "Mô tả bài viết có tối đa 200 ký tự";
-		public static final String RECEIVERS_VALIDATE = "Phải có ít nhất 1 người nhận";
 		public static final String NOTIFICATION_NOT_EXIST = "Thông báo không tồn tại";
 		public static final String CAN_NOT_READ_OTHER_S_NOTIFICATION = "Không thể đọc thông báo của người khác";
 	}
@@ -129,7 +111,6 @@ public class Message {
 	public static class RequestForLeave {
 		public static final String NOTE_VALIDATE = "Ghi chú tối đa 200 ký tự";
 		public static final String REQUEST_NOT_EXIST = "Không tồn tại đơn xin nghỉ việc";
-		public static final String REQUEST_HAS_BEEN_DELETED = "Đơn nghỉ việc đã được xóa";
 		public static final String REQUEST_ALREADY_HAS_BEEN_APPROVED = "Đơn nghỉ việc đã được chấp nhận rồi";
 		public static final String REQUEST_ALREADY_HAS_BEEN_REJECTED = "Đơn nghỉ việc đã được từ chối rồi";
 		public static final String REQUEST_CAN_ONLY_DELETED_BY_CREATOR

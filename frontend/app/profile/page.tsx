@@ -5,10 +5,9 @@ import { Input } from "@/components/ui/input";
 import { RadioGroupItem, RadioGroup } from "@/components/ui/radio-group";
 import { phoneRegex, required } from "@/constants";
 import { useLoading } from "@/hooks/loading-context";
-import getEmployee from "@/lib/employee/getEmployee";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { AiOutlineClose } from "react-icons/ai";
 import { FaPen } from "react-icons/fa";
@@ -21,15 +20,12 @@ import DetailSkeleton from "@/components/manage/employee/detail-skeleton";
 import ChangeImage from "@/components/manage/employee/change-image";
 import getProfile from "@/lib/profile/getProfile";
 import updateProfile from "@/lib/profile/updateProfile";
-import UnitList from "@/components/manage/unit/unit-list";
-import { useSession } from "next-auth/react";
 
 const FormSchema = z.object({
   phone: z.string().regex(phoneRegex, "Số điện thoại không hợp lệ"),
   address: required,
 });
 const ProfileScreen = () => {
-  const { update } = useSession();
   const { showLoading, hideLoading } = useLoading();
   const [open, setOpen] = useState(false);
   const [readOnly, setReadOnly] = useState(true);
@@ -92,7 +88,6 @@ const ProfileScreen = () => {
         description: "Chỉnh sửa thông tin thành công",
       });
       mutate();
-      update();
     }
   };
 
@@ -151,7 +146,6 @@ const ProfileScreen = () => {
           description: "Thay đổi ảnh đại diện thành công",
         });
         mutate();
-        update();
       }
     }
   };
@@ -175,7 +169,7 @@ const ProfileScreen = () => {
               readOnly
               value={employee.name}
               id="name"
-              className=" rounded-full"
+              className=" rounded-full bg-gray-100"
             ></Input>
           </div>
           <div>
@@ -188,7 +182,7 @@ const ProfileScreen = () => {
             <Input
               readOnly
               id="cccd"
-              className=" rounded-full"
+              className=" rounded-full bg-gray-100"
               value={employee.userIdentity}
             ></Input>
           </div>
@@ -221,7 +215,7 @@ const ProfileScreen = () => {
             <Input
               readOnly
               id="dob"
-              className="col-span-2 rounded-full"
+              className="col-span-2 rounded-full bg-gray-100"
               value={employee.dob}
             ></Input>
           </div>
@@ -257,13 +251,21 @@ const ProfileScreen = () => {
               value={employee.male ? "true" : "false"}
             >
               <div className="flex items-center space-x-1">
-                <RadioGroupItem value="true" id="r1" />
+                <RadioGroupItem
+                  value="true"
+                  id="r1"
+                  className="text-gray-500 border-gray-500"
+                />
                 <label htmlFor="r1" className="font-normal">
                   Nam
                 </label>
               </div>
               <div className="flex items-center space-x-1">
-                <RadioGroupItem value="false" id="r2" />
+                <RadioGroupItem
+                  value="false"
+                  id="r2"
+                  className="text-gray-500 border-gray-500"
+                />
                 <label className="font-normal" htmlFor="r2">
                   Nữ
                 </label>
@@ -280,7 +282,7 @@ const ProfileScreen = () => {
             <Input
               readOnly
               id="unit"
-              className="col-span-2 rounded-full"
+              className="col-span-2 rounded-full bg-gray-100"
               value={employee.unit.name}
             ></Input>
           </div>

@@ -3,7 +3,6 @@ package com.ciw.backend.entity;
 import com.ciw.backend.payload.calendar.ShiftType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 

@@ -2,7 +2,10 @@ package com.ciw.backend.service;
 
 import com.ciw.backend.constants.ApplicationConst;
 import com.ciw.backend.constants.Message;
-import com.ciw.backend.entity.*;
+import com.ciw.backend.entity.Feature;
+import com.ciw.backend.entity.Unit;
+import com.ciw.backend.entity.UnitFeature;
+import com.ciw.backend.entity.User;
 import com.ciw.backend.exception.AppException;
 import com.ciw.backend.payload.ListResponse;
 import com.ciw.backend.payload.SimpleResponse;
@@ -11,7 +14,10 @@ import com.ciw.backend.payload.page.AppPageRequest;
 import com.ciw.backend.payload.page.AppPageResponse;
 import com.ciw.backend.payload.staff.SimpleStaffResponse;
 import com.ciw.backend.payload.unit.*;
-import com.ciw.backend.repository.*;
+import com.ciw.backend.repository.FeatureRepository;
+import com.ciw.backend.repository.UnitFeatureRepository;
+import com.ciw.backend.repository.UnitRepository;
+import com.ciw.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,8 +40,6 @@ public class UnitService {
 	private final UserRepository userRepository;
 	private final FeatureRepository featureRepository;
 	private final UnitFeatureRepository unitFeatureRepository;
-	private final UnitShiftRepository unitShiftRepository;
-	private final UnitShiftAbsentRepository unitShiftAbsentRepository;
 
 	@Transactional
 	public ListResponse<UnitWithManagerNumStaffResponse, UnitFilter> getUnits(AppPageRequest page, UnitFilter filter) {
@@ -155,12 +159,6 @@ public class UnitService {
 		if (unit.getNumberStaffs() > 0) {
 			throw new AppException(HttpStatus.BAD_REQUEST, Message.Unit.UNIT_STILL_HAVE_STAFFS_CAN_NOT_DELETE);
 		}
-
-		List<UnitShift> unitShifts = unitShiftRepository.findByUnitId(unitId);
-		unitShiftRepository.deleteAll(unitShifts);
-
-		List<UnitShiftAbsent> unitShiftAbsents = unitShiftAbsentRepository.findByUnitId(unitId);
-		unitShiftAbsentRepository.deleteAll(unitShiftAbsents);
 
 		unitRepository.delete(unit);
 

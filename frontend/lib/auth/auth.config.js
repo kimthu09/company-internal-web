@@ -20,8 +20,6 @@ export const authConfig = {
     },
     async authorized({ auth, request }) {
       const user = auth?.user;
-      console.log("Đang chuyển trang")
-      console.log(user)
 
       const isOnLoginPage = request.nextUrl?.pathname.startsWith("/login");
       const isOnResetPasswordPage =

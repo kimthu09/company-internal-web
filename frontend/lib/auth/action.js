@@ -8,8 +8,6 @@ export const login = async (props) => {
   try {
     await signIn("credentials", { email, password });
   } catch (err) {
-    console.log(err);
-
     if (err.message.includes("CredentialsSignin")) {
       return { error: "Invalid username or password" };
     }

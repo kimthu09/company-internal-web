@@ -27,7 +27,7 @@ public class BirthdayCongratsService {
 	private static Map<String, Object> generateFirstContent(int month, int year) {
 		Map<String, Object> dataMap = new HashMap<>();
 		dataMap.put("text",
-					String.format("<b>Chúc mừng sinh nhật</b> tới nhân viên sinh vào <b>tháng %s năm %s</b>!",
+					String.format("<b>Chúc mừng sinh nhật</b> tới nhân viên sinh nhật vào <b>tháng %s năm %s</b>!",
 								  month,
 								  year));
 

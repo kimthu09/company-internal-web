@@ -265,9 +265,7 @@ const AddNewsPage = () => {
                   )}
                 </div>
                 <div>
-                  <span className="w-2/3 font-medium">
-                    Hình ảnh <span className="error___message">*</span>
-                  </span>
+                  <span className="w-2/3 font-medium">Hình ảnh</span>
                   <Input
                     id="img"
                     type="file"
