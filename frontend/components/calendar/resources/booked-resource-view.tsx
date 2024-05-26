@@ -32,8 +32,9 @@ import { Input } from "@/components/ui/input";
 import { AiOutlineClose } from "react-icons/ai";
 import ResourceList from "@/components/manage/resource/resource-list";
 import BookingItemList, { BookingProps } from "./booking-item";
-import { stringToDate } from "@/lib/utils";
+import { includesRoles, stringToDate } from "@/lib/utils";
 import StaffList from "@/components/manage/employee/staff-filter-list";
+import { useCurrentUser } from "@/hooks/use-user";
 type FormValues = {
   filters: {
     type: string;
@@ -100,6 +101,10 @@ const BookedResourceView = ({
   const onDelete = () => {
     mutate();
   };
+  const { currentUser } = useCurrentUser();
+  const isAdmin =
+    currentUser &&
+    includesRoles({ currentUser: currentUser, roleCodes: ["ADMIN"] });
   if (isLoading) {
     return <BookingItemSkeleton />;
   } else if (isError) {
@@ -288,6 +293,7 @@ const BookedResourceView = ({
                   dayArray={item.day}
                   nightArray={item.night}
                   onDeleted={onDelete}
+                  isAdmin={isAdmin}
                 />
               );
             }

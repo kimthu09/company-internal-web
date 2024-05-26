@@ -30,12 +30,14 @@ const BookingItemList = ({
   nightArray,
   isPersonal,
   onDeleted,
+  isAdmin,
 }: {
   prop: string;
   dayArray: BookingProps[];
   nightArray: BookingProps[];
   isPersonal?: boolean;
   onDeleted?: () => void;
+  isAdmin?: boolean;
 }) => {
   return (
     <div className="flex flex-col gap-5 pb-7">
@@ -56,6 +58,7 @@ const BookingItemList = ({
                 key={item.id}
                 booking={item}
                 isPersonal={isPersonal}
+                isAdmin={isAdmin}
               />
             ))}
           </div>
@@ -76,6 +79,7 @@ const BookingItemList = ({
                 key={item.id}
                 booking={item}
                 isPersonal={isPersonal}
+                isAdmin={isAdmin}
               />
             ))}
           </div>
@@ -90,11 +94,13 @@ const BookingItem = ({
   isPersonal,
   canDelete,
   onDeleted,
+  isAdmin,
 }: {
   booking: BookingProps;
   isPersonal?: boolean;
   canDelete?: boolean;
   onDeleted?: () => void;
+  isAdmin?: boolean;
 }) => {
   const { showLoading, hideLoading } = useLoading();
   const onDelete = async ({ id }: { id: number }) => {
@@ -153,7 +159,7 @@ const BookingItem = ({
           </span>
         </div>
       </div>
-      {isPersonal ? (
+      {isPersonal || isAdmin ? (
         <ConfirmDialog
           title={"Xác nhận"}
           description="Bạn xác nhận muốn huỷ việc đặt dùng tài nguyên ?"

@@ -57,7 +57,7 @@ const LeaveTable = () => {
       toast({
         variant: "success",
         title: "Thành công",
-        description: "Huỷ đặt dùng phòng họp thành công",
+        description: "Xoá đơn nghỉ phép thành công",
       });
     }
   };
@@ -80,22 +80,24 @@ const LeaveTable = () => {
                 className="flex border-b border-b-border py-4 my-2 "
               >
                 <LeaveItem className="flex-1" item={item} />
-                <ConfirmDialog
-                  title={"Xác nhận"}
-                  description="Bạn xác nhận muốn huỷ đơn xin nghỉ phép này?"
-                  handleYes={() => {
-                    onDelete({ id: item.id });
-                  }}
-                >
-                  <Button
-                    title="Xoá đơn xin nghỉ phép"
-                    size={"icon"}
-                    variant={"ghost"}
-                    className={`rounded-full  text-rose-500 hover:text-rose-600 text `}
+                {item.approvedBy || item.rejectedBy ? null : (
+                  <ConfirmDialog
+                    title={"Xác nhận"}
+                    description="Bạn xác nhận muốn huỷ đơn xin nghỉ phép này?"
+                    handleYes={() => {
+                      onDelete({ id: item.id });
+                    }}
                   >
-                    <FaTrash />
-                  </Button>
-                </ConfirmDialog>
+                    <Button
+                      title="Xoá đơn xin nghỉ phép"
+                      size={"icon"}
+                      variant={"ghost"}
+                      className={`rounded-full  text-rose-500 hover:text-rose-600 text `}
+                    >
+                      <FaTrash />
+                    </Button>
+                  </ConfirmDialog>
+                )}
               </div>
             ))
           ) : (
