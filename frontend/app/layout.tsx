@@ -35,28 +35,26 @@ export default async function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body className={`${roboto.className} flex overflow-y-hidden h-full`}>
-        <SessionProvider>
-          <LoadingProvider>
-            {isAuthented ? (
-              <>
-                <Sidebar />
-                <main className="flex flex-1 bg-[#eef6f7]">
-                  <div className="flex w-full flex-col overflow-y-hidden">
-                    <Header />
-                    <HeaderMobile />
-                    <div className="md:p-12 p-4 overflow-auto ">{children}</div>
-                    <Toaster />
-                  </div>
-                </main>
-              </>
-            ) : (
-              <main className="flex flex-1">
-                {children}
-                <Toaster />
+        <LoadingProvider>
+          {isAuthented ? (
+            <>
+              <Sidebar />
+              <main className="flex flex-1 bg-[#eef6f7]">
+                <div className="flex w-full flex-col overflow-y-hidden">
+                  <Header />
+                  <HeaderMobile />
+                  <div className="md:p-12 p-4 overflow-auto ">{children}</div>
+                  <Toaster />
+                </div>
               </main>
-            )}
-          </LoadingProvider>
-        </SessionProvider>
+            </>
+          ) : (
+            <main className="flex flex-1">
+              {children}
+              <Toaster />
+            </main>
+          )}
+        </LoadingProvider>
       </body>
     </html>
   );

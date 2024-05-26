@@ -4,7 +4,7 @@ import { Player } from "@lottiefiles/react-lottie-player";
 
 const NotFoundPage = () => {
   return (
-    <div className="flex flex-col items-center gap-16  lg:mt-[10%] mt-[40%]">
+    <div className="flex flex-col items-center gap-16 lg:mt-[10%] mt-[40%]">
       <Player
         autoplay
         loop
