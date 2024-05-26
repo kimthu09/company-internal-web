@@ -78,7 +78,7 @@ public class RequestForLeaveService {
 			throw new AppException(HttpStatus.UNAUTHORIZED, Message.USER_NOT_HAVE_FEATURE);
 		}
 
-		if (!isAdmin && isManager) {
+		if (!isAdmin && !isHasStaffManagerFeature) {
 			filter.setUnits(List.of(currUser.getUnit().getId()));
 		}
 
