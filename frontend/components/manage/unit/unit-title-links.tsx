@@ -6,6 +6,8 @@ import Link from "next/link";
 import React from "react";
 import { FaPen } from "react-icons/fa";
 import EditUnitName from "./edit-unit-name";
+import { useCurrentUser } from "@/hooks/use-user";
+import { includesRoles } from "@/lib/utils";
 
 const UnitTitleLinks = ({
   data,
@@ -14,15 +16,24 @@ const UnitTitleLinks = ({
   data: Unit;
   selectedPage: number;
 }) => {
+  const { currentUser } = useCurrentUser();
+  const isAdminRole =
+    currentUser &&
+    includesRoles({
+      currentUser: currentUser,
+      roleCodes: ["ADMIN"],
+    });
   return (
     <div className="pb-5 border-b w-full flex flex-row gap-5 items-end flex-wrap">
       <div className="flex items-center gap-1">
         <h1 className="table___title uppercase">{data.name}</h1>
-        <EditUnitName unit={data}>
-          <Button variant={"ghost"} className="rounded-full p-0 w-8 h-8">
-            <FaPen className="text-muted-foreground" />
-          </Button>
-        </EditUnitName>
+        {isAdminRole && (
+          <EditUnitName unit={data}>
+            <Button variant={"ghost"} className="rounded-full p-0 w-8 h-8">
+              <FaPen className="text-muted-foreground" />
+            </Button>
+          </EditUnitName>
+        )}
       </div>
 
       {unitLinks.map((item, index) => (
