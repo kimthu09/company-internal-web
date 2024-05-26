@@ -47,21 +47,21 @@ public class RequestForLeaveService {
 				contentMail = String.format("Đơn nghỉ phép vào buổi %s ngày %s %s.\n" +
 											"Nếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
 											requestForLeave.getFromShiftType() == ShiftType.DAY ? "sáng" : "chiều",
-											requestForLeave.getFromDate(),
+											TimeHelper.convertDateToString(requestForLeave.getFromDate()),
 											action);
 			} else {
 				contentMail = String.format("Đơn nghỉ phép vào ngày %s %s.\n" +
 											"Nếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
-											requestForLeave.getFromDate(),
+											TimeHelper.convertDateToString(requestForLeave.getFromDate()),
 											action);
 			}
 		} else {
 			contentMail = String.format("Đơn nghỉ phép vào buổi %s ngày %s đến hết buổi %s ngày %s %s.\n" +
 										"Nếu có sự nhầm lẫn, xin vui lòng liên hệ lại với chúng tôi.",
 										requestForLeave.getFromShiftType() == ShiftType.DAY ? "sáng" : "chiều",
-										requestForLeave.getFromDate(),
+										TimeHelper.convertDateToString(requestForLeave.getFromDate()),
 										requestForLeave.getToShiftType() == ShiftType.DAY ? "sáng" : "chiều",
-										requestForLeave.getToDate(),
+										TimeHelper.convertDateToString(requestForLeave.getToDate()),
 										action);
 		}
 		return contentMail;
