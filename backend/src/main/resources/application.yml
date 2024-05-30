@@ -2,9 +2,9 @@ spring:
   application:
     name: Backend
   datasource:
-    url: jdbc:mysql://localhost:3306/ciw
-    username: root
-    password: 123456
+    url: jdbc:mysql://cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/x6vz6oh56d4s5eoi
+    username: q7312lagbw84haof
+    password: yjjzr3x5l4ldp5hb
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
