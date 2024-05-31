@@ -56,15 +56,15 @@ Truy cập link: https://is-208-team5-nine.vercel.app/project
 ```bash
 export const endpoint = "localhost:8080/api/v1";
 ```
-1. **Bước 3:** Import các thư viện cần thiết
+3. **Bước 3:** Import các thư viện cần thiết
 ```bash
 npm install
 ```
-2. **Bước 4:** Build ứng dụng
+4. **Bước 4:** Build ứng dụng
 ```bash
 npm run build
 ```
-4. **Bước 5:** Build ứng dụng
+5. **Bước 5:** Build ứng dụng
 ```bash
 npm start
 ```
