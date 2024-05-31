@@ -11,10 +11,6 @@ Truy cập link: https://is-208-team5-nine.vercel.app/project
 > - *email*: admin@gmail.com
 > - *password*: 123456
 
-> [!Note]
-> - Bởi vì chúng mình đang sử dụng dịch vụ miễn phí để deploy nên tốc độ chạy có thể sẽ hơi chậm. BE cần khoảng 10 phút để khởi động trước khi sử dụng.
-> - Nếu có lỗi hoặc vấn đề gì xảy ra, xin hãy liên hệ với chúng mình: nguyenlengocmai000@gmail.com hoặc 21521495@gm.uit.edu.vn
-
 # Hướng dẫn cài đặt và chạy ứng dụng ở local
 
 ## Backend
