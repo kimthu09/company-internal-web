@@ -146,6 +146,7 @@ const EditNews = ({ params }: { params: { newsId: number } }) => {
       image: data.image,
       tags: data.tagIds.map((item) => item.tagId),
     });
+    showLoading();
 
     const responseData = await response;
     hideLoading();
@@ -176,7 +177,7 @@ const EditNews = ({ params }: { params: { newsId: number } }) => {
         description: "Chỉnh sửa bài báo mới thành công",
       });
       setImage(null);
-
+      mutate();
       redirectToNews();
     }
   };
