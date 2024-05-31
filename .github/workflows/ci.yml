@@ -1,0 +1,58 @@
+name: CI Pipeline
+
+on: [push, pull_request]
+
+jobs:
+  check-BE:
+    name: Check BE
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_DATABASE: ciw
+          MYSQL_ROOT_PASSWORD: 123456
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: "17"
+          distribution: "adopt"
+          cache: maven
+      - name: Grant execute permission for Maven Wrapper
+        run: chmod +x ./backend/mvnw
+      - name: Wait for MySQL to be ready
+        run: |
+          until mysqladmin ping -h 127.0.0.1 -u root --password=123456 --silent; do
+            echo 'waiting for mysql...'
+            sleep 5
+          done
+      - name: Run Maven Build
+        id: maven_build
+        run: ./mvnw clean install
+        working-directory: ./backend
+  check-FE:
+    name: Check FE
+    runs-on: ubuntu-latest
+    env:
+      NODE_VERSION: "18.18.0"
+      NEXT_ENV: "production"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Node.js for Next.js frontend
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Install dependencies for Next.js frontend
+        run: |
+          cd frontend
+          npm install
+      - name: Build Next.js frontend
+        run: |
+          cd frontend
+          NEXT_PUBLIC_ENVIRONMENT=${{ env.NEXT_ENV }} npm run build
