@@ -1,7 +1,21 @@
 # Giới thiệu sản phẩm
+
 Truy cập link: https://is-208-team5-nine.vercel.app/project
 
-# Hướng dẫn cài đặt và chạy ứng dụng
+# Sản phẩm
+
+1. BE API: https://ciw-be.onrender.com/swagger-ui/index.html
+2. FE: https://company-internal-web.vercel.app/
+> [!IMPORTANT]
+> *Tài khoản admin*:
+> - *email*: admin@gmail.com
+> - *password*: 123456
+
+> [!Note]
+> - Bởi vì chúng mình đang sử dụng dịch vụ miễn phí để deploy nên tốc độ chạy có thể sẽ hơi chậm. BE cần khoảng 10 phút để khởi động trước khi sử dụng.
+> - Nếu có lỗi hoặc vấn đề gì xảy ra, xin hãy liên hệ với chúng mình: nguyenlengocmai000@gmail.com hoặc 21521495@gm.uit.edu.vn
+
+# Hướng dẫn cài đặt và chạy ứng dụng ở local
 
 ## Backend
 
@@ -14,6 +28,7 @@ Truy cập link: https://is-208-team5-nine.vercel.app/project
 3. **Bước 3:** Sử dụng kết nối vừa tạo, chạy file `database.sql` để tạo cơ sở dữ liệu và bảng.
 
 ### Chạy Backend
+
 **Chú ý:** Cần thiết lập môi trường Java trước khi chạy
 
 #### Cách 1: Sử dụng các IDE hỗ trợ (IntelliJ IDEA)
@@ -31,29 +46,27 @@ Truy cập link: https://is-208-team5-nine.vercel.app/project
    ./mvnw spring-boot:run
    ```
 
-#### Link Swagger (API doc)
-Truy cập địa chỉ sau để xem API documentation:
-http://localhost:8080/swagger-ui/index.html
+> [!Note]
+> *Link Swagger (API doc)*: http://localhost:8080/swagger-ui/index.html
+
 
 ## Frontend
-
-### Import các thư viện cần thiết
-
-   ```bash
-   npm install
-   ```
-
-### Build ứng dụng
-
-   ```bash
-   npm run build
-   ```
-
-### Chạy ứng dụng
-
-   ```bash
-   npm start
-   ```
-
-Truy cập địa chỉ sau để sử dụng frontend:
-http://localhost:80
+1. **Bước 1:** Vào thư mục frontend
+2. **Bước 2:** Chỉnh lại giá trị endpoint trong file constants/index.ts
+```bash
+export const endpoint = "localhost:8080/api/v1";
+```
+1. **Bước 3:** Import các thư viện cần thiết
+```bash
+npm install
+```
+2. **Bước 4:** Build ứng dụng
+```bash
+npm run build
+```
+4. **Bước 5:** Build ứng dụng
+```bash
+npm start
+```
+> [!Note]
+> *Link FE*: http://localhost:80
