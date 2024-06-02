@@ -183,7 +183,7 @@ const ConfirmList = () => {
     currentUser &&
     includesOneRoles({
       currentUser: currentUser,
-      roleCodes: ["ADMIN", "STAFF MANAGER"],
+      roleCodes: ["ADMIN", "STAFF_MANAGER"],
     });
   if (isLoading) {
     return <NotiListSkeleton number={5} />;

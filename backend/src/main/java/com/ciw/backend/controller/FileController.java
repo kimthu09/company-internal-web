@@ -37,7 +37,6 @@ public class FileController {
 			responseCode = "200",
 			description = "Http Status is 200 OK"
 	)
-	@PreAuthorize("hasAnyAuthority('ADMIN')")
 	public ResponseEntity<FileLinkResponse> upload(@RequestParam("file") MultipartFile multipartFile) {
 		return new ResponseEntity<>(fileService.upload(multipartFile), HttpStatus.OK);
 	}

@@ -137,6 +137,10 @@ public class MeetingRoomService {
 		List<Long> bookedIds = bookedMeetingRoom.stream().filter(book -> {
 			LocalDate localDate = book.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 			if (localDate.format(formatter).equals(request.getFrom().getDate())) {
+				if (localDate.format(formatter).equals(request.getTo().getDate())) {
+					return !(request.getTo().getShiftType() == request.getFrom().getShiftType() &&
+						   request.getTo().getShiftType() != book.getShiftType());
+				}
 				if (book.getShiftType() == ShiftType.NIGHT) {
 					return true;
 				}

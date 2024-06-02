@@ -59,6 +59,7 @@ const LeaveTable = () => {
         title: "Thành công",
         description: "Xoá đơn nghỉ phép thành công",
       });
+      mutate();
     }
   };
   if (isLoading) {

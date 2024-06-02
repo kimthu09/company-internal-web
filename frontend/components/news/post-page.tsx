@@ -119,10 +119,13 @@ const PostPage = () => {
       if (item.type !== "tags") {
         stringToFilter = stringToFilter.concat(`&${item.type}=${item.value}`);
       }
+      console.log(item);
     });
-    data.tagIds.forEach((item) => {
-      stringToFilter = stringToFilter.concat(`&tags=${item.tagId}`);
-    });
+    if (data.tagIds != null) {
+      data.tagIds.forEach((item) => {
+        stringToFilter = stringToFilter.concat(`&tags=${item.tagId}`);
+      });
+    }
     setOpenFilter(false);
     router.push(`/news?limit=10${stringToFilter}`);
   };
@@ -358,7 +361,7 @@ const PostPage = () => {
         )}
         {posts.paging.limit < posts.paging.totalElements ? (
           <div className="flex items-center justify-end space-x-2 py-4">
-            <ViewMoreLink href={`/notifications?limit=${+limit + 10}`} />
+            <ViewMoreLink href={`/news?limit=${+limit + 10}`} />
           </div>
         ) : null}
       </div>
