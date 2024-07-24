@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/table";
 import { Fragment, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import getAllEmployees from "@/lib/employee/getAllEmployees";
+import getNotAdminAndNotDeletedEmployees from "@/lib/employee/getNotAdminAndNotDeletedEmployees";
 import TableSkeleton from "@/components/skeleton/table-skeleton";
 import {
   Controller,
@@ -98,12 +98,13 @@ const EmployeeTable = () => {
   const filterString = filters
     .map((item) => `${item.type}=${encodeURIComponent(item.value.toString())}`)
     .join("&");
-  const { employees, mutate, isLoading, isError } = getAllEmployees({
-    encodedString: filterString,
-    filter: {
-      page: page,
-    },
-  });
+  const { employees, mutate, isLoading, isError } =
+    getNotAdminAndNotDeletedEmployees({
+      encodedString: filterString,
+      filter: {
+        page: page,
+      },
+    });
   const data = employees?.data;
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);

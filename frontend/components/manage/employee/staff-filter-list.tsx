@@ -15,6 +15,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import getAllEmployees from "@/lib/employee/getAllEmployees";
+import getNotAdminAndNotDeletedEmployees from "@/lib/employee/getNotAdminAndNotDeletedEmployees";
 import { cn } from "@/lib/utils";
 import { Employee } from "@/types";
 import React, { useEffect, useState } from "react";
@@ -25,15 +26,29 @@ export interface StaffListProps {
   setStaff: (staff: string | number, name?: string) => void;
   isId: boolean;
   readonly?: boolean;
+  isForActiveAndNotAdmin?: boolean;
 }
-const StaffList = ({ isId, staff, setStaff, readonly }: StaffListProps) => {
+const StaffList = ({
+  isId,
+  staff,
+  setStaff,
+  readonly,
+  isForActiveAndNotAdmin,
+}: StaffListProps) => {
   const [open, setOpen] = useState(false);
-  const { employees, isLoading, isError } = getAllEmployees({
-    filter: {
-      page: "1",
-      limit: "10000",
-    },
-  });
+  const { employees, isLoading, isError } = isForActiveAndNotAdmin
+    ? getNotAdminAndNotDeletedEmployees({
+        filter: {
+          page: "1",
+          limit: "10000",
+        },
+      })
+    : getAllEmployees({
+        filter: {
+          page: "1",
+          limit: "10000",
+        },
+      });
   const [resourceList, setResourceList] = useState<Array<Employee>>([]);
   useEffect(() => {
     if (employees) {

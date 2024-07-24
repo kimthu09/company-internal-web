@@ -193,6 +193,7 @@ const CreateNotification = ({ onCreated }: { onCreated?: () => void }) => {
             isId
             staff={staff}
             setStaff={(value, name) => onSelect(+value, name ?? "")}
+            isForActiveAndNotAdmin
           />
 
           <div className="flex gap-5 justify-end sm:self-end mt-7">

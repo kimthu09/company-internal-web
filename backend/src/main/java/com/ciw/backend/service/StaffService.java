@@ -20,8 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -115,22 +113,15 @@ public class StaffService {
 	}
 
 	@Transactional
-	public ListResponse<StaffResponse, StaffFilter> getListUsers(AppPageRequest page, StaffFilter filter) {
-		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		String email = userDetails.getUsername();
-
+	public ListResponse<StaffResponse, StaffFilter> getAllUser(AppPageRequest page, StaffFilter filter) {
 		Pageable pageable = PageRequest.of(page.getPage() - 1,
 										   page.getLimit(),
-										   Sort.by(Sort.Direction.DESC, "name"));
+										   Sort.by(Sort.Direction.ASC, "name"));
 		Specification<User> spec = filterStaffs(filter);
 
-		Page<User> userPage;
-		if (email.equals(ApplicationConst.ADMIN_EMAIL)) {
-			userPage = userRepository.findAllNotDeletedAndNotAdmin(spec, pageable);
-		} else {
-			userPage = userRepository.findAll(spec, pageable);
-		}
+		Page<User> userPage = userRepository.findAll(spec, pageable);
 
+		System.out.println("Done");
 		return getListResponseFromPage(userPage, page, filter);
 	}
 
@@ -158,7 +149,7 @@ public class StaffService {
 	public ListResponse<StaffResponse, StaffFilter> getUsers(AppPageRequest page, StaffFilter filter) {
 		Pageable pageable = PageRequest.of(page.getPage() - 1,
 										   page.getLimit(),
-										   Sort.by(Sort.Direction.DESC, "name"));
+										   Sort.by(Sort.Direction.ASC, "name"));
 		Specification<User> spec = filterStaffs(filter);
 
 		Page<User> userPage = userRepository.findAllNotDeletedAndNotAdmin(spec, pageable);
@@ -221,6 +212,9 @@ public class StaffService {
 	}
 
 	private UnitWithNumStaffResponse mapToSimpleUnitWithoutManager(Unit unit) {
+		if (unit == null) {
+			return null;
+		}
 		return UnitWithNumStaffResponse.builder()
 									   .id(unit.getId())
 									   .name(unit.getName())

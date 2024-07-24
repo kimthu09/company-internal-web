@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { AutoComplete } from "./autocomplete";
-import getAllEmployees, { fetcher } from "@/lib/employee/getAllEmployees";
+import getNotAdminAndNotDeletedEmployees, {
+  fetcher,
+} from "@/lib/employee/getNotAdminAndNotDeletedEmployees";
 import { Employee } from "@/types";
 
 export type EmployeeListProps = {
@@ -9,16 +11,17 @@ export type EmployeeListProps = {
 };
 
 const EmployeeList = ({ value, onValueChange }: EmployeeListProps) => {
-  const handleOnValueChange = (item: Employee) => { };
+  const handleOnValueChange = (item: Employee) => {};
   const [inputValue, setInputValue] = useState<string>(value?.name || "");
   const [filterString, setFilterString] = useState("");
-  const { employees, mutate, isLoading, isError } = getAllEmployees({
-    encodedString: filterString,
-    filter: {
-      page: "1",
-      limit: "15",
-    },
-  });
+  const { employees, mutate, isLoading, isError } =
+    getNotAdminAndNotDeletedEmployees({
+      encodedString: filterString,
+      filter: {
+        page: "1",
+        limit: "15",
+      },
+    });
   const searchHandler = useCallback(() => {
     const encodeValue = `name=${encodeURIComponent(inputValue.trim())}`;
     if (filterString !== encodeValue) {
