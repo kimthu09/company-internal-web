@@ -155,7 +155,7 @@ const PostPage = () => {
             open={openFilter}
             onOpenChange={(open) => {
               setOpenFilter(open);
-              reset({ filters: filters });
+              reset({ filters: filters, tagIds: tagList });
             }}
           >
             <PopoverTrigger asChild>

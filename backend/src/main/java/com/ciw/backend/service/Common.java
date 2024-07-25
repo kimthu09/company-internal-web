@@ -23,13 +23,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public class Common {
-	public static Comparator<String> dateComparator = (date1, date2) -> {
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		LocalDate ld1 = LocalDate.parse(date1, dateTimeFormatter);
-		LocalDate ld2 = LocalDate.parse(date2, dateTimeFormatter);
-		return ld1.compareTo(ld2);
-	};
-
 	public static void updateIfNotNull(String newValue, Consumer<String> setter) {
 		if (newValue != null) {
 			setter.accept(newValue);
@@ -254,27 +247,5 @@ public class Common {
 							 description,
 							 List.of(receiver.getEmail()));
 
-	}
-
-	public static void checkAdminOrManager(UserRepository userRepository, Long managerId) {
-		User curr = Common.findCurrUser(userRepository);
-		if (managerId == null) {
-			if (!curr.getUnit().getName().contains(ApplicationConst.ADMIN_UNIT_NAME)) {
-				throw new AppException(HttpStatus.BAD_REQUEST, Message.USER_NOT_HAVE_FEATURE);
-			}
-		} else {
-			if (!curr.getUnit().getName().contains(ApplicationConst.ADMIN_UNIT_NAME) &&
-				!curr.getId().equals(managerId)) {
-				throw new AppException(HttpStatus.BAD_REQUEST, Message.USER_NOT_HAVE_FEATURE);
-			}
-		}
-	}
-
-	public static void checkAdminOrInUnit(UserRepository userRepository, Long unitId) {
-		User curr = Common.findCurrUser(userRepository);
-		if (!curr.getUnit().getName().contains(ApplicationConst.ADMIN_UNIT_NAME) &&
-			!curr.getUnit().getId().equals(unitId)) {
-			throw new AppException(HttpStatus.BAD_REQUEST, Message.USER_NOT_HAVE_FEATURE);
-		}
 	}
 }
