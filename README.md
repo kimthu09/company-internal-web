@@ -4,14 +4,16 @@ Truy cập link: https://is-208-team5-nine.vercel.app/project
 
 # Sản phẩm
 
-> [!Note] Cần tốn 50s hoặc hơn để BE khởi động
+> [!Note]
+> Cần tốn 50s hoặc hơn để BE khởi động
 
 1. BE API: https://ciw-be.onrender.com/swagger-ui/index.html
 2. FE: https://company-internal-web.vercel.app/
-   > [!IMPORTANT] > _Tài khoản admin_:
-   >
-   > - _email_: admin@gmail.com
-   > - _password_: 123456
+
+> [!IMPORTANT]
+> *Tài khoản admin*:
+> - *email*: admin@gmail.com
+> - *password*: 123456
 
 # Hướng dẫn cài đặt và chạy ứng dụng ở local
 
@@ -49,33 +51,27 @@ Truy cập link: https://is-208-team5-nine.vercel.app/project
    ./mvnw spring-boot:run
    ```
 
-> [!Note] > _Link Swagger (API doc)_: http://localhost:8080/swagger-ui/index.html
+> [!Note]
+> *Link Swagger (API doc)*: http://localhost:8080/swagger-ui/index.html
+
 
 ## Frontend
-
 1. **Bước 1:** Vào thư mục frontend
 2. **Bước 2:** Chỉnh lại giá trị endpoint trong file constants/index.ts
-
 ```bash
 export const endpoint = "http://localhost:8080/api/v1";
 ```
-
 3. **Bước 3:** Import các thư viện cần thiết
-
 ```bash
 npm install
 ```
-
 4. **Bước 4:** Build ứng dụng
-
 ```bash
 npm run build
 ```
-
 5. **Bước 5:** Build ứng dụng
-
 ```bash
 npm start
 ```
-
-> [!Note] > _Link FE_: http://localhost:80
+> [!Note]
+> *Link FE*: http://localhost:80
