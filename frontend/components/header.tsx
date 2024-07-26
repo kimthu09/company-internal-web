@@ -38,7 +38,7 @@ const Header = () => {
           </Link>
         </div>
         <div className="self-center flex items-center gap-4">
-          {canView && (
+          {canView && user != null && user.unit != null && (
             <Link
               href={`/manage/unit/${user.unit.id}`}
               title="Phòng ban của bạn"

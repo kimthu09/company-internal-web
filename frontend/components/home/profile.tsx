@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -14,7 +16,7 @@ import {
 import { Input } from "../ui/input";
 import { endpoint, required } from "@/constants";
 import { z } from "zod";
-import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MdOutlineLock } from "react-icons/md";
 import axios from "axios";
@@ -23,6 +25,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useLoading } from "@/hooks/loading-context";
 import Link from "next/link";
 import { Employee } from "@/types";
+import { useRouter } from "next/navigation";
 const PasswordSchema = z
   .object({
     oldPassword: z.string().min(6, "Ít nhất 6 ký tự"),
@@ -36,6 +39,7 @@ const PasswordSchema = z
 const Profile = ({ user }: { user: Employee }) => {
   const [open, setOpen] = useState(false);
   const [openPass, setOpenPass] = useState(false);
+  const router = useRouter();
 
   const [avatar, setAvatar] = useState("");
   const [name, setName] = useState({ name: "", id: "" });
@@ -43,7 +47,7 @@ const Profile = ({ user }: { user: Employee }) => {
     if (user) {
       setAvatar(user.image);
 
-      setName({ name: user.name, id: user.id.toString() });
+      setName({ name: user.name, id: user.id?.toString() ?? "" });
     }
   }, [user]);
   const passForm = useForm<z.infer<typeof PasswordSchema>>({
@@ -128,13 +132,31 @@ const Profile = ({ user }: { user: Employee }) => {
     }
     setOpenPass(value);
   };
+
+  const handleLogout = async () => {
+    try {
+      await logOut();
+      router.push("/login");
+    } catch (error) {
+      console.log("Hello");
+      console.log(error);
+      toast({
+        variant: "destructive",
+        title: "Có lỗi",
+        description: "Đăng xuất thất bại",
+      });
+    }
+  };
+
   return (
     <div>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Avatar className="cursor-pointer">
             <AvatarImage src={avatar} alt="@shadcn" />
-            <AvatarFallback>{name.name.substring(0, 2)}</AvatarFallback>
+            <AvatarFallback>
+              {name.name?.substring(0, 2) ?? "null"}
+            </AvatarFallback>
           </Avatar>
         </PopoverTrigger>
         <PopoverContent className="w-44 mx-4 flex flex-col gap-2 p-0 py-2">
@@ -220,7 +242,7 @@ const Profile = ({ user }: { user: Employee }) => {
               </form>
             </DialogContent>
           </Dialog>
-          <form action={logOut} className="w-full">
+          <form action={handleLogout} className="w-full">
             <Button
               variant={"ghost"}
               className="rounded-none w-full justify-start"

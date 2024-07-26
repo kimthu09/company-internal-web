@@ -1,6 +1,8 @@
 "use server";
 
 import { auth, signIn, signOut } from "./auth";
+import { isRedirectError } from "next/dist/client/components/redirect";
+import { redirect } from "next/navigation";
 
 export const login = async (props) => {
   const { email, password } = props;
@@ -16,12 +18,12 @@ export const login = async (props) => {
 };
 
 export const logOut = async () => {
-  await signOut();
+  await signOut({ redirect: false });
 };
 
 export const getApiKey = async () => {
   const session = await auth();
-  return session?.user?.token;
+  return session?.user?.token.token;
 };
 
 export const getUser = async () => {

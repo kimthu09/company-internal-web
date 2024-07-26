@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -16,4 +18,9 @@ public class AuthenticationResponse {
 			example = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyQGdtYWlsLmNvbSIsImlhdCI6MTcxMjcxOTUzNCwiZXhwIjoxNzEyNzIwOTc0fQ.UZHm76iYy9VkoDhk4OZ2PXKiLJ4rREs2NJU63BwPkeM"
 	)
 	private String token;
+
+	@Schema(
+			name = "expired"
+	)
+	private Date expired;
 }

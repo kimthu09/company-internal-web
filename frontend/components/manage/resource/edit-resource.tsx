@@ -100,14 +100,14 @@ const EditResource = ({
       <DialogContent className="max-w-[472px] p-0 bg-white">
         <DialogHeader>
           <DialogTitle className="p-6 pb-0">
-            Chỉnh sửa tên phòng ban
+            Chỉnh sửa tên tài nguyên
           </DialogTitle>
         </DialogHeader>
         <form>
           <div className="p-6 flex flex-col gap-4 border-y-[1px]">
             <div>
               <label htmlFor="name" className="font-medium">
-                Tên phòng ban
+                Tên tài nguyên
               </label>
               <Input id="name" {...register("name")}></Input>
               {errors.name && (

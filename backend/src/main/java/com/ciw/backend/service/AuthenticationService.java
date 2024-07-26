@@ -43,7 +43,7 @@ public class AuthenticationService {
 		);
 		User user = Common.findUserByEmail(request.getEmail(), userRepository);
 		String jwtToken = jwtService.generateToken(user);
-		return AuthenticationResponse.builder().token(jwtToken).build();
+		return AuthenticationResponse.builder().token(jwtToken).expired(jwtService.extractExpiration(jwtToken)).build();
 	}
 
 	@Transactional

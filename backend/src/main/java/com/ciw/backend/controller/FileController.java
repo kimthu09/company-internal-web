@@ -25,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileController {
 	private final FileService fileService;
 
-	@PostMapping
+	@PostMapping(consumes = "multipart/form-data")
 	@SecurityRequirement(
 			name = "Bearer Authentication"
 	)

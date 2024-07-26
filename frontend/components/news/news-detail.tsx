@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import dynamic from "next/dynamic";
 import { OutputData } from "@editorjs/editorjs";
-import NewsDetailSkeleton from "./news_detail_skeleton";
+import NewsDetailSkeleton from "./news-detail-skeleton";
 
 const EditorBlock = dynamic(() => import("./editor"), {
   ssr: false,

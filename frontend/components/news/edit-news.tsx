@@ -24,7 +24,7 @@ import { imageUpload } from "@/lib/employee/uploadImage";
 import { useRouter } from "next/navigation";
 import { News } from "@/types";
 import getDetailNews from "@/lib/post/getDetailNews";
-import NewsDetailSkeleton from "./news_detail_skeleton";
+import NewsDetailSkeleton from "./news-detail-skeleton";
 import updateNewNews from "@/lib/post/updateNew";
 import updateNews from "@/lib/post/updateNew";
 

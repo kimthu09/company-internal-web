@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
 export const authConfig = {
   pages: {
-    signIn: "/login"
+    signIn: "/login",
   },
   providers: [],
   callbacks: {
@@ -14,6 +14,12 @@ export const authConfig = {
     },
     session({ session, token }) {
       if (token) {
+        const tokenExpiresAt = new Date(token.id.token.expired + " GMT+0");
+        const currentTime = new Date();
+        if (currentTime > tokenExpiresAt) {
+          session.user = null;
+          return session;
+        }
         session.user = token.id;
       }
       return session;
@@ -25,22 +31,14 @@ export const authConfig = {
       const isOnResetPasswordPage =
         request.nextUrl?.pathname.startsWith("/reset-password");
 
-      if (user && isOnLoginPage) {
-        return NextResponse.redirect(new URL("/", request.nextUrl));
-      }
-      if (user && isOnResetPasswordPage) {
+      if (user && (isOnLoginPage || isOnResetPasswordPage)) {
         return NextResponse.redirect(new URL("/", request.nextUrl));
       }
 
-      if (isOnLoginPage) {
-        return true;
-      }
-      if (isOnResetPasswordPage) {
-        return true;
-      }
       if (!user && !isOnLoginPage && !isOnResetPasswordPage) {
         return false;
       }
+
       return true;
     },
   },
