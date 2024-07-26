@@ -25,7 +25,7 @@ import { useRouter } from "next/navigation";
 import { useCurrentUser } from "@/hooks/use-user";
 import { includesRoles } from "@/lib/utils";
 import NoRole from "@/components/no-role";
-import NewsDetailSkeleton from "@/components/news/news_detail_skeleton";
+import NewsDetailSkeleton from "@/components/news/news-detail-skeleton";
 
 const Schema = z.object({
   title: z.string().min(1, "Không được để trống").max(100, "Tối đa 100 ký tự"),
@@ -34,9 +34,12 @@ const Schema = z.object({
   tagIds: z.array(z.object({ tagId: z.coerce.number() })),
 });
 
-const EditorBlock = dynamic(() => import("../../../components/news/editor"), {
-  ssr: false,
-});
+const EditorBlock = dynamic(
+  () => import("../../../../components/news/editor"),
+  {
+    ssr: false,
+  }
+);
 
 const AddNewsPage = () => {
   const router = useRouter();

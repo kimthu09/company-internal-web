@@ -192,8 +192,9 @@ public class ResourceService {
 	public ListResponseWithoutPage<ResourceCalendarDayResponse, ResourceCalendarFilter> getResourceCalendar(
 			ResourceCalendarFilter filter) {
 		Specification<ResourceCalendar> spec = filterResourceCalendar(filter);
+		Sort sort = Sort.by(Sort.Direction.DESC, "date");
 
-		List<ResourceCalendar> calendars = resourceCalendarRepository.findAll(spec);
+		List<ResourceCalendar> calendars = resourceCalendarRepository.findAll(spec, sort);
 
 		return ListResponseWithoutPage.<ResourceCalendarDayResponse, ResourceCalendarFilter>builder()
 									  .data(mapToDTO(calendars))
@@ -222,9 +223,11 @@ public class ResourceService {
 	public ListResponseWithoutPage<ResourceCalendarDayResponse, PersonalResourceCalendarFilter> getPersonalResourceCalendar(
 			PersonalResourceCalendarFilter filter) {
 		User user = Common.findCurrUser(userRepository);
-		Specification<ResourceCalendar> spec = filterResourceCalendar(user.getId(), filter);
 
-		List<ResourceCalendar> calendars = resourceCalendarRepository.findAll(spec);
+		Specification<ResourceCalendar> spec = filterResourceCalendar(user.getId(), filter);
+		Sort sort = Sort.by(Sort.Direction.DESC, "date");
+
+		List<ResourceCalendar> calendars = resourceCalendarRepository.findAll(spec, sort);
 
 		return ListResponseWithoutPage.<ResourceCalendarDayResponse, PersonalResourceCalendarFilter>builder()
 									  .data(mapToDTO(calendars))
@@ -336,7 +339,7 @@ public class ResourceService {
 	private List<ResourceCalendarDayResponse> mapToDTO(List<ResourceCalendar> calendars) {
 		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
-		Map<String, List<ResourceCalendar>> mapEntity = new HashMap<>();
+		Map<String, List<ResourceCalendar>> mapEntity = new LinkedHashMap<>();
 		for (ResourceCalendar calendar : calendars) {
 			String date = formatter.format(calendar.getDate());
 
@@ -350,7 +353,7 @@ public class ResourceService {
 			}
 		}
 
-		Map<String, ResourceCalendarDayResponse> mapRes = new HashMap<>();
+		List<ResourceCalendarDayResponse> res = new ArrayList<>();
 		for (Map.Entry<String, List<ResourceCalendar>> entry : mapEntity.entrySet()) {
 			List<ResourceCalendarResponse> day = new ArrayList<>();
 			List<ResourceCalendarResponse> night = new ArrayList<>();
@@ -363,15 +366,10 @@ public class ResourceService {
 				}
 			}
 
-			mapRes.put(entry.getKey(),
-					   ResourceCalendarDayResponse.builder().date(entry.getKey()).day(day).night(night).build());
+			res.add(ResourceCalendarDayResponse.builder().date(entry.getKey()).day(day).night(night).build());
 		}
 
-		return mapRes.entrySet()
-					 .stream()
-					 .sorted(Map.Entry.comparingByKey(Common.dateComparator))
-					 .map(Map.Entry::getValue)
-					 .toList();
+		return res;
 	}
 
 	private Resource mapToEntity(CreateResourceRequest request) {

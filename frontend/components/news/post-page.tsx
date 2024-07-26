@@ -120,9 +120,11 @@ const PostPage = () => {
         stringToFilter = stringToFilter.concat(`&${item.type}=${item.value}`);
       }
     });
-    data.tagIds.forEach((item) => {
-      stringToFilter = stringToFilter.concat(`&tags=${item.tagId}`);
-    });
+    if (data.tagIds != null && data.tagIds.length != 0) {
+      data.tagIds.forEach((item) => {
+        stringToFilter = stringToFilter.concat(`&tags=${item.tagId}`);
+      });
+    }
     setOpenFilter(false);
     router.push(`/news?limit=10${stringToFilter}`);
   };
@@ -153,7 +155,7 @@ const PostPage = () => {
             open={openFilter}
             onOpenChange={(open) => {
               setOpenFilter(open);
-              reset({ filters: filters });
+              reset({ filters: filters, tagIds: tagList });
             }}
           >
             <PopoverTrigger asChild>

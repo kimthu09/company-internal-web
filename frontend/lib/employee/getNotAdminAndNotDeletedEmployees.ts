@@ -38,7 +38,7 @@ export const fetcher = async (url: string) => {
     });
 };
 
-export default function getAllEmployees({
+export default function getNotAdminAndNotDeletedEmployees({
   filter,
   encodedString,
 }: {
@@ -55,7 +55,7 @@ export default function getAllEmployees({
     encodeString = encodeString.concat("&").concat(encodedString);
   }
   const { data, error, isLoading, mutate } = useSWR(
-    `${endpoint}/staff/all?${encodeString}`,
+    `${endpoint}/staff?${encodeString}`,
     fetcher,
     {
       revalidateOnFocus: true,

@@ -201,8 +201,9 @@ public class MeetingRoomService {
 	public ListResponseWithoutPage<MeetingRoomCalendarDayResponse, MeetingRoomCalendarFilter> getMeetingRoomCalendar(
 			MeetingRoomCalendarFilter filter) {
 		Specification<MeetingRoomCalendar> spec = filterMeetingRoomCalendar(filter);
+		Sort sort = Sort.by(Sort.Direction.DESC, "date");
 
-		List<MeetingRoomCalendar> calendars = meetingRoomCalendarRepository.findAll(spec);
+		List<MeetingRoomCalendar> calendars = meetingRoomCalendarRepository.findAll(spec, sort);
 
 		return ListResponseWithoutPage.<MeetingRoomCalendarDayResponse, MeetingRoomCalendarFilter>builder()
 									  .data(mapToDTO(calendars))
@@ -232,9 +233,11 @@ public class MeetingRoomService {
 			PersonalMeetingRoomCalendarFilter filter) {
 		User curr = Common.findCurrUser(userRepository);
 
-		Specification<MeetingRoomCalendar> spec = filterMeetingRoomCalendar(curr.getId(), filter);
 
-		List<MeetingRoomCalendar> calendars = meetingRoomCalendarRepository.findAll(spec);
+		Specification<MeetingRoomCalendar> spec = filterMeetingRoomCalendar(curr.getId(), filter);
+		Sort sort = Sort.by(Sort.Direction.DESC, "date");
+
+		List<MeetingRoomCalendar> calendars = meetingRoomCalendarRepository.findAll(spec, sort);
 
 		return ListResponseWithoutPage.<MeetingRoomCalendarDayResponse, PersonalMeetingRoomCalendarFilter>builder()
 									  .data(mapToDTO(calendars))
@@ -347,7 +350,7 @@ public class MeetingRoomService {
 	private List<MeetingRoomCalendarDayResponse> mapToDTO(List<MeetingRoomCalendar> calendars) {
 		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
-		Map<String, List<MeetingRoomCalendar>> mapEntity = new HashMap<>();
+		Map<String, List<MeetingRoomCalendar>> mapEntity = new LinkedHashMap<>();
 		for (MeetingRoomCalendar calendar : calendars) {
 			String date = formatter.format(calendar.getDate());
 
@@ -361,7 +364,7 @@ public class MeetingRoomService {
 			}
 		}
 
-		Map<String, MeetingRoomCalendarDayResponse> mapRes = new HashMap<>();
+		List<MeetingRoomCalendarDayResponse> res = new ArrayList<>();
 		for (Map.Entry<String, List<MeetingRoomCalendar>> entry : mapEntity.entrySet()) {
 			List<MeetingRoomCalendarResponse> day = new ArrayList<>();
 			List<MeetingRoomCalendarResponse> night = new ArrayList<>();
@@ -374,15 +377,10 @@ public class MeetingRoomService {
 				}
 			}
 
-			mapRes.put(entry.getKey(),
-					   MeetingRoomCalendarDayResponse.builder().date(entry.getKey()).day(day).night(night).build());
+			res.add(MeetingRoomCalendarDayResponse.builder().date(entry.getKey()).day(day).night(night).build());
 		}
 
-		return mapRes.entrySet()
-					 .stream()
-					 .sorted(Map.Entry.comparingByKey(Common.dateComparator))
-					 .map(Map.Entry::getValue)
-					 .toList();
+		return res;
 	}
 
 	private MeetingRoom mapToMeetingRoomEntity(CreateMeetingRoomRequest request) {

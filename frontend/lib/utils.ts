@@ -38,7 +38,7 @@ export const includesRoles = ({
       return false;
     }
   } catch (error) {
-    throw new Error("Có lỗi xảy ra");
+    return false;
   }
 };
 export const includesOneRoles = ({
@@ -66,7 +66,7 @@ export const includesOneRoles = ({
       return false;
     }
   } catch (error) {
-    throw new Error("Có lỗi xảy ra");
+    throw false;
   }
 };
 export const isManager = ({
@@ -95,7 +95,7 @@ export const isManager = ({
     }
     return false;
   } catch (error) {
-    throw new Error("Có lỗi xảy ra");
+    throw false;
   }
 };
 export const isViewUnit = ({

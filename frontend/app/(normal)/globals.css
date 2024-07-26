@@ -1,0 +1,241 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 187 72% 47%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 198 15% 87%;
+    --input: 214.3 31.8% 91.4%;
+    /* --ring: 222.2 84% 4.9%; */
+    --ring: 187 89% 37%;
+
+    --radius: 0.5rem;
+
+    --gray-text: 220, 3%, 45%;
+    --hover-accent: 187 89% 37%;
+    --green-primary: 164 85% 41%;
+    --green-hover: 164 88% 35%;
+    --blue-primary: 224 76% 52%;
+    --blue-hover: 224 77% 43%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 187 72% 47%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+* {
+  @apply p-0 m-0 box-border;
+}
+
+.sidebar__logo {
+  @apply w-12 h-12 object-contain rounded-md;
+}
+
+.sidebar__list {
+  @apply list-none;
+}
+
+.sidebar__icon {
+  @apply w-6 h-6 inline-block;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+  height: 10px;
+}
+
+.card-shadow {
+  @apply shadow-[0_3px_20px_#1d26260d];
+}
+
+.card___style {
+  @apply card-shadow bg-white rounded-xl p-8;
+}
+
+.active-date {
+  @apply underline decoration-primary underline-offset-8 decoration-2;
+}
+
+.two-line {
+  overflow: hidden;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.one-line {
+  overflow: hidden;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.table___title {
+  @apply xl:text-3xl text-2xl font-bold tracking-wide;
+}
+
+.DropdownMenuContent {
+  width: var(--radix-dropdown-menu-trigger-width);
+  max-height: var(--radix-dropdown-menu-content-available-height);
+}
+
+.PopoverContent {
+  width: var(--radix-popover-trigger-width);
+  max-height: var(--radix-popover-content-available-height);
+}
+
+.loader {
+  width: 50px;
+  aspect-ratio: 1;
+  display: grid;
+}
+
+.loader::before,
+.loader::after {
+  content: "";
+  grid-area: 1/1;
+  --c: no-repeat radial-gradient(farthest-side, #22bbce 92%, #0000);
+  background: var(--c) 50% 0, var(--c) 50% 100%, var(--c) 100% 50%,
+    var(--c) 0 50%;
+  background-size: 12px 12px;
+  animation: l12 1s infinite;
+}
+
+.loader::before {
+  margin: 4px;
+  filter: hue-rotate(45deg);
+  background-size: 8px 8px;
+  animation-timing-function: linear;
+}
+
+@keyframes l12 {
+  100% {
+    transform: rotate(0.5turn);
+  }
+}
+
+input::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+input[type="date"]::-webkit-input-placeholder {
+  visibility: hidden !important;
+}
+
+.error___message {
+  @apply text-sm text-red-700;
+}
+
+.link___primary {
+  @apply text-primary hover:text-hover-accent;
+}
+
+.text_line {
+  width: 100%;
+  text-align: left;
+  border-bottom: 1px solid #d9e0e3;
+  line-height: 0.1em;
+  margin: 10px 0 8px;
+}
+
+.text_line span {
+  background: #fff;
+  padding: 0 10px 0 0;
+}
+
+.ce-block__content,
+.ce-toolbar__content {
+  max-width: 95%;
+}
+
+.codex-editor__redactor {
+  padding-bottom: 150px !important;
+}
+
+h2 {
+  @apply text-2xl font-bold tracking-tight lg:text-3xl;
+}
+
+h3 {
+  @apply text-xl font-bold tracking-tight lg:text-2xl;
+}
+
+h4 {
+  @apply text-lg font-bold tracking-tight lg:text-xl;
+}

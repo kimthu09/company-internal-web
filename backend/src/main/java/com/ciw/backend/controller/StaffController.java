@@ -36,8 +36,7 @@ public class StaffController {
 	)
 	@Operation(
 			summary = "Fetch staffs",
-			description = "Note:\n+" +
-						  "- Fetch all user are not deleted and not admin (admin@gmail.com)"
+			description = "Note: Fetch all user are not deleted and not admin (admin@gmail.com)"
 	)
 	@ApiResponse(
 			responseCode = "200",
@@ -56,9 +55,7 @@ public class StaffController {
 	)
 	@Operation(
 			summary = "Fetch all staffs",
-			description = "Note:\n+" +
-						  "- Fetch all user are not deleted and deleted if current user is admin\n" +
-						  "- Else fetch all user except admin"
+			description = "Note: Fetch all user even admin and is deleted"
 	)
 	@ApiResponse(
 			responseCode = "200",
@@ -67,7 +64,7 @@ public class StaffController {
 	public ResponseEntity<ListResponse<StaffResponse, StaffFilter>> getListUsers(
 			@Valid AppPageRequest page,
 			@Valid StaffFilter filter) {
-		return new ResponseEntity<>(staffService.getListUsers(page, filter), HttpStatus.OK);
+		return new ResponseEntity<>(staffService.getAllUser(page, filter), HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")

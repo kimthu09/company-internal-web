@@ -6,14 +6,18 @@ import { endpoint } from "@/constants";
 const login = async (credentials) => {
   const headers = {
     accept: "*/*",
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
   };
   let responseData;
   try {
-    const response = await axios.post(endpoint + "/auth/authenticate", {
-      email: credentials.email,
-      password: credentials.password,
-    }, { headers: headers });
+    const response = await axios.post(
+      endpoint + "/auth/authenticate",
+      {
+        email: credentials.email,
+        password: credentials.password,
+      },
+      { headers: headers }
+    );
 
     if (response) {
       responseData = response.data;
@@ -36,7 +40,6 @@ const login = async (credentials) => {
   ) {
     return null;
   } else {
-
     const { token } = responseData;
 
     const user = await axios
@@ -53,7 +56,7 @@ const login = async (credentials) => {
         console.error("Error:", error);
         return error.response.data;
       });
-    user.token = token;
+    user.token = responseData;
     return user;
   }
 };

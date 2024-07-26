@@ -29,5 +29,5 @@ logging:
   level:
     root: debug
 gmail:
-  username: nguyenlengocmai000@gmail.com
-  password: fyfo xyfe xswy toav
+  username: <<gmail-email>>
+  password: <<gmail-password>>
