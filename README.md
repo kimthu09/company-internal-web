@@ -4,6 +4,8 @@ Truy cập link: https://is-208-team5-nine.vercel.app/project
 
 # Sản phẩm
 
+> [!Note] Cần tốn 50s hoặc hơn để BE khởi động
+
 1. BE API: https://ciw-be.onrender.com/swagger-ui/index.html
 2. FE: https://company-internal-web.vercel.app/
    > [!IMPORTANT] > _Tài khoản admin_:
@@ -22,6 +24,11 @@ Truy cập link: https://is-208-team5-nine.vercel.app/project
    - Username: root
    - Password: 123456
 3. **Bước 3:** Sử dụng kết nối vừa tạo, chạy file `database.sql` để tạo cơ sở dữ liệu và bảng.
+
+### Cài đặt
+
+1. Vào file application.yml và điển _username-gmail_ và _password-gmail_
+2. Thêm file json private key của Firebase vào thư mục resource. Đặt tên file là "firebase-private-key.json"
 
 ### Chạy Backend
 
