@@ -1,7 +1,15 @@
-import NewsDetail from "@/components/news/news-detail";
+import EditNews from "@/components/news/edit-news";
 
-const NewsDetailPage = ({ params }: { params: { newsId: number } }) => {
-  return <NewsDetail params={params} />;
+import { withAuth } from "@/lib/auth/withAuth";
+
+const EditNewsPage = ({ params }: { params: { newsId: number } }) => {
+  return <EditNews params={params} />;
 };
 
-export default NewsDetailPage;
+export default withAuth(
+  EditNewsPage,
+  ["ADMIN", "POST"],
+  undefined,
+  undefined,
+  true
+);
